@@ -1,0 +1,19 @@
+{
+  "schema": "quiet.palette/v1",
+  "name": "Quiet Night",
+  "mode": "night",
+  "status": "candidate",
+  "anchors": {
+    "field": "#1C1E1C",
+    "surface": "#242925",
+    "structure": "#222A2D",
+    "ink": "#E2E0D7",
+    "muted": "#9AA29C",
+    "line": "#343B38",
+    "mineral": "#789AA3",
+    "moss": "#879A83",
+    "ochre": "#B49A67",
+    "rust": "#C47D6B"
+  }
+}
+
