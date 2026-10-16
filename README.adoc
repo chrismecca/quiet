@@ -1,1 +1,23 @@
 = Quiet.
+:toc:
+
+Quiet is a restrained interface color system for long-duration work.
+
+The interface should become scenery.
+
+Color is allowed to organize.  It is not allowed to shout.
+
+== Status
+
+Quiet Core 0.1 is under development.
+
+The current canonical anchors are frozen pending external review.
+
+== Variants 
+
+* Quiet Day
+* Quiet Night
+
+Both implement the same semantic core.  They are adaptations, not
+mathematical inversions.
+
