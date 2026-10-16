@@ -1,0 +1,179 @@
+// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-16
+
+= Contributing to Quiet
+
+Quiet is currently a candidate specification under active development.
+
+The project values reproducibility, restraint, and evidence over palette
+preference.
+
+== Repository conventions
+
+Project prose is written in AsciiDoc.
+
+Analytical report sources are written in Org mode and exported to PDF.
+
+Markdown files are not used.
+
+Go is the reference implementation for Quiet Core validation and
+generation.
+
+Generated and tool-managed files should remain conventional for their
+respective tools.  Project conventions should not be forced into formats
+that do not naturally support them.
+
+== File identification
+
+Human-authored source files use an SCCS-style identification string where
+the file format permits comments:
+
+----
+@(#)quiet / <type> / <repo-relative-path> / YYYY-MM-DD
+----
+
+For example:
+
+[source,go]
+----
+// @(#)quiet / go / internal/color/srgb.go / 2026-10-16
+----
+
+The identification line is normally the first line of the file.
+
+When a format requires a leading interpreter, magic, or file-local
+directive, that required line comes first and the Quiet identification
+follows immediately.
+
+The date records the last intentional semantic revision of the file.  It
+is not changed for formatting-only edits.
+
+Generated and tool-managed files do not receive manually maintained
+identification strings.
+
+Examples include:
+
+* JSON data;
+* `go.mod`;
+* `go.sum`;
+* generated PDFs;
+* generated theme artifacts.
+
+The standard `LICENSE` file is also left unmodified so that license
+identification tools can recognize it without project-specific decoration.
+
+== Go implementation style
+
+Code should make invariants and failure modes explicit.
+
+Comments should explain:
+
+* why a calculation or constraint exists;
+* what representation or units a value uses;
+* where numerical constants originate;
+* where precision, gamut, or quantization boundaries occur;
+* assumptions that a future maintainer could otherwise violate.
+
+Comments should not merely restate syntax.
+
+Exported identifiers should have Go documentation comments.
+
+Color-space conversions must not silently clip or gamut-map colors.
+Gamut mapping is a design decision and must remain explicit.
+
+Quantization to 8-bit sRGB is an export operation, not part of continuous
+color calculations.
+
+Numerical behavior that is important to Quiet should have a frozen test
+fixture derived independently of the implementation under test.
+
+Dependencies should be added when they materially improve correctness or
+maintainability, not merely to avoid implementing small, stable,
+well-specified primitives.
+
+== Before submitting a change
+
+Run:
+
+----
+make check
+----
+
+A change should not introduce:
+
+* formatting failures;
+* missing file-identification headers;
+* `go vet` failures;
+* test failures;
+* Quiet Core validation failures once Core validation is implemented.
+
+== Canonical colors
+
+The canonical Quiet anchors are intentionally conservative.
+
+A passing canonical anchor should not be changed solely because another
+color is aesthetically preferred.
+
+A proposed anchor change should identify a concrete reason, such as:
+
+* a failed specification constraint;
+* an accessibility problem;
+* a reproducible implementation problem;
+* independent user-testing evidence;
+* a documented inconsistency in Quiet Core.
+
+When possible, changes should minimize perceptual movement from the
+existing canonical value.
+
+== Semantics
+
+Consequential interface meaning must not depend on hue alone.
+
+Color may organize information, but state and meaning should also be
+communicated through text, shape, iconography, position, typography, or
+another non-color cue when the distinction is consequential.
+
+== Day and Night
+
+Quiet Day and Quiet Night are adaptations of the same semantic system.
+
+They are not required to be mathematical inversions or to preserve
+identical perceptual prominence ordering.
+
+Changes should preserve semantic role, recognizable color-family
+identity, readability, and the restrained character of Quiet.
+
+== Reports
+
+Analytical report sources live in:
+
+----
+reports/src/
+----
+
+as Org sources.
+
+Published report artifacts live in:
+
+----
+reports/pdf/
+----
+
+as PDF files.
+
+Both source and published artifact may be versioned when the report forms
+part of the project's evidence.
+
+== Experimental work
+
+Scratch experiments do not automatically belong in the repository.
+
+Promote an experiment into the project when it produces a specification
+decision, reproducible test, useful reference data, or other durable
+evidence.
+
+== Philosophy
+
+The interface should become scenery.
+
+Color is allowed to organize.  It is not allowed to shout.
+

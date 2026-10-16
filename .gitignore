@@ -1,0 +1,36 @@
+# @(#)quiet / git / .gitignore / 2026-10-16
+
+# go artifacts
+/bin/
+*.test
+*.out
+coverage.out
+
+# macos
+.DS_Store
+
+# vim
+*.swp
+*.swo
+*.swn
+
+# emacs
+*~
+\#*\#
+.#*
+
+# org-mode / LaTeX report intermediates
+/reports/src/*.aux
+/reports/src/*.bbl
+/reports/src/*.blg
+/reports/src/*.fdb_latexmk
+/reports/src/*.fls
+/reports/src/*.log
+/reports/src/*.out
+/reports/src/*.tex
+/reports/src/*.toc
+/reports/src/*.synctex.gz
+
+# tmp
+/tmp/
+

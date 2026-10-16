@@ -1,3 +1,5 @@
+// @(#)quiet / asciidoc / README.adoc / 2026-10-16
+
 = Quiet.
 :toc:
 
@@ -13,11 +15,46 @@ Quiet Core 0.1 is under development.
 
 The current canonical anchors are frozen pending external review.
 
-== Variants 
+== Variants
 
 * Quiet Day
 * Quiet Night
 
 Both implement the same semantic core.  They are adaptations, not
 mathematical inversions.
+
+== Reference implementation
+
+The reference implementation is written in Go.
+
+Run the complete local verification suite with:
+
+----
+make check
+----
+
+Build the command-line tool with:
+
+----
+make build
+----
+
+The resulting executable is:
+
+----
+bin/quiet
+----
+
+== Project conventions
+
+Project prose is written in AsciiDoc.
+
+Analytical report sources are written in Org mode and published as PDF.
+
+See link:CONTRIBUTING.adoc[Contributing to Quiet] for repository,
+implementation, and review conventions.
+
+== License
+
+Quiet is distributed under the MIT License.
 
