@@ -11,9 +11,13 @@ Color is allowed to organize.  It is not allowed to shout.
 
 == Status
 
-Quiet Core 0.1 is under development.
+Quiet is under development toward its first release.
 
-The current canonical anchors are frozen pending external review.
+The current canonical anchors are frozen pending external review,
+reference-port work, and broader testing.
+
+The existence of a candidate Quiet Core specification does not constitute a
+Quiet 0.1 release.
 
 == Variants
 
@@ -22,6 +26,20 @@ The current canonical anchors are frozen pending external review.
 
 Both implement the same semantic core.  They are adaptations, not
 mathematical inversions.
+
+== Specification
+
+The candidate human-readable specification is:
+
+* link:spec/quiet-core.adoc[Quiet Core]
+
+Machine-readable inputs are:
+
+----
+spec/quiet-core.json
+spec/quiet-day.json
+spec/quiet-night.json
+----
 
 == Reference implementation
 
@@ -43,6 +61,22 @@ The resulting executable is:
 
 ----
 bin/quiet
+----
+
+Validate the canonical palettes with:
+
+----
+bin/quiet check \
+    spec/quiet-core.json \
+    spec/quiet-day.json \
+    spec/quiet-night.json
+----
+
+The expected result is:
+
+----
+Quiet Day: PASS (19/19)
+Quiet Night: PASS (19/19)
 ----
 
 == Project conventions

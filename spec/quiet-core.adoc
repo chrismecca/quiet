@@ -1,0 +1,787 @@
+// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-16
+
+= Quiet Core
+:toc:
+:toclevels: 3
+:sectnums:
+
+Quiet Core defines the semantic and perceptual rules shared by Quiet Day,
+Quiet Night, and conforming Quiet ports.
+
+This document describes the current candidate specification.
+
+It is not yet a stable Quiet release.
+
+== Status
+
+Quiet Core is under active development.
+
+The canonical Day and Night anchors are frozen pending external review,
+reference-port work, and broader testing.
+
+The machine-readable contract is:
+
+----
+spec/quiet-core.json
+----
+
+The canonical palette data is:
+
+----
+spec/quiet-day.json
+spec/quiet-night.json
+----
+
+The Go reference implementation evaluates those files directly.
+
+== Design intent
+
+Quiet is a restrained interface color system for long-duration work.
+
+The interface should become scenery.
+
+Color is allowed to organize.  It is not allowed to shout.
+
+Quiet favors:
+
+* low-chroma structural color;
+* strong reading contrast without stark black-on-white presentation;
+* limited chromatic signaling;
+* stable semantic roles;
+* explicit accessibility constraints;
+* reproducible derivation rather than hand-selected secondary colors.
+
+Quiet is not intended to maximize visual separation between every adjacent
+interface region.
+
+Subtle architectural relationships are deliberate.
+
+== Conformance language
+
+The words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` describe
+requirements on implementations and ports.
+
+`MUST` and `MUST NOT` identify requirements necessary for conformance.
+
+`SHOULD` and `SHOULD NOT` identify strong recommendations that may be
+departed from when an implementation has a documented reason.
+
+`MAY` identifies optional behavior.
+
+== Reference environment
+
+Quiet Core is currently defined for:
+
+[cols="1,2"]
+|===
+| Property | Reference
+
+| Display color space
+| sRGB
+
+| White point
+| D65
+
+| Dynamic range
+| SDR
+
+| Perceptual authoring spaces
+| OKLab and OKLCH
+
+| Accessibility contrast model
+| WCAG 2.x relative luminance and contrast ratio
+
+| Canonical serialized color form
+| uppercase six-digit `#RRGGBB`
+|===
+
+Canonical anchors MUST be representable in sRGB.
+
+Derived opaque display colors MUST remain in sRGB gamut.
+
+A conforming implementation MUST NOT silently clip an out-of-gamut derived
+color.
+
+Gamut mapping, if introduced in a future Quiet specification, will be an
+explicit operation.
+
+== Color representations
+
+=== sRGB
+
+Canonical palette files store 8-bit sRGB values in uppercase hexadecimal
+form.
+
+For example:
+
+----
+#4A6E7A
+----
+
+Canonical files MUST NOT use shorthand hexadecimal forms, alpha-bearing
+hexadecimal forms, lowercase hexadecimal values, or an omitted `#`.
+
+Floating-point sRGB values MAY be used internally.
+
+Quantization to 8-bit sRGB is an export operation and MUST NOT be inserted
+into intermediate perceptual calculations.
+
+=== OKLab
+
+Quiet uses OKLab where rectangular perceptual interpolation is required.
+
+In particular, Selection is derived by interpolation in OKLab.
+
+=== OKLCH
+
+Quiet uses OKLCH where a derivation intentionally adjusts perceptual
+lightness and chroma while retaining a color family.
+
+In particular, Callout is derived from Surface in OKLCH.
+
+Hue values near the neutral axis MUST NOT be treated as semantically
+meaningful merely because a numeric hue angle can be computed.
+
+== Canonical anchors
+
+Every Quiet Day or Quiet Night palette contains exactly ten canonical
+anchors.
+
+Derived colors are not canonical anchors.
+
+[cols="1,3"]
+|===
+| Anchor | Role
+
+| Field
+| Primary application or document background.
+
+| Surface
+| Secondary interface surface, panel, or contained region.
+
+| Structure
+| Interface structure such as chrome, navigation, tab regions, or related
+secondary architecture.
+
+| Ink
+| Primary foreground for body text and other essential reading content.
+
+| Muted
+| Secondary readable foreground for information subordinate to Ink.
+
+| Line
+| Quiet structural linework, separators, and nonessential boundaries.
+
+| Mineral
+| Cool chromatic signal associated with information, focus, or active state.
+
+| Moss
+| Chromatic signal associated with success, nominal state, or positive state.
+
+| Ochre
+| Chromatic signal associated with warning or attention.
+
+| Rust
+| Chromatic signal associated with error, destructive action, or failure.
+|===
+
+The four chromatic anchors define semantic families.
+
+Their hues support meaning but MUST NOT be the sole carrier of consequential
+meaning.
+
+== Quiet Day
+
+The current candidate Quiet Day anchors are:
+
+[cols="1,1"]
+|===
+| Anchor | sRGB
+
+| Field
+| `#F3F0E6`
+
+| Surface
+| `#E6E9E2`
+
+| Structure
+| `#E7EDF0`
+
+| Ink
+| `#242825`
+
+| Muted
+| `#616B65`
+
+| Line
+| `#CDD1CA`
+
+| Mineral
+| `#4A6E7A`
+
+| Moss
+| `#586E5C`
+
+| Ochre
+| `#85602E`
+
+| Rust
+| `#8F5A42`
+|===
+
+== Quiet Night
+
+The current candidate Quiet Night anchors are:
+
+[cols="1,1"]
+|===
+| Anchor | sRGB
+
+| Field
+| `#1C1E1C`
+
+| Surface
+| `#242925`
+
+| Structure
+| `#222A2D`
+
+| Ink
+| `#E2E0D7`
+
+| Muted
+| `#9AA29C`
+
+| Line
+| `#343B38`
+
+| Mineral
+| `#789AA3`
+
+| Moss
+| `#879A83`
+
+| Ochre
+| `#B49A67`
+
+| Rust
+| `#C47D6B`
+|===
+
+== Derived roles
+
+Quiet distinguishes canonical anchors from semantic colors that can be
+reproduced deterministically from those anchors.
+
+A conforming implementation SHOULD derive these values rather than storing
+their current hexadecimal results as independent palette choices.
+
+=== Selection
+
+Selection is an opaque derived color.
+
+It is produced by interpolating from Structure toward Mineral in OKLab.
+
+[cols="1,1"]
+|===
+| Mode | Mineral interpolation amount
+
+| Day
+| `0.10`
+
+| Night
+| `0.23`
+|===
+
+The interpolation is:
+
+----
+result = structure + (mineral - structure) * amount
+----
+
+applied independently to `L`, `a`, and `b` in OKLab.
+
+For the current canonical anchors this produces:
+
+[cols="1,1"]
+|===
+| Mode | Current result
+
+| Day
+| `#D6E0E4`
+
+| Night
+| `#344246`
+|===
+
+These hexadecimal values are consequences of the derivation and are not
+additional canonical anchors.
+
+=== Callout
+
+Callout is an opaque derived color based on Surface.
+
+Surface is converted to OKLCH.  Its lightness and chroma are adjusted while
+its hue is preserved.
+
+[cols="1,1,1"]
+|===
+| Mode | Delta L | Delta C
+
+| Day
+| `+0.008`
+| `+0.004`
+
+| Night
+| `+0.014`
+| `+0.003`
+|===
+
+For the current canonical anchors this produces:
+
+[cols="1,1"]
+|===
+| Mode | Current result
+
+| Day
+| `#E8ECE2`
+
+| Night
+| `#262D28`
+|===
+
+These hexadecimal values are consequences of the derivation and are not
+additional canonical anchors.
+
+=== Subtle
+
+Subtle is not one opaque canonical or derived color.
+
+Subtle is a contextual compositing rule.
+
+Muted is composited over the local background at:
+
+----
+alpha = 0.55
+----
+
+using conventional gamma-encoded sRGB compositing.
+
+For each component:
+
+----
+result = muted * 0.55 + background * 0.45
+----
+
+The background MUST be the actual local background on which Subtle appears.
+
+Therefore:
+
+----
+Subtle over Field
+----
+
+and:
+
+----
+Subtle over Surface
+----
+
+are different displayed colors.
+
+For reference, Subtle over Field currently produces:
+
+[cols="1,1"]
+|===
+| Mode | Current appearance over Field
+
+| Day
+| `#A3A79F`
+
+| Night
+| `#616762`
+|===
+
+These values MUST NOT be treated as a global opaque Subtle token.
+
+Subtle is intended only for redundant or nonessential information.
+
+Essential text or state information MUST NOT depend on Subtle-level contrast.
+
+== Contrast requirements
+
+Quiet applies contrast requirements to relationships in which readable
+foreground content is intentionally used on a background.
+
+Quiet does not assign arbitrary contrast floors to every architectural
+boundary.
+
+=== Primary reading contrast
+
+Ink on Field MUST have a contrast ratio of at least:
+
+----
+7.0:1
+----
+
+Ink on Structure MUST have a contrast ratio of at least:
+
+----
+7.0:1
+----
+
+The current canonical palettes substantially exceed these requirements.
+
+=== Selection text
+
+Ink on Selection MUST have a contrast ratio of at least:
+
+----
+4.5:1
+----
+
+=== Secondary readable foreground
+
+Muted MUST have a contrast ratio of at least `4.5:1` on:
+
+* Field;
+* Surface;
+* Structure;
+* Callout.
+
+=== Chromatic foregrounds
+
+Each chromatic anchor MUST have a contrast ratio of at least `4.5:1` when
+used as normal readable foreground content on:
+
+* Field;
+* Surface;
+* Structure.
+
+This requirement applies independently to:
+
+* Mineral;
+* Moss;
+* Ochre;
+* Rust.
+
+=== Current executable contract
+
+The current machine-readable contract contains nineteen hard contrast
+relationships:
+
+[cols="2,1"]
+|===
+| Relationship | Minimum
+
+| Ink on Field
+| `7.0`
+
+| Ink on Structure
+| `7.0`
+
+| Ink on Selection
+| `4.5`
+
+| Muted on Field
+| `4.5`
+
+| Muted on Surface
+| `4.5`
+
+| Muted on Structure
+| `4.5`
+
+| Muted on Callout
+| `4.5`
+
+| Mineral on Field
+| `4.5`
+
+| Mineral on Surface
+| `4.5`
+
+| Mineral on Structure
+| `4.5`
+
+| Moss on Field
+| `4.5`
+
+| Moss on Surface
+| `4.5`
+
+| Moss on Structure
+| `4.5`
+
+| Ochre on Field
+| `4.5`
+
+| Ochre on Surface
+| `4.5`
+
+| Ochre on Structure
+| `4.5`
+
+| Rust on Field
+| `4.5`
+
+| Rust on Surface
+| `4.5`
+
+| Rust on Structure
+| `4.5`
+|===
+
+The JSON representation in `quiet-core.json` is the machine-readable form of
+this table.
+
+== Architectural contrast
+
+Quiet intentionally permits low-contrast architectural relationships.
+
+The following relationships currently have no universal minimum contrast
+requirement:
+
+* Surface against Field;
+* Structure against Field;
+* Structure against Surface;
+* Line against neighboring surfaces;
+* Callout against Structure;
+* Selection fill against Field.
+
+A port MUST NOT invent a `3:1` or `4.5:1` requirement for these relationships
+merely because those thresholds are used elsewhere.
+
+Architectural subtlety is part of the visual system.
+
+A port MAY increase separation where required by the host interface, provided
+the result continues to preserve Quiet's restrained hierarchy.
+
+== Semantic color
+
+The current chromatic semantics are:
+
+[cols="1,2"]
+|===
+| Family | Typical semantics
+
+| Mineral
+| information, focus, active
+
+| Moss
+| success, nominal, positive
+
+| Ochre
+| warning, attention
+
+| Rust
+| error, destructive, failure
+|===
+
+These associations are semantic guidance, not permission to encode state by
+hue alone.
+
+Consequential meaning MUST NOT depend on hue alone.
+
+When a distinction affects comprehension or action, a port MUST provide a
+non-color cue such as:
+
+* text;
+* iconography;
+* shape;
+* position;
+* border treatment;
+* typography;
+* interaction state;
+* another redundant structural cue.
+
+Warning and error, for example, MUST NOT be distinguished solely by Ochre
+versus Rust.
+
+== Color-vision deficiency
+
+Quiet's chromatic families have been screened under simulated protanopia,
+deuteranopia, and tritanopia.
+
+Simulation is an engineering screening tool and does not replace evaluation
+with people who have color-vision deficiencies.
+
+The screening did not establish a universal Delta E threshold for semantic
+distinguishability.
+
+Quiet therefore treats semantic redundancy as the conformance mechanism
+rather than attempting to guarantee meaning through hue distance alone.
+
+== Day and Night correspondence
+
+Quiet Day and Quiet Night are adaptations of one semantic system.
+
+They are not mathematical inversions.
+
+A conforming pair SHOULD preserve:
+
+* semantic role;
+* recognizable color-family identity;
+* required foreground contrast;
+* restrained chroma;
+* quiet architectural separation;
+* the overall hierarchy of work over interface.
+
+A conforming pair is not required to preserve:
+
+* identical OKLCH lightness;
+* identical OKLCH chroma;
+* identical hue angle;
+* identical accent contrast rank;
+* equal numerical distance from Field;
+* mathematical symmetry.
+
+The current canonical palettes intentionally differ in accent prominence.
+
+Quiet Day places its four chromatic foregrounds on a nearly common
+perceptual-lightness and contrast plane.
+
+Quiet Night permits a wider prominence range.
+
+This is not currently considered a conformance defect.
+
+== Canonical-data rules
+
+Canonical palette files MUST:
+
+* identify schema `quiet.palette/v1`;
+* identify mode as `day` or `night`;
+* contain exactly the ten defined anchors;
+* represent each anchor as uppercase six-digit sRGB hexadecimal;
+* contain no unknown fields;
+* contain no cached derived colors.
+
+The current candidate Core contract identifies schema:
+
+----
+quiet.core/v1
+----
+
+Schema identifiers version serialized data formats.
+
+They are not Quiet release numbers.
+
+== Reference implementation
+
+The Go implementation under:
+
+----
+internal/color/
+internal/core/
+cmd/quiet/
+----
+
+is the reference implementation for the current candidate specification.
+
+Generic color mathematics belongs in `internal/color`.
+
+Quiet-specific semantics belong in `internal/core`.
+
+This boundary is intentional.
+
+The command:
+
+----
+quiet derive PALETTE
+----
+
+derives semantic display colors from canonical anchors.
+
+The command:
+
+----
+quiet check CONTRACT PALETTE [PALETTE ...]
+----
+
+evaluates the machine-readable Quiet Core contract.
+
+For the canonical palettes:
+
+----
+quiet check \
+    spec/quiet-core.json \
+    spec/quiet-day.json \
+    spec/quiet-night.json
+----
+
+the expected result is:
+
+----
+Quiet Day: PASS (19/19)
+Quiet Night: PASS (19/19)
+----
+
+== Porting principles
+
+A port maps the semantics of Quiet onto the capabilities of another
+interface.
+
+A port SHOULD map host-interface roles to Quiet roles before selecting
+colors.
+
+A port SHOULD NOT begin by replacing host colors one-for-one based only on
+visual resemblance.
+
+When the host requires a role that Quiet does not define directly, the port
+SHOULD prefer:
+
+. an existing canonical anchor;
+. an existing derived role;
+. a documented contextual derivation;
+. a port-specific extension as a last resort.
+
+Port-specific extensions MUST NOT be presented as new Quiet Core canonical
+anchors.
+
+A port SHOULD document significant semantic compromises imposed by its host.
+
+== Change control
+
+Canonical anchors are intentionally conservative.
+
+A passing canonical anchor SHOULD NOT be changed solely because an alternate
+color is aesthetically preferred.
+
+A proposed canonical change should be supported by evidence such as:
+
+* a failed Core requirement;
+* an accessibility defect;
+* a reproducible implementation defect;
+* independent user-testing evidence;
+* a documented semantic inconsistency;
+* a demonstrated failure in a representative reference port.
+
+When a change is required, the preferred correction is the smallest
+perceptual movement that resolves the documented problem while preserving
+Quiet's design intent.
+
+== Release boundary
+
+The existence of this candidate specification does not constitute a Quiet
+0.1 release.
+
+Before Quiet 0.1, the project is expected to include at least:
+
+* a stable human-readable Core specification;
+* a stable machine-readable Core contract;
+* reproducible Day and Night palettes;
+* the reference validation implementation;
+* reproducible analytical reports;
+* external review;
+* a small set of representative reference ports.
+
+Reference ports are part of the release evidence: they demonstrate that the
+specification can be mapped onto real interfaces without private knowledge
+from the original author.
+
+== Guiding principle
+
+The interface should become scenery.
+
+Color is allowed to organize.  It is not allowed to shout.
+
