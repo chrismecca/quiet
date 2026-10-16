@@ -81,3 +81,15 @@ tidy:
 clean:
 	rm -rf bin coverage.out
 
+.PHONY: terminal-app-smoke
+terminal-app-smoke:
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "Terminal.app smoke test requires macOS"; \
+		exit 2; \
+	fi
+	mkdir -p tmp
+	swift ports/terminal/terminal-app/generate.swift \
+		ports/terminal/terminal-app/testdata/sentinel.json \
+		tmp/quiet-terminal-sentinel.terminal
+	plutil -lint tmp/quiet-terminal-sentinel.terminal
+

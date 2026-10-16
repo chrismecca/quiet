@@ -1,0 +1,66 @@
+// @(#)quiet / asciidoc / ports/terminal/terminal-app/README.adoc / 2026-10-16
+
+= Terminal.app adapter
+
+This directory contains the native host adapter used to produce macOS
+Terminal.app profile files.
+
+It does not define the Quiet terminal palette.
+
+Quiet-to-terminal semantic mapping belongs to the parent terminal reference
+port.  This adapter receives an already resolved terminal palette and
+serializes it into Terminal.app's native `.terminal` representation.
+
+== Host representation
+
+Terminal.app profiles are XML property lists.
+
+Color values are stored as `NSKeyedArchiver`-encoded `NSColor` objects
+embedded as property-list data.
+
+The adapter uses AppKit directly rather than reproducing Cocoa archive
+internals in the Quiet Go implementation.
+
+== Generator
+
+Run:
+
+----
+swift ports/terminal/terminal-app/generate.swift \
+    INPUT.json \
+    OUTPUT.terminal
+----
+
+The input document contains:
+
+* background;
+* text;
+* bold text;
+* selection;
+* cursor;
+* the sixteen ANSI colors.
+
+All input colors are uppercase or lowercase six-digit sRGB hexadecimal
+values.
+
+The generated `NSColor` values use the sRGB color space and are opaque.
+
+== Selection
+
+Terminal.app profiles may store an alpha component for Selection.
+
+Quiet Selection is currently defined as an opaque derived display color.
+
+The reference adapter therefore serializes Selection with alpha `1.0`
+instead of inheriting Terminal.app's default selection opacity.
+
+This is a host-adaptation decision and remains subject to reference-port
+testing.
+
+== Test data
+
+`testdata/sentinel.json` contains deliberately artificial colors used only to
+exercise Terminal.app serialization.
+
+It is not a Quiet palette and must not be used as reference color data.
+
