@@ -191,3 +191,64 @@ func assertNear(
 		)
 	}
 }
+
+func TestCompositeLegacySRGBEndpoints(t *testing.T) {
+	foreground := MustParseHex("#123456")
+	background := MustParseHex("#ABCDEF")
+
+	atZero, err := CompositeLegacySRGB(
+		foreground,
+		background,
+		0,
+	)
+	if err != nil {
+		t.Fatalf(
+			"CompositeLegacySRGB alpha=0: %v",
+			err,
+		)
+	}
+
+	if got := atZero.MustHex(); got != "#ABCDEF" {
+		t.Fatalf(
+			"alpha=0 = %s, want #ABCDEF",
+			got,
+		)
+	}
+
+	atOne, err := CompositeLegacySRGB(
+		foreground,
+		background,
+		1,
+	)
+	if err != nil {
+		t.Fatalf(
+			"CompositeLegacySRGB alpha=1: %v",
+			err,
+		)
+	}
+
+	if got := atOne.MustHex(); got != "#123456" {
+		t.Fatalf(
+			"alpha=1 = %s, want #123456",
+			got,
+		)
+	}
+}
+
+func TestCompositeLegacySRGBRejectsInvalidAlpha(t *testing.T) {
+	for _, alpha := range []float64{
+		-0.01,
+		1.01,
+	} {
+		if _, err := CompositeLegacySRGB(
+			MustParseHex("#000000"),
+			MustParseHex("#FFFFFF"),
+			alpha,
+		); err == nil {
+			t.Errorf(
+				"alpha %.2f succeeded; want error",
+				alpha,
+			)
+		}
+	}
+}
