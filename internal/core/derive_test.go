@@ -18,21 +18,18 @@ func TestCanonicalDerivedColors(t *testing.T) {
 		file      string
 		selection string
 		callout   string
-		subtle    string
 	}{
 		{
 			name:      "day",
 			file:      "quiet-day.json",
 			selection: "#D6E0E4",
 			callout:   "#E8ECE2",
-			subtle:    "#A3A79F",
 		},
 		{
 			name:      "night",
 			file:      "quiet-night.json",
 			selection: "#344246",
 			callout:   "#262D28",
-			subtle:    "#616762",
 		},
 	}
 
@@ -73,14 +70,108 @@ func TestCanonicalDerivedColors(t *testing.T) {
 				derived.Callout.MustHex(),
 				tt.callout,
 			)
+		})
+	}
+}
+
+// The historical Subtle fixtures are specifically the appearance of Subtle
+// over Field. They are not independent canonical colors.
+func TestCanonicalSubtleOverField(t *testing.T) {
+	tests := []struct {
+		name string
+		file string
+		want string
+	}{
+		{
+			name: "day",
+			file: "quiet-day.json",
+			want: "#A3A79F",
+		},
+		{
+			name: "night",
+			file: "quiet-night.json",
+			want: "#616762",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			palette, err := LoadPaletteFile(
+				repoPath(
+					t,
+					"spec",
+					tt.file,
+				),
+			)
+			if err != nil {
+				t.Fatalf(
+					"LoadPaletteFile: %v",
+					err,
+				)
+			}
+
+			subtle, err := SubtleOver(
+				palette,
+				palette.Anchors.Field,
+			)
+			if err != nil {
+				t.Fatalf(
+					"SubtleOver: %v",
+					err,
+				)
+			}
 
 			assertHex(
 				t,
-				"subtle",
-				derived.Subtle.MustHex(),
-				tt.subtle,
+				"subtle over field",
+				subtle.MustHex(),
+				tt.want,
 			)
 		})
+	}
+}
+
+func TestSubtleDependsOnBackground(t *testing.T) {
+	palette, err := LoadPaletteFile(
+		repoPath(
+			t,
+			"spec",
+			"quiet-day.json",
+		),
+	)
+	if err != nil {
+		t.Fatalf(
+			"LoadPaletteFile: %v",
+			err,
+		)
+	}
+
+	onField, err := SubtleOver(
+		palette,
+		palette.Anchors.Field,
+	)
+	if err != nil {
+		t.Fatalf(
+			"SubtleOver field: %v",
+			err,
+		)
+	}
+
+	onSurface, err := SubtleOver(
+		palette,
+		palette.Anchors.Surface,
+	)
+	if err != nil {
+		t.Fatalf(
+			"SubtleOver surface: %v",
+			err,
+		)
+	}
+
+	if onField.MustHex() == onSurface.MustHex() {
+		t.Fatal(
+			"Subtle did not vary with its local background",
+		)
 	}
 }
 

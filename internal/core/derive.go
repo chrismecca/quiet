@@ -26,26 +26,27 @@ const (
 	subtleAlpha = 0.55
 )
 
-// Derived contains Quiet colors produced deterministically from canonical
-// anchors.
+// Derived contains opaque Quiet colors produced deterministically from the
+// canonical anchors.
 //
-// These values are outputs, not additional canonical anchors. A conforming
-// implementation should reproduce them from the derivation rules rather than
-// treating the resulting hexadecimal values as independent source data.
+// Subtle is intentionally absent. Unlike Selection and Callout, Subtle is not
+// one opaque derived color: it is a compositing rule whose displayed value
+// depends on the local background.
 type Derived struct {
 	Selection color.SRGB
 	Callout   color.SRGB
-	Subtle    color.SRGB
 }
 
-// Derive applies the candidate Quiet Core derivation rules to palette.
+// Derive applies the opaque candidate Quiet Core derivation rules to palette.
 //
 // The derivations intentionally use different color operations because the
 // roles have different perceptual purposes:
 //
 //   - Selection interpolates Structure toward Mineral in OKLab.
 //   - Callout adjusts Surface lightness and chroma in OKLCH.
-//   - Subtle composites Muted over Field in legacy sRGB at 55% opacity.
+//
+// Subtle is evaluated separately with SubtleOver because its output depends on
+// the local background.
 //
 // Every resulting display color must remain representable in sRGB. Derivation
 // fails rather than silently clipping an out-of-gamut result.
@@ -60,16 +61,46 @@ func Derive(p Palette) (Derived, error) {
 		return Derived{}, err
 	}
 
-	subtle, err := deriveSubtle(p)
-	if err != nil {
-		return Derived{}, err
-	}
-
 	return Derived{
 		Selection: selection,
 		Callout:   callout,
-		Subtle:    subtle,
 	}, nil
+}
+
+// SubtleOver returns the displayed Subtle color when Muted is composited over
+// background at the Quiet Core Subtle opacity.
+//
+// The operation intentionally uses conventional gamma-encoded sRGB
+// compositing. Subtle models ordinary interface opacity behavior; it is not a
+// perceptual interpolation.
+//
+// The background is supplied by the caller because Subtle is local to the
+// surface on which it appears. There is therefore no single canonical opaque
+// hexadecimal value for Subtle.
+func SubtleOver(
+	p Palette,
+	background color.SRGB,
+) (color.SRGB, error) {
+	result, err := color.CompositeLegacySRGB(
+		p.Anchors.Muted,
+		background,
+		subtleAlpha,
+	)
+	if err != nil {
+		return color.SRGB{}, fmt.Errorf(
+			"derive subtle: %w",
+			err,
+		)
+	}
+
+	if err := requireDisplayGamut(
+		"subtle",
+		result,
+	); err != nil {
+		return color.SRGB{}, err
+	}
+
+	return result, nil
 }
 
 func deriveSelection(p Palette) (color.SRGB, error) {
@@ -139,29 +170,6 @@ func deriveCallout(p Palette) (color.SRGB, error) {
 
 	if err := requireDisplayGamut(
 		"callout",
-		result,
-	); err != nil {
-		return color.SRGB{}, err
-	}
-
-	return result, nil
-}
-
-func deriveSubtle(p Palette) (color.SRGB, error) {
-	result, err := color.CompositeLegacySRGB(
-		p.Anchors.Muted,
-		p.Anchors.Field,
-		subtleAlpha,
-	)
-	if err != nil {
-		return color.SRGB{}, fmt.Errorf(
-			"derive subtle: %w",
-			err,
-		)
-	}
-
-	if err := requireDisplayGamut(
-		"subtle",
 		result,
 	); err != nil {
 		return color.SRGB{}, err

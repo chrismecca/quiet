@@ -211,6 +211,14 @@ func derive(
 		return err
 	}
 
+	subtleOnField, err := core.SubtleOver(
+		palette,
+		palette.Anchors.Field,
+	)
+	if err != nil {
+		return err
+	}
+
 	fmt.Fprintf(
 		w,
 		"%s\n",
@@ -219,20 +227,20 @@ func derive(
 
 	fmt.Fprintf(
 		w,
-		"  selection  %s\n",
+		"  selection     %s\n",
 		derived.Selection.MustHex(),
 	)
 
 	fmt.Fprintf(
 		w,
-		"  callout    %s\n",
+		"  callout       %s\n",
 		derived.Callout.MustHex(),
 	)
 
 	fmt.Fprintf(
 		w,
-		"  subtle     %s\n",
-		derived.Subtle.MustHex(),
+		"  subtle/field  %s\n",
+		subtleOnField.MustHex(),
 	)
 
 	return nil

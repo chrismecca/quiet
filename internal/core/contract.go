@@ -37,7 +37,6 @@ const (
 
 	RoleSelection Role = "selection"
 	RoleCallout   Role = "callout"
-	RoleSubtle    Role = "subtle"
 )
 
 // Contract is the machine-readable portion of the candidate Quiet Core
@@ -273,8 +272,7 @@ func knownRole(role Role) bool {
 		RoleOchre,
 		RoleRust,
 		RoleSelection,
-		RoleCallout,
-		RoleSubtle:
+		RoleCallout:
 		return true
 
 	default:

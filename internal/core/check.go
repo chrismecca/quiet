@@ -166,9 +166,6 @@ func resolveRole(
 	case RoleCallout:
 		return derived.Callout, nil
 
-	case RoleSubtle:
-		return derived.Subtle, nil
-
 	default:
 		return color.SRGB{}, fmt.Errorf(
 			"resolve unknown role %q",
