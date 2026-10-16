@@ -1,0 +1,127 @@
+{
+  "schema": "quiet.core/v1",
+  "name": "Quiet Core",
+  "status": "candidate",
+  "contrast_constraints": [
+    {
+      "id": "ink-on-field",
+      "foreground": "ink",
+      "background": "field",
+      "minimum": 7.0
+    },
+    {
+      "id": "ink-on-structure",
+      "foreground": "ink",
+      "background": "structure",
+      "minimum": 7.0
+    },
+    {
+      "id": "ink-on-selection",
+      "foreground": "ink",
+      "background": "selection",
+      "minimum": 4.5
+    },
+
+    {
+      "id": "muted-on-field",
+      "foreground": "muted",
+      "background": "field",
+      "minimum": 4.5
+    },
+    {
+      "id": "muted-on-surface",
+      "foreground": "muted",
+      "background": "surface",
+      "minimum": 4.5
+    },
+    {
+      "id": "muted-on-structure",
+      "foreground": "muted",
+      "background": "structure",
+      "minimum": 4.5
+    },
+    {
+      "id": "muted-on-callout",
+      "foreground": "muted",
+      "background": "callout",
+      "minimum": 4.5
+    },
+
+    {
+      "id": "mineral-on-field",
+      "foreground": "mineral",
+      "background": "field",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-surface",
+      "foreground": "mineral",
+      "background": "surface",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-structure",
+      "foreground": "mineral",
+      "background": "structure",
+      "minimum": 4.5
+    },
+
+    {
+      "id": "moss-on-field",
+      "foreground": "moss",
+      "background": "field",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-surface",
+      "foreground": "moss",
+      "background": "surface",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-structure",
+      "foreground": "moss",
+      "background": "structure",
+      "minimum": 4.5
+    },
+
+    {
+      "id": "ochre-on-field",
+      "foreground": "ochre",
+      "background": "field",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-surface",
+      "foreground": "ochre",
+      "background": "surface",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-structure",
+      "foreground": "ochre",
+      "background": "structure",
+      "minimum": 4.5
+    },
+
+    {
+      "id": "rust-on-field",
+      "foreground": "rust",
+      "background": "field",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-surface",
+      "foreground": "rust",
+      "background": "surface",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-structure",
+      "foreground": "rust",
+      "background": "structure",
+      "minimum": 4.5
+    }
+  ]
+}
+

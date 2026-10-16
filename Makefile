@@ -3,6 +3,11 @@
 GO := go
 BIN := bin/quiet
 
+CONTRACT := spec/quiet-core.json
+PALETTES := \
+	spec/quiet-day.json \
+	spec/quiet-night.json
+
 GOFILES := $(shell find cmd internal -type f -name '*.go' -print | sort)
 DOCFILES := $(shell find docs spec reports/src -type f \
 	\( -name '*.adoc' -o -name '*.org' \) -print 2>/dev/null | sort)
@@ -52,8 +57,12 @@ vet:
 test:
 	$(GO) test ./...
 
+.PHONY: core-check
+core-check:
+	$(GO) run ./cmd/quiet check $(CONTRACT) $(PALETTES)
+
 .PHONY: check
-check: headers fmt-check vet test
+check: headers fmt-check vet test core-check
 
 .PHONY: build
 build:

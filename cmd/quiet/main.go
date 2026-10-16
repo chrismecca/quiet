@@ -1,7 +1,7 @@
 // @(#)quiet / go / cmd/quiet/main.go / 2026-10-16
 
 // Command quiet is the reference command-line implementation for inspecting,
-// deriving, and eventually validating Quiet Core color data.
+// deriving, and validating Quiet Core color data.
 package main
 
 import (
@@ -43,7 +43,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 		}
 
 		if err := inspect(stdout, args[1]); err != nil {
-			fmt.Fprintf(stderr, "quiet: %v\n", err)
+			fmt.Fprintf(
+				stderr,
+				"quiet: %v\n",
+				err,
+			)
 			return exitError
 		}
 
@@ -60,7 +64,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 			args[1],
 			args[2],
 		); err != nil {
-			fmt.Fprintf(stderr, "quiet: %v\n", err)
+			fmt.Fprintf(
+				stderr,
+				"quiet: %v\n",
+				err,
+			)
 			return exitError
 		}
 
@@ -76,7 +84,37 @@ func run(args []string, stdout, stderr io.Writer) int {
 			stdout,
 			args[1],
 		); err != nil {
-			fmt.Fprintf(stderr, "quiet: %v\n", err)
+			fmt.Fprintf(
+				stderr,
+				"quiet: %v\n",
+				err,
+			)
+			return exitError
+		}
+
+		return exitOK
+
+	case "check":
+		if len(args) < 3 {
+			usage(stderr)
+			return exitUsage
+		}
+
+		passed, err := check(
+			stdout,
+			args[1],
+			args[2:],
+		)
+		if err != nil {
+			fmt.Fprintf(
+				stderr,
+				"quiet: %v\n",
+				err,
+			)
+			return exitError
+		}
+
+		if !passed {
 			return exitError
 		}
 
@@ -200,9 +238,85 @@ func derive(
 	return nil
 }
 
+func check(
+	w io.Writer,
+	contractPath string,
+	palettePaths []string,
+) (bool, error) {
+	contract, err := core.LoadContractFile(
+		contractPath,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	allPassed := true
+
+	for _, path := range palettePaths {
+		palette, err := core.LoadPaletteFile(path)
+		if err != nil {
+			return false, err
+		}
+
+		report, err := core.Check(
+			contract,
+			palette,
+		)
+		if err != nil {
+			return false, err
+		}
+
+		passed := report.PassedCount()
+		total := len(report.Results)
+
+		if report.Passed() {
+			fmt.Fprintf(
+				w,
+				"%s: PASS (%d/%d)\n",
+				report.Palette,
+				passed,
+				total,
+			)
+			continue
+		}
+
+		allPassed = false
+
+		fmt.Fprintf(
+			w,
+			"%s: FAIL (%d/%d)\n",
+			report.Palette,
+			passed,
+			total,
+		)
+
+		for _, result := range report.Results {
+			if result.Pass {
+				continue
+			}
+
+			fmt.Fprintf(
+				w,
+				"  FAIL %s on %s: %.6f < %.6f [%s]\n",
+				result.Foreground,
+				result.Background,
+				result.Actual,
+				result.Minimum,
+				result.ID,
+			)
+		}
+	}
+
+	return allPassed, nil
+}
+
 func usage(w io.Writer) {
 	fmt.Fprintln(w, "usage:")
 	fmt.Fprintln(w, "  quiet inspect HEX")
 	fmt.Fprintln(w, "  quiet contrast HEX HEX")
 	fmt.Fprintln(w, "  quiet derive PALETTE")
+	fmt.Fprintln(
+		w,
+		"  quiet check CONTRACT PALETTE [PALETTE ...]",
+	)
 }
