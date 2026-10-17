@@ -1,0 +1,314 @@
+// @(#)quiet / asciidoc / ports/terminal/ansi.adoc / 2026-10-17
+
+= Quiet ANSI mapping
+:toc:
+
+The ANSI terminal model requires sixteen indexed colors.
+
+Quiet Core defines ten canonical anchors and does not contain dedicated
+magenta, cyan, or bright-color anchors.
+
+The reference terminal port therefore maps existing roles where possible
+and derives terminal-local extensions where required.
+
+These extensions are part of the terminal reference port.
+
+They are not Quiet Core anchors.
+
+== Normal chromatic slots
+
+[cols="1,2"]
+|===
+| ANSI | Quiet mapping
+
+| 1 -- red
+| Rust
+
+| 2 -- green
+| Moss
+
+| 3 -- yellow
+| Ochre
+
+| 4 -- blue
+| Mineral
+|===
+
+== Cyan
+
+Quiet Core has no cyan anchor.
+
+ANSI cyan is a terminal-local extension derived between Moss and Mineral in
+OKLCH.
+
+Its lightness and chroma are the arithmetic means of Moss and Mineral.
+
+Its hue is the shortest-arc midpoint between those two hue families.
+
+Current results:
+
+[cols="1,1"]
+|===
+| Mode | Cyan
+
+| Quiet Day
+| `#4C706B`
+
+| Quiet Night
+| `#7A9C93`
+|===
+
+== Magenta
+
+Quiet Core has no magenta anchor.
+
+ANSI magenta fills the otherwise unoccupied hue interval from Mineral,
+through 360 degrees, to Rust.
+
+Its lightness and chroma are the arithmetic means of Mineral and Rust.
+
+Its hue is the midpoint of that outer interval.
+
+The opposite interval is deliberately not used because it passes through
+the existing Moss and Ochre families.
+
+Current results:
+
+[cols="1,1"]
+|===
+| Mode | Magenta
+
+| Quiet Day
+| `#755E82`
+
+| Quiet Night
+| `#9C89B4`
+|===
+
+== Bright chromatic slots
+
+ANSI bright chromatic colors are derived from their corresponding base
+color in OKLCH.
+
+The current candidate rule is:
+
+----
+bright.L = base.L + 0.010
+bright.C = base.C * 1.20
+bright.H = base.H
+----
+
+The rule gives `bright` the same interpretation in Quiet Day and Quiet
+Night:
+
+* modestly greater perceptual lightness;
+* modestly greater chroma;
+* unchanged hue family.
+
+The previous experiment moved bright colors toward Ink in OKLab.
+
+That rule was rejected because it made Quiet Day bright backgrounds darker
+than their corresponding normal backgrounds.
+
+Each bright chromatic color must:
+
+* remain in sRGB gamut;
+* retain at least `4.5:1` contrast against Field;
+* have greater OKLCH lightness than its base color;
+* have greater OKLCH chroma than its base color.
+
+== Neutral slots
+
+The four ANSI neutral slots use existing Quiet neutrals ordered by
+perceptual lightness.
+
+[cols="1,2"]
+|===
+| ANSI | Mapping
+
+| 0 -- black
+| darker of Field and Ink
+
+| 8 -- bright black
+| darker of Muted and Line
+
+| 7 -- white
+| lighter of Muted and Line
+
+| 15 -- bright white
+| lighter of Field and Ink
+|===
+
+This produces a monotonic neutral ramp in both Quiet Day and Quiet Night.
+
+=== ANSI neutral limitation
+
+ANSI neutral slots are overloaded as both foreground and background colors.
+
+In Quiet Day, ANSI bright white approaches Field and may have little or no
+foreground contrast on the default background.
+
+In Quiet Night, ANSI black approaches Field and may have little or no
+foreground contrast on the default background.
+
+This behavior is intentional in the reference mapping.
+
+The ANSI model cannot simultaneously preserve conventional black/white
+endpoint semantics and guarantee readable foreground contrast for every
+neutral slot in both light and dark adaptations.
+
+Applications should not rely on ANSI 0 or ANSI 15 as universally readable
+foreground colors.
+
+== Quiet Day
+
+[cols="1,1,1"]
+|===
+| Index | ANSI name | sRGB
+
+| 0
+| black
+| `#242825`
+
+| 1
+| red
+| `#8F5A42`
+
+| 2
+| green
+| `#586E5C`
+
+| 3
+| yellow
+| `#85602E`
+
+| 4
+| blue
+| `#4A6E7A`
+
+| 5
+| magenta
+| `#755E82`
+
+| 6
+| cyan
+| `#4C706B`
+
+| 7
+| white
+| `#CDD1CA`
+
+| 8
+| bright black
+| `#616B65`
+
+| 9
+| bright red
+| `#99593C`
+
+| 10
+| bright green
+| `#57725C`
+
+| 11
+| bright yellow
+| `#8D611F`
+
+| 12
+| bright blue
+| `#457281`
+
+| 13
+| bright magenta
+| `#7A5E8A`
+
+| 14
+| bright cyan
+| `#48746E`
+
+| 15
+| bright white
+| `#F3F0E6`
+|===
+
+== Quiet Night
+
+[cols="1,1,1"]
+|===
+| Index | ANSI name | sRGB
+
+| 0
+| black
+| `#1C1E1C`
+
+| 1
+| red
+| `#C47D6B`
+
+| 2
+| green
+| `#879A83`
+
+| 3
+| yellow
+| `#B49A67`
+
+| 4
+| blue
+| `#789AA3`
+
+| 5
+| magenta
+| `#9C89B4`
+
+| 6
+| cyan
+| `#7A9C93`
+
+| 7
+| white
+| `#9AA29C`
+
+| 8
+| bright black
+| `#343B38`
+
+| 9
+| bright red
+| `#D07B65`
+
+| 10
+| bright green
+| `#879E83`
+
+| 11
+| bright yellow
+| `#BC9C5D`
+
+| 12
+| bright blue
+| `#759EA9`
+
+| 13
+| bright magenta
+| `#A189BD`
+
+| 14
+| bright cyan
+| `#77A196`
+
+| 15
+| bright white
+| `#E2E0D7`
+|===
+
+== Semantic limitation
+
+ANSI applications may assign their own meanings to indexed colors.
+
+A terminal port therefore cannot guarantee Quiet Core semantics for
+arbitrary third-party software.
+
+The reference mapping preserves Quiet's color families and restrained
+character while remaining compatible with the conventional ANSI model.
+

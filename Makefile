@@ -18,9 +18,14 @@ HEADER_FILES := \
 	Makefile \
 	README.adoc \
 	$(GOFILES) \
-	$(DOCFILES)
+	$(DOCFILES) \
+	$(PORTFILES)
 
 .DEFAULT_GOAL := check
+
+PORTFILES := $(shell find ports -type f \
+	\( -name '*.adoc' -o -name '*.org' -o -name '*.swift' -o -name '*.sh' \) \
+	-print 2>/dev/null | sort)
 
 .PHONY: all
 all: check build

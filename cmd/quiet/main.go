@@ -11,6 +11,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
 const (
@@ -120,6 +121,37 @@ func run(args []string, stdout, stderr io.Writer) int {
 
 		return exitOK
 
+	case "port":
+		if len(args) != 3 {
+			usage(stderr)
+			return exitUsage
+		}
+
+		switch args[1] {
+		case "terminal":
+			if err := portTerminal(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
+		default:
+			fmt.Fprintf(
+				stderr,
+				"quiet: unknown port %q\n",
+				args[1],
+			)
+			return exitUsage
+		}
+
 	default:
 		fmt.Fprintf(
 			stderr,
@@ -129,6 +161,26 @@ func run(args []string, stdout, stderr io.Writer) int {
 		usage(stderr)
 		return exitUsage
 	}
+}
+
+func portTerminal(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return terminal.EncodeJSON(
+		w,
+		resolved,
+	)
 }
 
 func inspect(w io.Writer, s string) error {
@@ -323,6 +375,10 @@ func usage(w io.Writer) {
 	fmt.Fprintln(w, "  quiet inspect HEX")
 	fmt.Fprintln(w, "  quiet contrast HEX HEX")
 	fmt.Fprintln(w, "  quiet derive PALETTE")
+	fmt.Fprintln(
+		w,
+		"  quiet port terminal PALETTE",
+	)
 	fmt.Fprintln(
 		w,
 		"  quiet check CONTRACT PALETTE [PALETTE ...]",

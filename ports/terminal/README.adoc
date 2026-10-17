@@ -1,0 +1,91 @@
+// @(#)quiet / asciidoc / ports/terminal/README.adoc / 2026-10-17
+
+= Quiet terminal reference port
+
+This directory defines Quiet's reference mapping onto the conventional
+sixteen-color ANSI terminal model.
+
+The mapping is a port of Quiet Core.
+
+It does not extend Quiet Core.
+
+== Architecture
+
+The reference-port pipeline is:
+
+----
+Quiet canonical palette
+        |
+        v
+Go ANSI resolver
+        |
+        v
+resolved terminal JSON
+        |
+        v
+host adapter
+----
+
+Host adapters consume the resolved terminal palette rather than
+reimplementing Quiet-to-ANSI semantics independently.
+
+== Reference mapping
+
+The generic ANSI mapping is documented in:
+
+* link:ansi.adoc[Quiet ANSI mapping]
+
+The executable reference implementation lives in:
+
+----
+internal/port/terminal/
+----
+
+== Host adapters
+
+The first host adapter is:
+
+* link:terminal-app/README.adoc[macOS Terminal.app]
+
+Terminal.app serialization is deliberately separate from the generic ANSI
+mapping.
+
+Quiet Core defines semantic color roles.
+
+The generic terminal port maps those roles to ANSI.
+
+The Terminal.app adapter only serializes the already-resolved terminal
+palette into the host format.
+
+== Test fixture
+
+The script:
+
+----
+ports/terminal/ansi-test.sh
+----
+
+exercises:
+
+* normal ANSI foregrounds;
+* bright ANSI foregrounds;
+* normal ANSI backgrounds;
+* bright ANSI backgrounds;
+* common text attributes;
+* semantic approximations;
+* selection;
+* cursor visibility.
+
+The fixture is intended for host-level evaluation rather than automated
+color-science conformance.
+
+== Status
+
+The ANSI mapping is a candidate reference port.
+
+It has been exercised in both Quiet Day and Quiet Night under macOS
+Terminal.app.
+
+The mapping may still change as additional terminal hosts and applications
+expose constraints in the ANSI color model.
+
