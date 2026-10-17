@@ -27,6 +27,11 @@ PORTFILES := $(shell find ports -type f \
 	\( -name '*.adoc' -o -name '*.org' -o -name '*.swift' -o -name '*.sh' \) \
 	-print 2>/dev/null | sort)
 
+TERMINAL_APP_DIR := ports/terminal/terminal-app
+
+TERMINAL_APP_DAY := $(TERMINAL_APP_DIR)/quiet-day.terminal
+TERMINAL_APP_NIGHT := $(TERMINAL_APP_DIR)/quiet-night.terminal
+
 .PHONY: all
 all: check build
 
@@ -98,3 +103,25 @@ terminal-app-smoke:
 		tmp/quiet-terminal-sentinel.terminal
 	plutil -lint tmp/quiet-terminal-sentinel.terminal
 
+.PHONY: terminal-app-profiles
+terminal-app-profiles: build
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "Terminal.app profile generation requires macOS"; \
+		exit 2; \
+	fi
+	mkdir -p tmp
+	$(BIN) port terminal \
+		spec/quiet-day.json \
+		> tmp/quiet-day-terminal.json
+	$(BIN) port terminal \
+		spec/quiet-night.json \
+		> tmp/quiet-night-terminal.json
+	swift $(TERMINAL_APP_DIR)/generate.swift \
+		tmp/quiet-day-terminal.json \
+		$(TERMINAL_APP_DAY)
+	swift $(TERMINAL_APP_DIR)/generate.swift \
+		tmp/quiet-night-terminal.json \
+		$(TERMINAL_APP_NIGHT)
+	plutil -lint \
+		$(TERMINAL_APP_DAY) \
+		$(TERMINAL_APP_NIGHT)

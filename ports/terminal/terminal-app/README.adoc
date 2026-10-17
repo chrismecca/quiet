@@ -1,15 +1,65 @@
-// @(#)quiet / asciidoc / ports/terminal/terminal-app/README.adoc / 2026-10-16
+// @(#)quiet / asciidoc / ports/terminal/terminal-app/README.adoc / 2026-10-17
 
-= Terminal.app adapter
+= Quiet for Terminal.app
 
-This directory contains the native host adapter used to produce macOS
-Terminal.app profile files.
+This directory contains the macOS Terminal.app host adapter and generated
+Quiet reference profiles.
 
-It does not define the Quiet terminal palette.
+== Profiles
 
-Quiet-to-terminal semantic mapping belongs to the parent terminal reference
-port.  This adapter receives an already resolved terminal palette and
-serializes it into Terminal.app's native `.terminal` representation.
+Importable profiles are:
+
+* link:quiet-day.terminal[Quiet Day]
+* link:quiet-night.terminal[Quiet Night]
+
+These files are generated artifacts.
+
+They are not independent palette definitions.
+
+The generation path is:
+
+----
+Quiet canonical palette
+        |
+        v
+generic ANSI reference mapping
+        |
+        v
+resolved terminal JSON
+        |
+        v
+generate.swift
+        |
+        v
+Terminal.app .terminal profile
+----
+
+== Installation
+
+In Finder, double-click either `.terminal` file.
+
+Alternatively:
+
+----
+open ports/terminal/terminal-app/quiet-day.terminal
+open ports/terminal/terminal-app/quiet-night.terminal
+----
+
+Terminal.app imports each file as a profile.
+
+Importing a profile does not automatically make it the default profile.
+
+== Generation
+
+Generate both reference profiles from repository sources with:
+
+----
+make terminal-app-profiles
+----
+
+Profile generation requires macOS because the serializer uses AppKit.
+
+The generated files are validated with `plutil`.
 
 == Host representation
 
@@ -21,46 +71,50 @@ embedded as property-list data.
 The adapter uses AppKit directly rather than reproducing Cocoa archive
 internals in the Quiet Go implementation.
 
-== Generator
-
-Run:
-
-----
-swift ports/terminal/terminal-app/generate.swift \
-    INPUT.json \
-    OUTPUT.terminal
-----
-
-The input document contains:
-
-* background;
-* text;
-* bold text;
-* selection;
-* cursor;
-* the sixteen ANSI colors.
-
-All input colors are uppercase or lowercase six-digit sRGB hexadecimal
-values.
-
-The generated `NSColor` values use the sRGB color space and are opaque.
+Quiet color semantics remain outside this adapter.
 
 == Selection
 
 Terminal.app profiles may store an alpha component for Selection.
 
-Quiet Selection is currently defined as an opaque derived display color.
+Quiet Selection is an opaque derived display color.
 
 The reference adapter therefore serializes Selection with alpha `1.0`
-instead of inheriting Terminal.app's default selection opacity.
+rather than inheriting Terminal.app's profile-default selection opacity.
 
-This is a host-adaptation decision and remains subject to reference-port
-testing.
+== ANSI mapping
+
+The Terminal.app adapter does not define ANSI color semantics.
+
+It consumes the generic reference mapping documented at:
+
+* link:../ansi.adoc[Quiet ANSI mapping]
+
+This separation is intentional.
+
+Other terminal hosts should reuse the generic ANSI mapping and implement
+only their own host serialization.
+
+== Generated-artifact policy
+
+The `.terminal` files are committed because they are user-consumable port
+artifacts.
+
+The semantic sources of truth remain:
+
+----
+spec/quiet-day.json
+spec/quiet-night.json
+internal/port/terminal/
+----
+
+Changes to a generated Terminal.app profile should be produced through the
+reference pipeline rather than by editing the plist manually.
 
 == Test data
 
-`testdata/sentinel.json` contains deliberately artificial colors used only to
+`testdata/sentinel.json` contains deliberately artificial colors used to
 exercise Terminal.app serialization.
 
-It is not a Quiet palette and must not be used as reference color data.
+It is not a Quiet palette.
 
