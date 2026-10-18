@@ -1,0 +1,165 @@
+// @(#)quiet / asciidoc / ports/web/README.adoc / 2026-10-18
+
+= Quiet CSS / Web reference port
+
+The Quiet web reference port exposes Quiet Core semantic colors as CSS
+custom properties.
+
+It does not define application layout, typography, widgets, or component
+styling.
+
+Quiet ports color systems.  It does not skin applications.
+
+== Artifact
+
+The generated stylesheet is:
+
+----
+ports/web/quiet.css
+----
+
+It is generated from the canonical Quiet Day and Quiet Night palette data.
+
+The stylesheet MUST NOT be edited independently of the generator.
+
+== Variables
+
+The web port exposes the ten canonical Quiet anchors:
+
+----
+--quiet-field
+--quiet-surface
+--quiet-structure
+--quiet-ink
+--quiet-muted
+--quiet-line
+--quiet-mineral
+--quiet-moss
+--quiet-ochre
+--quiet-rust
+----
+
+It also exposes the opaque derived roles:
+
+----
+--quiet-selection
+--quiet-callout
+----
+
+These names preserve Quiet Core semantics directly.
+
+The web port does not create aliases such as `--quiet-background`,
+`--quiet-success`, or `--quiet-error`.
+
+Applications MAY define their own aliases from Quiet roles.
+
+== Day and Night
+
+Without an explicit override, Quiet Day is the default adaptation.
+
+When the root document has no `data-quiet-theme` attribute, the stylesheet
+uses `prefers-color-scheme: dark` to select Quiet Night for users requesting
+a dark interface.
+
+An explicit theme may be selected with:
+
+----
+<html data-quiet-theme="day">
+----
+
+or:
+
+----
+<html data-quiet-theme="night">
+----
+
+Explicit selection takes precedence over the system preference.
+
+== Subtle
+
+Quiet Subtle is contextual.
+
+There is deliberately no:
+
+----
+--quiet-subtle
+----
+
+global CSS variable.
+
+Subtle is Muted composited at 55 percent over the actual local background.
+
+For a known Field background, a web implementation may express the rule as:
+
+----
+color: color-mix(
+    in srgb,
+    var(--quiet-muted) 55%,
+    var(--quiet-field) 45%
+);
+----
+
+A Surface context must use Surface instead:
+
+----
+color: color-mix(
+    in srgb,
+    var(--quiet-muted) 55%,
+    var(--quiet-surface) 45%
+);
+----
+
+A port MUST NOT treat either result as a universal opaque Subtle color.
+
+== Example
+
+A minimal document surface may use:
+
+----
+body {
+    background: var(--quiet-field);
+    color: var(--quiet-ink);
+}
+
+aside {
+    background: var(--quiet-surface);
+    color: var(--quiet-muted);
+}
+
+::selection {
+    background: var(--quiet-selection);
+    color: var(--quiet-ink);
+}
+
+a {
+    color: var(--quiet-mineral);
+}
+----
+
+These mappings illustrate semantic use.
+
+They are not a complete Quiet application skin.
+
+== Generation
+
+Regenerate the canonical stylesheet with:
+
+----
+make web
+----
+
+The repository test suite verifies that the committed stylesheet is exactly
+the output produced from the canonical Quiet palettes.
+
+== Source of truth
+
+The semantic sources remain:
+
+----
+spec/quiet-day.json
+spec/quiet-night.json
+spec/quiet-core.adoc
+----
+
+The CSS file is a generated reference artifact.
+

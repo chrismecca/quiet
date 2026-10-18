@@ -125,3 +125,10 @@ terminal-app-profiles: build
 	plutil -lint \
 		$(TERMINAL_APP_DAY) \
 		$(TERMINAL_APP_NIGHT)
+
+.PHONY: web
+web:
+	$(GO) run ./cmd/quiet port web \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/web/quiet.css

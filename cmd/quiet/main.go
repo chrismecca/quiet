@@ -1,7 +1,7 @@
-// @(#)quiet / go / cmd/quiet/main.go / 2026-10-16
+// @(#)quiet / go / cmd/quiet/main.go / 2026-10-18
 
 // Command quiet is the reference command-line implementation for inspecting,
-// deriving, and validating Quiet Core color data.
+// deriving, validating, and porting Quiet Core color data.
 package main
 
 import (
@@ -12,6 +12,7 @@ import (
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
 	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/web"
 )
 
 const (
@@ -21,12 +22,22 @@ const (
 )
 
 func main() {
-	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+	os.Exit(
+		run(
+			os.Args[1:],
+			os.Stdout,
+			os.Stderr,
+		),
+	)
 }
 
 // run contains command dispatch so behavior can be exercised without coupling
 // command tests to process-wide os.Exit calls.
-func run(args []string, stdout, stderr io.Writer) int {
+func run(
+	args []string,
+	stdout io.Writer,
+	stderr io.Writer,
+) int {
 	if len(args) == 0 {
 		usage(stderr)
 		return exitUsage
@@ -43,7 +54,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return exitUsage
 		}
 
-		if err := inspect(stdout, args[1]); err != nil {
+		if err := inspect(
+			stdout,
+			args[1],
+		); err != nil {
 			fmt.Fprintf(
 				stderr,
 				"quiet: %v\n",
@@ -122,16 +136,42 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return exitOK
 
 	case "port":
-		if len(args) != 3 {
+		if len(args) < 2 {
 			usage(stderr)
 			return exitUsage
 		}
 
 		switch args[1] {
 		case "terminal":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
 			if err := portTerminal(
 				stdout,
 				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
+		case "web":
+			if len(args) != 4 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portWeb(
+				stdout,
+				args[2],
+				args[3],
 			); err != nil {
 				fmt.Fprintf(
 					stderr,
@@ -149,6 +189,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 				"quiet: unknown port %q\n",
 				args[1],
 			)
+			usage(stderr)
 			return exitUsage
 		}
 
@@ -183,7 +224,38 @@ func portTerminal(
 	)
 }
 
-func inspect(w io.Writer, s string) error {
+func portWeb(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return web.EncodeCSS(
+		w,
+		day,
+		night,
+	)
+}
+
+func inspect(
+	w io.Writer,
+	s string,
+) error {
 	c, err := color.ParseHex(s)
 	if err != nil {
 		return err
@@ -243,7 +315,10 @@ func printContrast(
 	fmt.Fprintf(
 		w,
 		"%.6f:1\n",
-		color.Contrast(a, b),
+		color.Contrast(
+			a,
+			b,
+		),
 	)
 
 	return nil
@@ -371,16 +446,38 @@ func check(
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "usage:")
-	fmt.Fprintln(w, "  quiet inspect HEX")
-	fmt.Fprintln(w, "  quiet contrast HEX HEX")
-	fmt.Fprintln(w, "  quiet derive PALETTE")
+	fmt.Fprintln(
+		w,
+		"usage:",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet inspect HEX",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet contrast HEX HEX",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet derive PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet check CONTRACT PALETTE [PALETTE ...]",
+	)
+
 	fmt.Fprintln(
 		w,
 		"  quiet port terminal PALETTE",
 	)
+
 	fmt.Fprintln(
 		w,
-		"  quiet check CONTRACT PALETTE [PALETTE ...]",
+		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
 	)
 }
