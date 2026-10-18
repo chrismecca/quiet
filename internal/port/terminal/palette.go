@@ -27,6 +27,8 @@ const (
 	// remain recognizably Quiet rather than becoming saturated terminal colors.
 	brightChromaScale = 1.20
 
+	brightSearchIterations = 48
+
 	// minimumChromaticContrast applies to ANSI chromatic foreground slots.
 	//
 	// Neutral ANSI slots are deliberately excluded. ANSI neutral slots are
@@ -97,7 +99,10 @@ func Resolve(p core.Palette) (Palette, error) {
 			return Palette{}, err
 		}
 
-		bright, err := deriveBrightChromatic(base)
+		bright, err := deriveBrightChromatic(
+			base,
+			p.Anchors.Field,
+		)
 		if err != nil {
 			return Palette{}, fmt.Errorf(
 				"derive ANSI %d: %w",
@@ -150,15 +155,19 @@ func Resolve(p core.Palette) (Palette, error) {
 // deriveBrightChromatic produces the ANSI bright member of one chromatic
 // family.
 //
-// ANSI bright slots are used as both foregrounds and backgrounds. The previous
-// reference-port experiment moved each base color toward Ink, which increased
-// foreground contrast but made Quiet Day bright backgrounds darker than their
-// corresponding normal backgrounds.
+// Bright colors retain the base hue, receive a modest chroma increase, and
+// attempt a small perceptual-lightness increase.
 //
-// Candidate 0.2 instead gives "bright" an adaptation-independent meaning:
-// slightly greater perceptual lightness and chroma with hue preserved.
+// ANSI colors are also commonly used as foregrounds. If the full lightness
+// increase would violate the terminal port's foreground-contrast floor, the
+// lightness increase is reduced to the greatest value that still conforms.
+//
+// Quantization is part of the host boundary. The final candidate is therefore
+// also checked after conversion to canonical 8-bit sRGB so that a color which
+// passes in continuous space cannot silently fail after export.
 func deriveBrightChromatic(
 	base color.SRGB,
+	field color.SRGB,
 ) (color.SRGB, error) {
 	lch := base.OKLab().OKLCH()
 
@@ -168,19 +177,164 @@ func deriveBrightChromatic(
 		)
 	}
 
-	bright := color.OKLCH{
-		L: lch.L + brightDeltaL,
-		C: lch.C * brightChromaScale,
-		H: lch.H,
-	}.OKLab().SRGB()
+	makeCandidate := func(lightness float64) color.SRGB {
+		return color.OKLCH{
+			L: lightness,
+			C: lch.C * brightChromaScale,
+			H: lch.H,
+		}.OKLab().SRGB()
+	}
 
-	if !bright.InGamut() {
+	baseL := lch.L
+	targetL := lch.L + brightDeltaL
+
+	target := makeCandidate(targetL)
+
+	if !target.InGamut() {
 		return color.SRGB{}, fmt.Errorf(
 			"bright chromatic is outside sRGB gamut",
 		)
 	}
 
-	return bright, nil
+	targetExportPasses, err := exportedContrastAtLeast(
+		target,
+		field,
+		minimumChromaticContrast,
+	)
+	if err != nil {
+		return color.SRGB{}, err
+	}
+
+	if color.Contrast(target, field) >= minimumChromaticContrast &&
+		targetExportPasses {
+		return target, nil
+	}
+
+	// Increasing chroma alone must still leave us with a viable starting
+	// point. If not, this derivation cannot satisfy the terminal contract.
+	baseIntensity := makeCandidate(baseL)
+
+	if !baseIntensity.InGamut() {
+		return color.SRGB{}, fmt.Errorf(
+			"bright chromatic base intensity is outside sRGB gamut",
+		)
+	}
+
+	if color.Contrast(
+		baseIntensity,
+		field,
+	) < minimumChromaticContrast {
+		return color.SRGB{}, fmt.Errorf(
+			"bright chromatic cannot satisfy %.1f:1 contrast",
+			minimumChromaticContrast,
+		)
+	}
+
+	// First locate the greatest continuous-lightness increase that satisfies
+	// the contrast floor.
+	low := baseL
+	high := targetL
+
+	for range brightSearchIterations {
+		mid := (low + high) / 2
+		candidate := makeCandidate(mid)
+
+		if color.Contrast(
+			candidate,
+			field,
+		) >= minimumChromaticContrast {
+			low = mid
+		} else {
+			high = mid
+		}
+	}
+
+	candidate := makeCandidate(low)
+
+	exportPasses, err := exportedContrastAtLeast(
+		candidate,
+		field,
+		minimumChromaticContrast,
+	)
+	if err != nil {
+		return color.SRGB{}, err
+	}
+
+	if exportPasses {
+		return candidate, nil
+	}
+
+	// The continuous candidate passes, but 8-bit export may round onto the
+	// wrong side of the threshold. Search downward only far enough to find
+	// the highest exportable lightness that still passes.
+	high = low
+	low = baseL
+
+	baseExportPasses, err := exportedContrastAtLeast(
+		makeCandidate(low),
+		field,
+		minimumChromaticContrast,
+	)
+	if err != nil {
+		return color.SRGB{}, err
+	}
+
+	if !baseExportPasses {
+		return color.SRGB{}, fmt.Errorf(
+			"bright chromatic cannot satisfy %.1f:1 after sRGB export",
+			minimumChromaticContrast,
+		)
+	}
+
+	for range brightSearchIterations {
+		mid := (low + high) / 2
+		probe := makeCandidate(mid)
+
+		pass, err := exportedContrastAtLeast(
+			probe,
+			field,
+			minimumChromaticContrast,
+		)
+		if err != nil {
+			return color.SRGB{}, err
+		}
+
+		if pass {
+			low = mid
+		} else {
+			high = mid
+		}
+	}
+
+	return makeCandidate(low), nil
+}
+
+func exportedContrastAtLeast(
+	foreground color.SRGB,
+	background color.SRGB,
+	minimum float64,
+) (bool, error) {
+	hex, err := foreground.Hex()
+	if err != nil {
+		return false, fmt.Errorf(
+			"encode terminal color: %w",
+			err,
+		)
+	}
+
+	exported, err := color.ParseHex(hex)
+	if err != nil {
+		return false, fmt.Errorf(
+			"decode exported terminal color %s: %w",
+			hex,
+			err,
+		)
+	}
+
+	return color.Contrast(
+		exported,
+		background,
+	) >= minimum, nil
 }
 
 // neutralRamp maps existing Quiet neutrals onto the four ANSI grayscale slots.

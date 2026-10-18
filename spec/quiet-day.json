@@ -4,10 +4,10 @@
   "mode": "day",
   "status": "candidate",
   "anchors": {
-    "field": "#F3F0E6",
+    "field": "#EEEADF",
     "surface": "#E6E9E2",
-    "structure": "#E7EDF0",
-    "ink": "#242825",
+    "structure": "#E4EAED",
+    "ink": "#1B1F1C",
     "muted": "#616B65",
     "line": "#CDD1CA",
     "mineral": "#4A6E7A",

@@ -13,8 +13,8 @@ Color is allowed to organize.  It is not allowed to shout.
 
 Quiet is under development toward its first release.
 
-The current canonical anchors are frozen pending external review,
-reference-port work, and broader testing.
+The current canonical anchors remain candidate data pending broader testing
+and additional reference-port work.
 
 The existence of a candidate Quiet Core specification does not constitute a
 Quiet 0.1 release.

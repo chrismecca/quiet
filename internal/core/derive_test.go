@@ -22,7 +22,7 @@ func TestCanonicalDerivedColors(t *testing.T) {
 		{
 			name:      "day",
 			file:      "quiet-day.json",
-			selection: "#D6E0E4",
+			selection: "#D4DDE1",
 			callout:   "#E8ECE2",
 		},
 		{
@@ -85,7 +85,7 @@ func TestCanonicalSubtleOverField(t *testing.T) {
 		{
 			name: "day",
 			file: "quiet-day.json",
-			want: "#A3A79F",
+			want: "#A0A49C",
 		},
 		{
 			name: "night",

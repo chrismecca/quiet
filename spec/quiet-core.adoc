@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-16
+// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-18
 
 = Quiet Core
 :toc:
@@ -16,8 +16,8 @@ It is not yet a stable Quiet release.
 
 Quiet Core is under active development.
 
-The canonical Day and Night anchors are frozen pending external review,
-reference-port work, and broader testing.
+The canonical Day and Night anchors remain candidate data pending broader
+testing and additional reference-port work.
 
 The machine-readable contract is:
 
@@ -199,16 +199,16 @@ The current candidate Quiet Day anchors are:
 | Anchor | sRGB
 
 | Field
-| `#F3F0E6`
+| `#EEEADF`
 
 | Surface
 | `#E6E9E2`
 
 | Structure
-| `#E7EDF0`
+| `#E4EAED`
 
 | Ink
-| `#242825`
+| `#1B1F1C`
 
 | Muted
 | `#616B65`
@@ -308,7 +308,7 @@ For the current canonical anchors this produces:
 | Mode | Current result
 
 | Day
-| `#D6E0E4`
+| `#D4DDE1`
 
 | Night
 | `#344246`
@@ -396,7 +396,7 @@ For reference, Subtle over Field currently produces:
 | Mode | Current appearance over Field
 
 | Day
-| `#A3A79F`
+| `#A0A49C`
 
 | Night
 | `#616762`
@@ -784,4 +784,3 @@ from the original author.
 The interface should become scenery.
 
 Color is allowed to organize.  It is not allowed to shout.
-

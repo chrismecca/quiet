@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/terminal/ansi.adoc / 2026-10-17
+// @(#)quiet / asciidoc / ports/terminal/ansi.adoc / 2026-10-18
 
 = Quiet ANSI mapping
 :toc:
@@ -90,20 +90,35 @@ Current results:
 ANSI bright chromatic colors are derived from their corresponding base
 color in OKLCH.
 
-The current candidate rule is:
+The reference derivation first attempts:
 
 ----
-bright.L = base.L + 0.010
-bright.C = base.C * 1.20
-bright.H = base.H
+target.L = base.L + 0.010
+target.C = base.C * 1.20
+target.H = base.H
 ----
 
-The rule gives `bright` the same interpretation in Quiet Day and Quiet
+This gives `bright` the same intended interpretation in Quiet Day and Quiet
 Night:
 
 * modestly greater perceptual lightness;
 * modestly greater chroma;
 * unchanged hue family.
+
+ANSI bright colors are also commonly used as foregrounds.  If the full
+lightness increase would reduce contrast against Field below `4.5:1`, the
+reference implementation reduces only the lightness increase toward the
+base value until it finds the greatest conforming value.
+
+The chroma multiplier and hue are retained.
+
+The final 8-bit sRGB export is checked as well as the continuous result.
+A candidate that passes only before quantization is reduced further until
+the exported color also retains at least `4.5:1` contrast against Field.
+
+If the chroma-increased color cannot satisfy the contrast floor even at the
+base lightness, the reference derivation fails rather than silently weakening
+the terminal-port requirement.
 
 The previous experiment moved bright colors toward Ink in OKLab.
 
@@ -113,9 +128,10 @@ than their corresponding normal backgrounds.
 Each bright chromatic color must:
 
 * remain in sRGB gamut;
-* retain at least `4.5:1` contrast against Field;
-* have greater OKLCH lightness than its base color;
-* have greater OKLCH chroma than its base color.
+* retain at least `4.5:1` contrast against Field after 8-bit sRGB export;
+* preserve the base hue family;
+* use the terminal bright chroma increase;
+* never use lower OKLCH lightness than its base color.
 
 == Neutral slots
 
@@ -168,7 +184,7 @@ foreground colors.
 
 | 0
 | black
-| `#242825`
+| `#1B1F1C`
 
 | 1
 | red
@@ -208,7 +224,7 @@ foreground colors.
 
 | 10
 | bright green
-| `#57725C`
+| `#56705B`
 
 | 11
 | bright yellow
@@ -216,7 +232,7 @@ foreground colors.
 
 | 12
 | bright blue
-| `#457281`
+| `#44707F`
 
 | 13
 | bright magenta
@@ -224,11 +240,11 @@ foreground colors.
 
 | 14
 | bright cyan
-| `#48746E`
+| `#45726C`
 
 | 15
 | bright white
-| `#F3F0E6`
+| `#EEEADF`
 |===
 
 == Quiet Night
@@ -311,4 +327,3 @@ arbitrary third-party software.
 
 The reference mapping preserves Quiet's color families and restrained
 character while remaining compatible with the conventional ANSI model.
-

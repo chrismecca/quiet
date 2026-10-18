@@ -27,7 +27,7 @@ func TestCanonicalANSIReferencePalettes(t *testing.T) {
 			name: "day",
 			file: "quiet-day.json",
 			want: [16]string{
-				"#242825",
+				"#1B1F1C",
 				"#8F5A42",
 				"#586E5C",
 				"#85602E",
@@ -38,12 +38,12 @@ func TestCanonicalANSIReferencePalettes(t *testing.T) {
 
 				"#616B65",
 				"#99593C",
-				"#57725C",
+				"#56705B",
 				"#8D611F",
-				"#457281",
+				"#44707F",
 				"#7A5E8A",
-				"#48746E",
-				"#F3F0E6",
+				"#45726C",
+				"#EEEADF",
 			},
 		},
 		{
