@@ -11,6 +11,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/terminal"
 	"github.com/chrismecca/quiet/internal/port/web"
 )
@@ -183,6 +184,26 @@ func run(
 
 			return exitOK
 
+		case "base16":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portBase16(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -249,6 +270,26 @@ func portWeb(
 		w,
 		day,
 		night,
+	)
+}
+
+func portBase16(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	scheme, err := base16.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return base16.EncodeYAML(
+		w,
+		scheme,
 	)
 }
 
@@ -479,5 +520,10 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port base16 PALETTE",
 	)
 }

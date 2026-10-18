@@ -132,3 +132,12 @@ web:
 		spec/quiet-day.json \
 		spec/quiet-night.json \
 		> ports/web/quiet.css
+
+.PHONY: base16
+base16:
+	$(GO) run ./cmd/quiet port base16 \
+		spec/quiet-day.json \
+		> ports/base16/quiet-day.yaml
+	$(GO) run ./cmd/quiet port base16 \
+		spec/quiet-night.json \
+		> ports/base16/quiet-night.yaml
