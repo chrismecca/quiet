@@ -13,7 +13,7 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
-== Quiet
+== Why
 
 Quiet is a semantic color system for software used for hours at a time.
 
@@ -35,9 +35,6 @@ It does not redesign the applications that use them.
 Quiet Day and Quiet Night are adaptations of the same semantic system.
 
 They are not mathematical inversions.
-
-The structural roles remain quiet.  Ink carries the work.  Chromatic color
-is used sparingly for information, nominal state, attention, and failure.
 
 ----
 Field      Surface      Structure
@@ -118,14 +115,8 @@ The rest are on the road ahead.
 
 Quiet is specified rather than eyeballed.
 
-* sRGB canonical colors
-* OKLab / OKLCH derivation
-* deterministic Selection and Callout
-* contextual Subtle composition
-* WCAG contrast validation
-* sRGB gamut checks
-* color-vision-deficiency screening
-* external human review
+sRGB · OKLab / OKLCH · deterministic derivation · WCAG contrast ·
+gamut validation · CVD screening · human review
 
 Current Core validation:
 
@@ -145,8 +136,11 @@ The reference implementation can inspect, derive, validate, and export Quiet:
 
 ----
 ./bin/quiet inspect '#4A6E7A'
+
 ./bin/quiet derive spec/quiet-day.json
-./bin/quiet check spec/quiet-core.json \
+
+./bin/quiet check \
+    spec/quiet-core.json \
     spec/quiet-day.json \
     spec/quiet-night.json
 ----
@@ -160,7 +154,7 @@ The reference implementation can inspect, derive, validate, and export Quiet:
 | link:CONTRIBUTING.adoc[Contributing]
 |===
 
-The evidence behind design decisions lives in `reports/`.
+Design evidence lives in `reports/`.
 
 The reference interface lives in `examples/reference-interface/`.
 
@@ -168,11 +162,12 @@ The reference interface lives in `examples/reference-interface/`.
 
 Quiet Core 0.1 is under development.
 
-The current Day and Night palettes remain candidate data while reference-port
-work and broader testing continue.
+Day and Night remain candidate data while reference-port work and broader
+testing continue.
 
 MIT.  See `LICENSE`.
 
 '''
 
 _The interface should become scenery._
+
