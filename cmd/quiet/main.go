@@ -27,6 +27,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/wezterm"
 
 	"github.com/chrismecca/quiet/internal/port/emacs"
+	"github.com/chrismecca/quiet/internal/port/neovim"
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 )
@@ -420,6 +421,26 @@ func run(
 
 			return exitOK
 
+		case "neovim":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portNeovim(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "xcode":
 			if len(args) != 3 {
 				usage(stderr)
@@ -725,6 +746,21 @@ func portVim(
 	)
 }
 
+func portNeovim(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return neovim.Encode(
+		w,
+		palette,
+	)
+}
+
 func portXcode(
 	w io.Writer,
 	path string,
@@ -1022,6 +1058,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port vim PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port neovim PALETTE",
 	)
 
 	fmt.Fprintln(

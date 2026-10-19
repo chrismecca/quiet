@@ -224,3 +224,11 @@ emacs:
 		spec/quiet-night.json \
 		> ports/emacs/quiet-night-theme.el
 
+.PHONY: neovim
+neovim:
+	$(GO) run ./cmd/quiet port neovim \
+		spec/quiet-day.json \
+		> ports/neovim/quiet-day.lua
+	$(GO) run ./cmd/quiet port neovim \
+		spec/quiet-night.json \
+		> ports/neovim/quiet-night.lua

@@ -1,0 +1,127 @@
+// @(#)quiet / asciidoc / ports/neovim/README.adoc / 2026-10-19
+
+= Quiet Neovim
+
+Quiet Day and Quiet Night for Neovim.
+
+The port maps Quiet Core semantics directly onto Neovim UI, syntax,
+Tree-sitter, diagnostic, and LSP semantic-token highlight groups.
+
+It introduces no independent color policy.
+
+== Architecture
+
+----
+Quiet Core
+    |
+    v
+Neovim semantic mapping
+    |
+    v
+native Lua colorscheme
+----
+
+== Syntax
+
+Quiet deliberately avoids rainbow syntax.
+
+Ordinary source remains Ink.
+
+Comments and secondary information use Muted.
+
+Language structure such as keywords, types, directives, and operators uses
+Mineral.
+
+Moss, Ochre, and Rust are reserved for semantic state such as success,
+warnings, errors, and diff state.
+
+== Artifacts
+
+----
+ports/neovim/quiet-day.lua
+ports/neovim/quiet-night.lua
+----
+
+These files are generated artifacts and MUST NOT be edited independently of
+the reference implementation.
+
+== Installation
+
+Copy the generated schemes into Neovim's colors directory:
+
+----
+mkdir -p ~/.config/nvim/colors
+
+cp ports/neovim/quiet-day.lua \
+   ports/neovim/quiet-night.lua \
+   ~/.config/nvim/colors/
+----
+
+Then select one with:
+
+----
+:colorscheme quiet-day
+----
+
+or:
+
+----
+:colorscheme quiet-night
+----
+
+== Clean validation
+
+`--clean` intentionally omits the normal user runtime path.
+
+To validate an installed Quiet scheme with an otherwise clean Neovim:
+
+----
+nvim --clean \
+  --cmd "set runtimepath^=$HOME/.config/nvim" \
+  +'colorscheme quiet-day'
+----
+
+and:
+
+----
+nvim --clean \
+  --cmd "set runtimepath^=$HOME/.config/nvim" \
+  +'colorscheme quiet-night'
+----
+
+The generated Lua can also be validated directly:
+
+----
+nvim --clean --headless \
+  +'luafile ports/neovim/quiet-day.lua' \
+  +'lua assert(vim.g.colors_name == "quiet-day")' \
+  +qa
+----
+
+== Scope
+
+The first-party port controls color only.
+
+It does not impose:
+
+* font family;
+* font weight;
+* italics;
+* underlines or undercurls;
+* cursor shape;
+* layout;
+* plugin configuration.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Generation
+
+----
+make neovim
+----
+
+The repository tests verify that the committed artifacts match the reference
+implementation.
+
