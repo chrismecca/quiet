@@ -22,6 +22,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/port/terminal"
 
+	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 )
 
@@ -293,6 +294,26 @@ func run(
 
 			return exitOK
 
+		case "vim":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portVim(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "xcode":
 			if len(args) != 3 {
 				usage(stderr)
@@ -468,6 +489,26 @@ func portTerminal(
 	return terminal.EncodeJSON(
 		w,
 		resolved,
+	)
+}
+
+func portVim(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	theme, err := vim.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return vim.Encode(
+		w,
+		theme,
 	)
 }
 
@@ -743,6 +784,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port terminal PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port vim PALETTE",
 	)
 
 	fmt.Fprintln(

@@ -172,3 +172,12 @@ xcode:
 		spec/quiet-night.json \
 		> 'ports/xcode/Quiet Night.xcworkspacecolortheme'
 
+.PHONY: vim
+vim:
+	$(GO) run ./cmd/quiet port vim \
+		spec/quiet-day.json \
+		> ports/vim/quiet-day.vim
+	$(GO) run ./cmd/quiet port vim \
+		spec/quiet-night.json \
+		> ports/vim/quiet-night.vim
+

@@ -1,0 +1,444 @@
+// @(#)quiet / asciidoc / ports/vim/README.adoc / 2026-10-18
+
+= Quiet Vim
+
+The Quiet Vim port maps Quiet Core semantics onto Vim's native highlight
+groups.
+
+It is designed for both GUI-capable Vim and terminal Vim with truecolor
+support.
+
+== Artifacts
+
+----
+ports/vim/quiet-day.vim
+ports/vim/quiet-night.vim
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Design
+
+Quiet does not treat programming-language token classes as unrelated semantic
+state colors merely to maximize syntax differentiation.
+
+Strings are not success.
+
+Numbers are not warnings.
+
+Regular expressions are not errors.
+
+The Vim port therefore uses a restrained syntax hierarchy:
+
+----
+Ink       ordinary source content
+Muted     comments and secondary text
+Mineral   language structure and active syntax
+----
+
+Quiet's semantic chromatic families are reserved for roles that actually
+carry corresponding meaning.
+
+For example:
+
+----
+Moss      diff additions
+Ochre     warnings and attention
+Rust      errors and diff deletions
+Mineral   active navigation and focus
+----
+
+== Syntax hierarchy
+
+The principal syntax mappings are:
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `Normal`
+| Ink on Field
+
+| `Comment`
+| Muted
+
+| `Constant`
+| Ink
+
+| `Identifier`
+| Ink
+
+| `Statement`
+| Mineral
+
+| `PreProc`
+| Mineral
+
+| `Type`
+| Mineral
+
+| `Special`
+| Ink
+
+| `Underlined`
+| Mineral
+
+| `Ignore`
+| Subtle
+|===
+
+Standard Vim syntax subgroups link into those broader roles.
+
+Examples include:
+
+----
+Character   -> Constant
+Number      -> Constant
+Boolean     -> Constant
+Float       -> Constant
+
+Function    -> Identifier
+
+Conditional -> Statement
+Repeat      -> Statement
+Operator    -> Statement
+Keyword     -> Statement
+
+Include     -> PreProc
+Define      -> PreProc
+Macro       -> PreProc
+
+StorageClass -> Type
+Structure    -> Type
+Typedef      -> Type
+----
+
+The purpose is hierarchy rather than token-by-token color proliferation.
+
+== Editor structure
+
+Quiet maps Vim's structural UI onto the corresponding Quiet roles.
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `Cursor`
+| Mineral
+
+| `CursorLine`
+| Callout
+
+| `CursorLineNr`
+| Mineral on Callout
+
+| `LineNr`
+| Subtle
+
+| `ColorColumn`
+| Structure
+
+| `Folded`
+| Muted on Surface
+
+| `NonText`
+| Line
+
+| `SignColumn`
+| Muted on Field
+
+| `WinSeparator`
+| Line
+
+| `VertSplit`
+| Line
+|===
+
+== Selection and navigation
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `Visual`
+| Ink on Selection
+
+| `VisualNOS`
+| Ink on Selection
+
+| `Search`
+| Ink on Selection
+
+| `IncSearch`
+| Field on Mineral
+
+| `MatchParen`
+| Field on Mineral
+
+| `QuickFixLine`
+| Ink on Selection
+
+| `WildMenu`
+| Ink on Selection
+|===
+
+Selection uses Quiet's derived Selection role.
+
+The current line uses Quiet's derived Callout role.
+
+== Messages and state
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `Error`
+| Rust
+
+| `ErrorMsg`
+| Rust
+
+| `WarningMsg`
+| Ochre
+
+| `Todo`
+| Ochre
+
+| `ModeMsg`
+| Mineral
+
+| `MoreMsg`
+| Mineral
+
+| `Question`
+| Mineral
+|===
+
+Consequential meaning must not depend on hue alone.
+
+Vim's own text, symbols, layout, and interaction context remain part of the
+state presentation.
+
+== Menus and auxiliary surfaces
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `Pmenu`
+| Ink on Surface
+
+| `PmenuSel`
+| Ink on Selection
+
+| `PmenuSbar`
+| Structure
+
+| `PmenuThumb`
+| Mineral
+
+| `NormalFloat`
+| Ink on Surface
+
+| `FloatBorder`
+| Line
+
+| `FloatTitle`
+| Ink
+|===
+
+== Status and tabs
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `StatusLine`
+| Ink on Structure
+
+| `StatusLineNC`
+| Muted on Surface
+
+| `TabLine`
+| Muted on Surface
+
+| `TabLineFill`
+| Line on Surface
+
+| `TabLineSel`
+| Ink on Structure
+|===
+
+== Diff semantics
+
+Diff state is one of the places where Quiet's chromatic semantic families
+apply directly.
+
+[cols="2,1"]
+|===
+| Vim group | Quiet role
+
+| `DiffAdd`
+| Moss
+
+| `DiffChange`
+| Ochre
+
+| `DiffDelete`
+| Rust
+
+| `DiffText`
+| Ink on Selection
+
+| `Added`
+| Moss
+
+| `Changed`
+| Ochre
+
+| `Removed`
+| Rust
+|===
+
+== Terminal integration
+
+The Vim port embeds the same sixteen-color ANSI palette produced by Quiet's
+generic terminal reference port.
+
+This is exposed through:
+
+----
+g:terminal_ansi_colors
+----
+
+The ANSI values therefore remain consistent with other first-party terminal
+ports.
+
+The Vim colorscheme does not maintain a separate terminal palette.
+
+== Truecolor
+
+When Vim runs in a terminal with truecolor support, enable:
+
+----
+set termguicolors
+----
+
+Vim will then use the exact `guifg` and `guibg` values emitted by the Quiet
+port.
+
+Without truecolor, the generated `ctermfg` and `ctermbg` mappings fall back to
+Quiet's generic ANSI slots.
+
+== Typography
+
+Quiet does not define Vim typography policy.
+
+The generated colorschemes deliberately avoid forcing:
+
+* bold;
+* italic;
+* underline;
+* undercurl;
+* font selection;
+* font size.
+
+Those are separate host and user preferences.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Installation
+
+Copy the generated files into Vim's colors directory:
+
+----
+mkdir -p ~/.vim/colors
+
+cp ports/vim/quiet-day.vim \
+   ~/.vim/colors/
+
+cp ports/vim/quiet-night.vim \
+   ~/.vim/colors/
+----
+
+Then select one from Vim:
+
+----
+:colorscheme quiet-day
+----
+
+or:
+
+----
+:colorscheme quiet-night
+----
+
+For truecolor terminal Vim:
+
+----
+:set termguicolors
+----
+
+== Reference capture
+
+For a clean reference session without depending on the user's normal Vim
+configuration:
+
+----
+vim -Nu NONE \
+    +'filetype on' \
+    +'syntax enable' \
+    +'set termguicolors' \
+    +'colorscheme quiet-day' \
+    QuietThemeProbe.swift
+----
+
+Quiet Night:
+
+----
+vim -Nu NONE \
+    +'filetype on' \
+    +'syntax enable' \
+    +'set termguicolors' \
+    +'colorscheme quiet-night' \
+    QuietThemeProbe.swift
+----
+
+This is useful for testing the Vim mapping independently of plugins or local
+configuration.
+
+== Scope
+
+The Vim port controls colors only.
+
+It does not:
+
+* install plugins;
+* change key mappings;
+* alter indentation;
+* modify statusline plugins;
+* configure completion frameworks;
+* change fonts;
+* change terminal settings;
+* redefine application layout.
+
+Plugin-specific highlight groups may require separate mappings when a plugin
+introduces semantics not covered by Vim's standard groups.
+
+Such mappings should follow `PORTING.adoc`.
+
+== Generation
+
+Regenerate both canonical schemes with:
+
+----
+make vim
+----
+
+The repository tests verify that committed artifacts exactly match the
+reference generator.
+
