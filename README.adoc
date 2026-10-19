@@ -13,7 +13,12 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
-image::docs/assets/header/terminal-vim.png[Quiet Day and Quiet Night in Terminal.app with vim]
+<p align="center">
+  <img src="docs/assets/header/terminal-vim.png"
+       alt="Quiet Day and Quiet Night in Terminal.app with vim"
+       width="50%"/>
+</p>
+
 
 == Why
 
