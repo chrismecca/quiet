@@ -190,3 +190,10 @@ ghostty:
 		spec/quiet-night.json \
 		> 'ports/ghostty/Quiet Night'
 
+.PHONY: iterm2
+iterm2:
+	$(GO) run ./cmd/quiet port iterm2 \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> 'ports/iterm2/Quiet.itermcolors'
+

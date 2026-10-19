@@ -21,6 +21,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/x11"
 
 	"github.com/chrismecca/quiet/internal/port/ghostty"
+	"github.com/chrismecca/quiet/internal/port/iterm2"
 	"github.com/chrismecca/quiet/internal/port/terminal"
 
 	"github.com/chrismecca/quiet/internal/port/vim"
@@ -295,6 +296,27 @@ func run(
 
 			return exitOK
 
+		case "iterm2":
+			if len(args) != 4 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portITerm2(
+				stdout,
+				args[2],
+				args[3],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "ghostty":
 			if len(args) != 3 {
 				usage(stderr)
@@ -510,6 +532,38 @@ func portTerminal(
 	return terminal.EncodeJSON(
 		w,
 		resolved,
+	)
+}
+
+func portITerm2(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	dayCore, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return err
+	}
+
+	nightCore, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return err
+	}
+
+	day, err := terminal.Resolve(dayCore)
+	if err != nil {
+		return err
+	}
+
+	night, err := terminal.Resolve(nightCore)
+	if err != nil {
+		return err
+	}
+
+	return iterm2.Encode(
+		w,
+		day,
+		night,
 	)
 }
 
@@ -841,4 +895,10 @@ func usage(w io.Writer) {
 		w,
 		"  quiet port xcode PALETTE",
 	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port iterm2 DAY NIGHT",
+	)
+
 }
