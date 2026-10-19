@@ -1,0 +1,192 @@
+// @(#)quiet / asciidoc / ports/wezterm/README.adoc / 2026-10-19
+
+= Quiet WezTerm
+
+The Quiet WezTerm port serializes Quiet's generic terminal palette into
+WezTerm's native TOML color-scheme format.
+
+It introduces no independent color policy.
+
+== Artifacts
+
+----
+ports/wezterm/Quiet Day.toml
+ports/wezterm/Quiet Night.toml
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Architecture
+
+----
+Quiet Core
+    |
+    v
+generic terminal mapping
+    |
+    v
+WezTerm serializer
+----
+
+All ANSI derivation occurs in the generic terminal reference port.
+
+== Mapping
+
+[cols="2,2"]
+|===
+| WezTerm role | Generic terminal role
+
+| `foreground`
+| Text
+
+| `background`
+| Background
+
+| `cursor_bg`
+| Cursor
+
+| `cursor_border`
+| Cursor
+
+| `cursor_fg`
+| Background
+
+| `selection_bg`
+| Selection
+
+| `selection_fg`
+| Text
+
+| `ansi`
+| ANSI 0 through 7
+
+| `brights`
+| ANSI 8 through 15
+|===
+
+== Scope
+
+The first-party scheme controls terminal color only.
+
+It intentionally does not define:
+
+* tab-bar colors;
+* split-pane decoration;
+* scrollbar colors;
+* window-frame colors;
+* fonts;
+* opacity;
+* cursor shape;
+* key bindings.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Installation
+
+WezTerm discovers custom TOML schemes under:
+
+----
+~/.config/wezterm/colors
+----
+
+Install both adaptations:
+
+----
+mkdir -p ~/.config/wezterm/colors
+
+cp 'ports/wezterm/Quiet Day.toml' \
+   ~/.config/wezterm/colors/
+
+cp 'ports/wezterm/Quiet Night.toml' \
+   ~/.config/wezterm/colors/
+----
+
+Select one from the user's WezTerm configuration:
+
+----
+config.color_scheme = 'Quiet Day'
+----
+
+or:
+
+----
+config.color_scheme = 'Quiet Night'
+----
+
+== Automatic Day / Night
+
+WezTerm can select a scheme from the operating-system appearance.
+
+This is user configuration rather than part of the Quiet color artifact.
+
+A minimal example is:
+
+----
+local wezterm = require 'wezterm'
+
+local function appearance()
+  if wezterm.gui then
+    return wezterm.gui.get_appearance()
+  end
+
+  return 'Dark'
+end
+
+local function quiet_scheme()
+  if appearance():find 'Dark' then
+    return 'Quiet Night'
+  end
+
+  return 'Quiet Day'
+end
+
+return {
+  color_scheme = quiet_scheme(),
+}
+----
+
+WezTerm reloads its configuration when the system appearance changes.
+
+== Testing
+
+Verify the installed version:
+
+----
+wezterm --version
+----
+
+Load each scheme directly without changing the permanent configuration:
+
+----
+wezterm --config 'color_scheme="Quiet Day"' start
+----
+
+----
+wezterm --config 'color_scheme="Quiet Night"' start
+----
+
+Inspect:
+
+* ordinary foreground and background;
+* ANSI colors 0 through 15;
+* cursor and cursor text;
+* text selection.
+
+A port is not considered complete until both adaptations have been visually
+validated in WezTerm.
+
+== Generation
+
+Regenerate both canonical schemes with:
+
+----
+make wezterm
+----
+
+The repository tests verify that the committed artifacts exactly match the
+generic terminal mapping.
+

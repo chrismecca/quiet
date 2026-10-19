@@ -206,3 +206,12 @@ kitty:
 		spec/quiet-night.json \
 		> 'ports/kitty/Quiet Night.conf'
 
+.PHONY: wezterm
+wezterm:
+	$(GO) run ./cmd/quiet port wezterm \
+		spec/quiet-day.json \
+		> 'ports/wezterm/Quiet Day.toml'
+	$(GO) run ./cmd/quiet port wezterm \
+		spec/quiet-night.json \
+		> 'ports/wezterm/Quiet Night.toml'
+

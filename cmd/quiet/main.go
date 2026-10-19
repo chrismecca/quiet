@@ -24,6 +24,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/iterm2"
 	"github.com/chrismecca/quiet/internal/port/kitty"
 	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/wezterm"
 
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/xcode"
@@ -317,6 +318,26 @@ func run(
 
 			return exitOK
 
+		case "wezterm":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portWezTerm(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "iterm2":
 			if len(args) != 4 {
 				usage(stderr)
@@ -571,6 +592,26 @@ func portKitty(
 	}
 
 	return kitty.Encode(
+		w,
+		resolved,
+	)
+}
+
+func portWezTerm(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return wezterm.Encode(
 		w,
 		resolved,
 	)
@@ -925,6 +966,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port kitty PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port wezterm PALETTE",
 	)
 
 	fmt.Fprintln(
