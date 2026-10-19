@@ -33,6 +33,7 @@ TERMINAL_APP_NIGHT := $(TERMINAL_APP_DIR)/quiet-night.terminal
 GENERATED_PORTS := \
 	base16 \
 	base24 \
+	cde \
 	dircolors \
 	emacs \
 	ghostty \
@@ -131,6 +132,15 @@ base24:
 	$(GO) run ./cmd/quiet port base24 \
 		spec/quiet-night.json \
 		> ports/base24/quiet-night.yaml
+
+.PHONY: cde
+cde:
+	$(GO) run ./cmd/quiet port cde \
+		spec/quiet-day.json \
+		> ports/cde/QuietDay.dp
+	$(GO) run ./cmd/quiet port cde \
+		spec/quiet-night.json \
+		> ports/cde/QuietNight.dp
 
 .PHONY: dircolors
 dircolors:

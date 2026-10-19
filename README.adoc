@@ -75,38 +75,28 @@ The native exports preserve Quiet's own semantic vocabulary.
 |===
 | link:ports/terminal/terminal-app/[Terminal.app]
 | link:ports/x11/[X11]
-| CDE
+| link:ports/cde/[CDE]
 | link:ports/dircolors/[GNU dircolors]
-
 | SGI 4Dwm
 | link:ports/ghostty/[Ghostty]
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
-
 | link:ports/wezterm/[WezTerm]
 | link:ports/emacs/[Emacs]
-
 | link:ports/vim/[Vim]
 | link:ports/neovim/[Neovim]
 | link:ports/vscode/[VS Code]
 | JetBrains
-
 | link:ports/xcode/[Xcode]
 | Firefox
 | Chrome
-
 | link:ports/tmux/[tmux]
 | fzf
-
 | delta
 |
 |
 |
 |===
-
-Available ports are linked.
-
-The rest are on the road ahead.
 
 == Underneath
 

@@ -1,0 +1,222 @@
+// @(#)quiet / asciidoc / ports/cde/README.adoc / 2026-10-19
+
+= Quiet for CDE
+
+Quiet's CDE port maps Quiet semantic architecture onto the Common Desktop
+Environment high-color palette model.
+
+The reference port was developed and visually validated on a real CDE desktop.
+
+== Files
+
+----
+QuietDay.dp
+QuietNight.dp
+----
+
+These files are generated from the canonical Quiet palettes.
+
+== Installation
+
+Copy the generated palettes into the user's CDE palette directory:
+
+----
+mkdir -p "$HOME/.dt/palettes"
+
+cp QuietDay.dp \
+    QuietNight.dp \
+    "$HOME/.dt/palettes/"
+----
+
+Open:
+
+----
+Style Manager
+    Color
+----
+
+and select either `QuietDay` or `QuietNight`.
+
+== CDE color sets
+
+A CDE high-color palette contains eight base color sets.
+
+CDE uses those bases to derive additional Motif colors including foreground,
+top-shadow, bottom-shadow, and selection colors.
+
+Quiet therefore maps architectural roles to CDE base sets rather than trying
+to replace CDE's derived colors individually.
+
+[cols="1,3,2"]
+|===
+| Set | CDE role | Quiet role
+
+| 1
+| Active window frame
+| Selection
+
+| 2
+| Inactive window frame
+| Structure
+
+| 3
+| Workspace 1
+| Field
+
+| 4
+| Text and list entry areas
+| Field
+
+| 5
+| Main application background
+| Surface
+
+| 6
+| Menus, dialogs, and dtterm background
+| Surface
+
+| 7
+| Workspace 4
+| Field
+
+| 8
+| Front Panel
+| Structure
+|===
+
+Repeated Quiet roles are intentional.
+
+CDE requires eight color-set positions. Quiet does not require eight visually
+distinct architectural colors.
+
+== Contextual adaptation
+
+Direct use of the canonical architectural colors was tested on the reference
+CDE system.
+
+Quiet Night placed the CDE base colors too near the low end of the available
+lightness range. CDE's derived shadows and bevels consequently compressed into
+a very dark visual mass.
+
+Quiet Day placed the base colors too near the high end. CDE's derived
+highlights consequently lost useful headroom.
+
+The reference port therefore applies a CDE-local OKLab lightness adaptation
+before serialization:
+
+----
+Quiet Day:
+
+    L = L - 0.08
+    a = unchanged
+    b = unchanged
+
+Quiet Night:
+
+    L = L + 0.10
+    a = unchanged
+    b = unchanged
+----
+
+This is a contextual port derivation.
+
+It does not modify Quiet Core or create new canonical anchors.
+
+Derived colors must remain inside the sRGB gamut.
+
+== Current resolved architectural colors
+
+Quiet Day:
+
+[cols="1,1"]
+|===
+| Role | CDE base
+
+| Selection
+| `#BAC3C7`
+
+| Structure
+| `#CAD0D3`
+
+| Field
+| `#D4D0C5`
+
+| Surface
+| `#CCCFC8`
+|===
+
+Quiet Night:
+
+[cols="1,1"]
+|===
+| Role | CDE base
+
+| Selection
+| `#4F5D61`
+
+| Structure
+| `#3B4447`
+
+| Field
+| `#343734`
+
+| Surface
+| `#3D433E`
+|===
+
+== Native representation
+
+CDE `.dp` palettes use sixteen-bit X color components.
+
+The reference Quiet serializer exports the validated eight-bit sRGB value into
+the high byte of each component:
+
+----
+#RRGGBB
+
+becomes
+
+#RR00GG00BB00
+----
+
+For example:
+
+----
+#BAC3C7
+
+becomes
+
+#BA00C300C700
+----
+
+Quantization occurs only at export.
+
+== Host limitation
+
+CDE color set 6 is shared by several host roles, including menus, dialogs,
+workspace color, and dtterm background.
+
+Those roles do not correspond to one exact Quiet semantic role.
+
+The reference port maps color set 6 to Surface because Surface is the closest
+shared architectural interpretation.
+
+Quiet does not add application-specific overrides to compensate for this CDE
+constraint.
+
+== Semantic boundary
+
+Quiet does not force every canonical anchor into every host.
+
+The CDE palette model primarily describes desktop architecture.
+
+Moss, Ochre, and Rust are therefore not inserted into CDE color sets merely
+to make them visible.
+
+CDE remains responsible for its own widget rendering, shadows, bevels,
+foreground generation, window-management behavior, and interaction model.
+
+Quiet ports color systems.
+
+It does not redesign CDE.
+
