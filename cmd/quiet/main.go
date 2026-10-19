@@ -29,6 +29,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/emacs"
 	"github.com/chrismecca/quiet/internal/port/neovim"
 	"github.com/chrismecca/quiet/internal/port/vim"
+	"github.com/chrismecca/quiet/internal/port/vscode"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 )
 
@@ -461,6 +462,26 @@ func run(
 
 			return exitOK
 
+		case "vscode":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portVSCode(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -781,6 +802,21 @@ func portXcode(
 	)
 }
 
+func portVSCode(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return vscode.Encode(
+		w,
+		palette,
+	)
+}
+
 func inspect(
 	w io.Writer,
 	s string,
@@ -1068,6 +1104,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port xcode PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port vscode PALETTE",
 	)
 
 	fmt.Fprintln(

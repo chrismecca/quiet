@@ -232,3 +232,13 @@ neovim:
 	$(GO) run ./cmd/quiet port neovim \
 		spec/quiet-night.json \
 		> ports/neovim/quiet-night.lua
+
+.PHONY: vscode
+vscode:
+	$(GO) run ./cmd/quiet port vscode \
+		spec/quiet-day.json \
+		> ports/vscode/themes/quiet-day-color-theme.json
+	$(GO) run ./cmd/quiet port vscode \
+		spec/quiet-night.json \
+		> ports/vscode/themes/quiet-night-color-theme.json
+

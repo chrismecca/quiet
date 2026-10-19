@@ -1,0 +1,119 @@
+// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-19
+
+= Quiet Visual Studio Code
+
+Quiet Day and Quiet Night for Visual Studio Code.
+
+The port maps Quiet Core semantics onto the VS Code workbench, editor,
+TextMate syntax highlighting, semantic tokens, and integrated terminal.
+
+It introduces no independent color system.
+
+== Architecture
+
+----
+Quiet Core
+    |
+    +----> workbench / syntax / semantic tokens
+    |
+    +----> generic terminal mapping
+              |
+              v
+        integrated terminal
+----
+
+The integrated terminal deliberately uses the same generic ANSI mapping as the
+other Quiet terminal ports.
+
+== Artifacts
+
+----
+themes/quiet-day-color-theme.json
+themes/quiet-night-color-theme.json
+----
+
+The theme files are generated artifacts.
+
+`package.json` is the authored VS Code extension manifest.
+
+== Syntax
+
+Quiet deliberately avoids rainbow syntax.
+
+Ordinary source remains Ink.
+
+Comments and secondary information use Muted.
+
+Language structure such as keywords, types, directives, decorators, and
+operators uses Mineral.
+
+Moss, Ochre, and Rust are reserved for semantic state such as source-control
+status, warnings, failures, and destructive state.
+
+Semantic highlighting is enabled by the theme.
+
+== Integrated terminal
+
+The VS Code terminal consumes Quiet's generic terminal model.
+
+Its ANSI 0 through 15 colors therefore match the other first-party terminal
+ports rather than being independently derived by the VS Code adapter.
+
+== Scope
+
+The first-party port controls color only.
+
+It does not define:
+
+* fonts;
+* font size or weight;
+* italics;
+* icon themes;
+* product icons;
+* layout;
+* window decoration;
+* editor behavior;
+* key bindings.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Testing
+
+The current reference implementation has been validated against Visual Studio
+Code 1.142.0.
+
+Launch the theme as an extension under development:
+
+----
+code --new-window \
+  --extensionDevelopmentPath="$PWD/ports/vscode"
+----
+
+Open the Color Theme picker with:
+
+----
+Command-K Command-T
+----
+
+and select either:
+
+----
+Quiet Day
+Quiet Night
+----
+
+A port is not considered complete until both adaptations have been visually
+validated in the real application.
+
+== Generation
+
+----
+make vscode
+----
+
+The repository tests verify that the generated theme artifacts match the
+reference implementation and that the integrated terminal exactly matches
+Quiet's generic terminal palette.
+
