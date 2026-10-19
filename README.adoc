@@ -88,12 +88,12 @@ The native exports preserve Quiet's own semantic vocabulary.
 | Windows Terminal
 | Emacs
 
-| Vim
+| link:ports/vim/[Vim]
 | Neovim
 | VS Code
 | JetBrains
 
-| Xcode
+| link:ports/xcode/[Xcode]
 | Firefox
 | Chrome
 | Slack
