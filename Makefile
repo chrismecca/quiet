@@ -141,3 +141,14 @@ base16:
 	$(GO) run ./cmd/quiet port base16 \
 		spec/quiet-night.json \
 		> ports/base16/quiet-night.yaml
+
+.PHONY: base24
+base24:
+	$(GO) run ./cmd/quiet port base24 \
+		spec/quiet-day.json \
+		> ports/base24/quiet-day.yaml
+	$(GO) run ./cmd/quiet port base24 \
+		spec/quiet-night.json \
+		> ports/base24/quiet-night.yaml
+
+

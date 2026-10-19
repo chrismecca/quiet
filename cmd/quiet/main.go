@@ -11,9 +11,12 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+
 	"github.com/chrismecca/quiet/internal/port/base16"
-	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/base24"
 	"github.com/chrismecca/quiet/internal/port/web"
+
+	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
 const (
@@ -204,6 +207,26 @@ func run(
 
 			return exitOK
 
+		case "base24":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portBase24(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -223,6 +246,7 @@ func run(
 		usage(stderr)
 		return exitUsage
 	}
+
 }
 
 func portTerminal(
@@ -288,6 +312,26 @@ func portBase16(
 	}
 
 	return base16.EncodeYAML(
+		w,
+		scheme,
+	)
+}
+
+func portBase24(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	scheme, err := base24.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return base24.EncodeYAML(
 		w,
 		scheme,
 	)
@@ -525,5 +569,10 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port base16 PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port base24 PALETTE",
 	)
 }
