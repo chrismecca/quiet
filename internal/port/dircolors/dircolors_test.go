@@ -230,3 +230,93 @@ func repoPath(
 
 	return filepath.Join(parts...)
 }
+
+func TestPermissionStatesAvoidColoredBackgrounds(t *testing.T) {
+	data, err := os.ReadFile(
+		repoPath(
+			t,
+			"ports",
+			"dircolors",
+			"quiet.dircolors",
+		),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got := string(data)
+
+	want := []string{
+		"SETUID 01;31",
+		"SETGID 01;31",
+		"CAPABILITY 01;31",
+		"STICKY_OTHER_WRITABLE 01;33",
+		"OTHER_WRITABLE 01;31",
+		"STICKY 33",
+	}
+
+	for _, line := range want {
+		if !strings.Contains(
+			got,
+			line+"\n",
+		) {
+			t.Errorf(
+				"dircolors permission-state mapping missing %q",
+				line,
+			)
+		}
+	}
+}
+
+func TestPermissionStatesContainNoBackgroundSGR(t *testing.T) {
+	data, err := os.ReadFile(
+		repoPath(
+			t,
+			"ports",
+			"dircolors",
+			"quiet.dircolors",
+		),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sensitive := map[string]bool{
+		"SETUID":                true,
+		"SETGID":                true,
+		"CAPABILITY":            true,
+		"STICKY_OTHER_WRITABLE": true,
+		"OTHER_WRITABLE":        true,
+		"STICKY":                true,
+	}
+
+	for _, line := range strings.Split(
+		string(data),
+		"\n",
+	) {
+		fields := strings.Fields(line)
+
+		if len(fields) != 2 ||
+			!sensitive[fields[0]] {
+			continue
+		}
+
+		for _, sgr := range strings.Split(
+			fields[1],
+			";",
+		) {
+			switch sgr {
+			case "40", "41", "42", "43",
+				"44", "45", "46", "47",
+				"100", "101", "102", "103",
+				"104", "105", "106", "107":
+				t.Errorf(
+					"%s uses forbidden ANSI background SGR %s in %q",
+					fields[0],
+					sgr,
+					line,
+				)
+			}
+		}
+	}
+}

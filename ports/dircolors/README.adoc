@@ -141,16 +141,17 @@ The port deliberately uses no background-color SGR sequences.
 
 == Compatibility colors
 
-Cyan and Magenta are terminal-specific compatibility families already
-defined by the generic ANSI reference port.
+Quiet's ANSI chromatic slots are designed primarily as foreground colors
+against the terminal Field.
 
-They are useful here for filesystem object classes that benefit from
-distinction but do not correspond to additional Quiet Core semantic
-families.
+Legacy `LS_COLORS` configurations may combine chromatic foregrounds and
+chromatic backgrounds. Those pairings are outside Quiet's terminal contrast
+contract and may produce poor readability.
 
-They remain terminal-port extensions.
+The Quiet dircolors port deliberately avoids chromatic background colors.
 
-They are not Quiet Core anchors.
+Permission-sensitive states use foreground color, with bold used where an
+additional non-hue signal is useful.
 
 == Use
 
