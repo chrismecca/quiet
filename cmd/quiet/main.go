@@ -147,47 +147,6 @@ func run(
 		}
 
 		switch args[1] {
-		case "terminal":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portTerminal(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "web":
-			if len(args) != 4 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portWeb(
-				stdout,
-				args[2],
-				args[3],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
 		case "base16":
 			if len(args) != 3 {
 				usage(stderr)
@@ -249,6 +208,47 @@ func run(
 
 			return exitOK
 
+		case "web":
+			if len(args) != 4 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portWeb(
+				stdout,
+				args[2],
+				args[3],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
+		case "terminal":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portTerminal(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -268,55 +268,6 @@ func run(
 		usage(stderr)
 		return exitUsage
 	}
-
-}
-
-func portTerminal(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	resolved, err := terminal.Resolve(palette)
-	if err != nil {
-		return err
-	}
-
-	return terminal.EncodeJSON(
-		w,
-		resolved,
-	)
-}
-
-func portWeb(
-	w io.Writer,
-	dayPath string,
-	nightPath string,
-) error {
-	day, err := core.LoadPaletteFile(dayPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Day palette: %w",
-			err,
-		)
-	}
-
-	night, err := core.LoadPaletteFile(nightPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Night palette: %w",
-			err,
-		)
-	}
-
-	return web.EncodeCSS(
-		w,
-		day,
-		night,
-	)
 }
 
 func portBase16(
@@ -384,6 +335,54 @@ func portMachine(
 		w,
 		day,
 		night,
+	)
+}
+
+func portWeb(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return web.EncodeCSS(
+		w,
+		day,
+		night,
+	)
+}
+
+func portTerminal(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return terminal.EncodeJSON(
+		w,
+		resolved,
 	)
 }
 
@@ -608,16 +607,6 @@ func usage(w io.Writer) {
 
 	fmt.Fprintln(
 		w,
-		"  quiet port terminal PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
 		"  quiet port base16 PALETTE",
 	)
 
@@ -629,5 +618,15 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port machine DAY_PALETTE NIGHT_PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port terminal PALETTE",
 	)
 }
