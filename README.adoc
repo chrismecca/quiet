@@ -98,7 +98,7 @@ The native exports preserve Quiet's own semantic vocabulary.
 | Chrome
 | Slack
 
-| tmux
+| link:ports/tmux/[tmux]
 | Zellij
 | fzf
 | bat

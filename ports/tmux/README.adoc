@@ -1,0 +1,188 @@
+// @(#)quiet / asciidoc / ports/tmux/README.adoc / 2026-10-19
+
+= Quiet for tmux
+
+Quiet's tmux port is a color overlay for tmux interface chrome.
+
+It does not replace a user's tmux configuration.
+
+== Scope
+
+Quiet controls color for:
+
+* the status line;
+* window status;
+* pane borders;
+* messages and command prompts;
+* copy and mode interfaces;
+* menus;
+* popups;
+* tree mode;
+* display-panes overlays;
+* pane scrollbars.
+
+Quiet deliberately does not configure:
+
+* `status-left` or `status-right` content;
+* status or window formats;
+* separators;
+* key bindings;
+* the prefix key;
+* mouse behavior;
+* pane layout;
+* pane-border format or line style;
+* plugins;
+* terminal capabilities;
+* `window-style` or `window-active-style`.
+
+The contents of a tmux pane remain the responsibility of the terminal and the
+application running inside the pane.
+
+== Files
+
+----
+quiet-day.conf
+quiet-night.conf
+----
+
+Both files are generated from the canonical Quiet palettes.
+
+== Loading
+
+Source the desired adaptation after the rest of the tmux configuration:
+
+----
+source-file ~/src/quiet/ports/tmux/quiet-night.conf
+----
+
+For Quiet Day:
+
+----
+source-file ~/src/quiet/ports/tmux/quiet-day.conf
+----
+
+Loading Quiet last is intentional.
+
+A plugin or later configuration statement that changes tmux colors will
+override the Quiet overlay.
+
+== Existing configuration
+
+Generated Quiet assignments use tmux's append form:
+
+----
+set-option -ag ...
+set-window-option -ag ...
+----
+
+This changes the supplied color components while retaining unrelated style
+attributes already present in the user's configuration.
+
+For example, an existing:
+
+----
+window-status-current-style underscore
+----
+
+can retain `underscore` while Quiet supplies its foreground and background
+colors.
+
+Quiet does not inspect or rewrite color directives embedded directly inside
+user-authored format strings.
+
+== Semantic mapping
+
+[cols="2,2"]
+|===
+| tmux role | Quiet role
+
+| Status background
+| Structure
+
+| Primary status text
+| Ink
+
+| Secondary status text
+| Muted
+
+| Current window
+| Selection / Ink
+
+| Active state
+| Mineral
+
+| Inactive pane border
+| Line
+
+| Active pane border
+| Mineral
+
+| Surface UI
+| Surface / Ink
+
+| Copy-mode selection
+| Selection / Ink
+
+| Search match
+| Callout / Ink
+
+| Current search match
+| Selection / Ink
+
+| Warning or attention state
+| Ochre
+
+| Consequential synchronized-input state
+| Rust
+|===
+
+== Active pane states
+
+tmux exposes several pane states through the active pane border.
+
+Quiet maps them as:
+
+[cols="2,1"]
+|===
+| tmux state | Quiet role
+
+| Normal active pane
+| Mineral
+
+| Modal pane
+| Mineral
+
+| Marked pane
+| Ochre
+
+| Pane in mode
+| Ochre
+
+| `synchronize-panes`
+| Rust
+|===
+
+`synchronize-panes` is consequential because input is sent to more than one
+pane.
+
+Rust supplements tmux's existing behavioral state; color is not the sole
+carrier of that meaning.
+
+== Compatibility
+
+The reference port is tested against tmux 3.8.
+
+The generated files use hexadecimal sRGB colors directly.
+
+Quiet does not alter terminal feature detection, `terminal-features`,
+`terminal-overrides`, or other terminal capability configuration.
+
+== Design boundary
+
+Quiet ports color systems.
+
+It does not redesign tmux.
+
+The user's tmux configuration remains authoritative for content, behavior,
+layout, formatting, and interaction.
+

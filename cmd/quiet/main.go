@@ -21,6 +21,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/neovim"
 	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/tmux"
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/vscode"
 	"github.com/chrismecca/quiet/internal/port/web"
@@ -123,6 +124,17 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portTerminal(w, args[0])
+		},
+	},
+	{
+		name:  "tmux",
+		usage: "quiet port tmux PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portTmux(
+				w,
+				args[0],
+			)
 		},
 	},
 	{
@@ -533,6 +545,26 @@ func portTerminal(
 	return terminal.EncodeJSON(
 		w,
 		resolved,
+	)
+}
+
+func portTmux(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	theme, err := tmux.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return tmux.Encode(
+		w,
+		theme,
 	)
 }
 

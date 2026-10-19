@@ -40,10 +40,12 @@ GENERATED_PORTS := \
 	kitty \
 	machine \
 	neovim \
+	tmux \
 	vim \
 	vscode \
 	web \
 	wezterm \
+	x11 \
 	xcode
 
 .DEFAULT_GOAL := check
@@ -185,6 +187,15 @@ neovim:
 		spec/quiet-night.json \
 		> ports/neovim/quiet-night.lua
 
+.PHONY: tmux
+tmux:
+	$(GO) run ./cmd/quiet port tmux \
+		spec/quiet-day.json \
+		> ports/tmux/quiet-day.conf
+	$(GO) run ./cmd/quiet port tmux \
+		spec/quiet-night.json \
+		> ports/tmux/quiet-night.conf
+
 .PHONY: terminal-app-smoke
 terminal-app-smoke:
 	@if [ "$$(uname -s)" != "Darwin" ]; then \
@@ -253,6 +264,15 @@ wezterm:
 	$(GO) run ./cmd/quiet port wezterm \
 		spec/quiet-night.json \
 		> 'ports/wezterm/Quiet Night.toml'
+
+.PHONY: x11
+x11:
+	$(GO) run ./cmd/quiet port x11 \
+		spec/quiet-day.json \
+		> ports/x11/quiet-day.Xresources
+	$(GO) run ./cmd/quiet port x11 \
+		spec/quiet-night.json \
+		> ports/x11/quiet-night.Xresources
 
 .PHONY: xcode
 xcode:
