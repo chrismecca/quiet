@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / README.adoc / 2026-10-19
 
 ----
   ___       _     _
@@ -79,18 +79,18 @@ The native exports preserve Quiet's own semantic vocabulary.
 | link:ports/dircolors/[GNU dircolors]
 
 | SGI 4Dwm
-| Ghostty
-| iTerm2
-| kitty
+| link:ports/ghostty/[Ghostty]
+| link:ports/iterm2/[iTerm2]
+| link:ports/kitty/[kitty]
 
 | Alacritty
-| WezTerm
+| link:ports/wezterm/[WezTerm]
 | Windows Terminal
-| Emacs
+| link:ports/emacs/[Emacs]
 
 | link:ports/vim/[Vim]
-| Neovim
-| VS Code
+| link:ports/neovim/[Neovim]
+| link:ports/vscode/[VS Code]
 | JetBrains
 
 | link:ports/xcode/[Xcode]
@@ -132,6 +132,7 @@ Quiet Night: PASS (19/19)
 ----
 make check
 make build
+make generate
 ----
 
 The reference implementation can inspect, derive, validate, and export Quiet:

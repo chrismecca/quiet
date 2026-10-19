@@ -1,4 +1,4 @@
-# @(#)quiet / make / Makefile / 2026-10-16
+# @(#)quiet / make / Makefile / 2026-10-19
 
 GO := go
 BIN := bin/quiet
@@ -11,6 +11,9 @@ PALETTES := \
 GOFILES := $(shell find cmd internal -type f -name '*.go' -print | sort)
 DOCFILES := $(shell find docs spec reports/src -type f \
 	\( -name '*.adoc' -o -name '*.org' \) -print 2>/dev/null | sort)
+PORTFILES := $(shell find ports -type f \
+	\( -name '*.adoc' -o -name '*.org' -o -name '*.swift' -o -name '*.sh' \) \
+	-print 2>/dev/null | sort)
 
 HEADER_FILES := \
 	.gitignore \
@@ -21,16 +24,29 @@ HEADER_FILES := \
 	$(DOCFILES) \
 	$(PORTFILES)
 
-.DEFAULT_GOAL := check
-
-PORTFILES := $(shell find ports -type f \
-	\( -name '*.adoc' -o -name '*.org' -o -name '*.swift' -o -name '*.sh' \) \
-	-print 2>/dev/null | sort)
-
 TERMINAL_APP_DIR := ports/terminal/terminal-app
-
 TERMINAL_APP_DAY := $(TERMINAL_APP_DIR)/quiet-day.terminal
 TERMINAL_APP_NIGHT := $(TERMINAL_APP_DIR)/quiet-night.terminal
+
+# Portable generated ports, kept in the same canonical order as quiet's port
+# registry. Terminal.app remains separate because its serializer requires macOS.
+GENERATED_PORTS := \
+	base16 \
+	base24 \
+	dircolors \
+	emacs \
+	ghostty \
+	iterm2 \
+	kitty \
+	machine \
+	neovim \
+	vim \
+	vscode \
+	web \
+	wezterm \
+	xcode
+
+.DEFAULT_GOAL := check
 
 .PHONY: all
 all: check build
@@ -89,49 +105,12 @@ tidy:
 
 .PHONY: clean
 clean:
-	rm -rf bin coverage.out
+	rm -rf bin coverage.out tmp
 
-.PHONY: terminal-app-smoke
-terminal-app-smoke:
-	@if [ "$$(uname -s)" != "Darwin" ]; then \
-		echo "Terminal.app smoke test requires macOS"; \
-		exit 2; \
-	fi
-	mkdir -p tmp
-	swift ports/terminal/terminal-app/generate.swift \
-		ports/terminal/terminal-app/testdata/sentinel.json \
-		tmp/quiet-terminal-sentinel.terminal
-	plutil -lint tmp/quiet-terminal-sentinel.terminal
+.PHONY: generate
+generate: $(GENERATED_PORTS)
 
-.PHONY: terminal-app-profiles
-terminal-app-profiles: build
-	@if [ "$$(uname -s)" != "Darwin" ]; then \
-		echo "Terminal.app profile generation requires macOS"; \
-		exit 2; \
-	fi
-	mkdir -p tmp
-	$(BIN) port terminal \
-		spec/quiet-day.json \
-		> tmp/quiet-day-terminal.json
-	$(BIN) port terminal \
-		spec/quiet-night.json \
-		> tmp/quiet-night-terminal.json
-	swift $(TERMINAL_APP_DIR)/generate.swift \
-		tmp/quiet-day-terminal.json \
-		$(TERMINAL_APP_DAY)
-	swift $(TERMINAL_APP_DIR)/generate.swift \
-		tmp/quiet-night-terminal.json \
-		$(TERMINAL_APP_NIGHT)
-	plutil -lint \
-		$(TERMINAL_APP_DAY) \
-		$(TERMINAL_APP_NIGHT)
-
-.PHONY: web
-web:
-	$(GO) run ./cmd/quiet port web \
-		spec/quiet-day.json \
-		spec/quiet-night.json \
-		> ports/web/quiet.css
+# Generated ports -----------------------------------------------------------
 
 .PHONY: base16
 base16:
@@ -151,35 +130,19 @@ base24:
 		spec/quiet-night.json \
 		> ports/base24/quiet-night.yaml
 
-.PHONY: machine
-machine:
-	$(GO) run ./cmd/quiet port machine \
-		spec/quiet-day.json \
-		spec/quiet-night.json \
-		> ports/machine/quiet.json
-
 .PHONY: dircolors
 dircolors:
 	$(GO) run ./cmd/quiet port dircolors \
 		> ports/dircolors/quiet.dircolors
 
-.PHONY: xcode
-xcode:
-	$(GO) run ./cmd/quiet port xcode \
+.PHONY: emacs
+emacs:
+	$(GO) run ./cmd/quiet port emacs \
 		spec/quiet-day.json \
-		> 'ports/xcode/Quiet Day.xcworkspacecolortheme'
-	$(GO) run ./cmd/quiet port xcode \
+		> ports/emacs/quiet-day-theme.el
+	$(GO) run ./cmd/quiet port emacs \
 		spec/quiet-night.json \
-		> 'ports/xcode/Quiet Night.xcworkspacecolortheme'
-
-.PHONY: vim
-vim:
-	$(GO) run ./cmd/quiet port vim \
-		spec/quiet-day.json \
-		> ports/vim/quiet-day.vim
-	$(GO) run ./cmd/quiet port vim \
-		spec/quiet-night.json \
-		> ports/vim/quiet-night.vim
+		> ports/emacs/quiet-night-theme.el
 
 .PHONY: ghostty
 ghostty:
@@ -206,23 +169,12 @@ kitty:
 		spec/quiet-night.json \
 		> 'ports/kitty/Quiet Night.conf'
 
-.PHONY: wezterm
-wezterm:
-	$(GO) run ./cmd/quiet port wezterm \
+.PHONY: machine
+machine:
+	$(GO) run ./cmd/quiet port machine \
 		spec/quiet-day.json \
-		> 'ports/wezterm/Quiet Day.toml'
-	$(GO) run ./cmd/quiet port wezterm \
 		spec/quiet-night.json \
-		> 'ports/wezterm/Quiet Night.toml'
-
-.PHONY: emacs
-emacs:
-	$(GO) run ./cmd/quiet port emacs \
-		spec/quiet-day.json \
-		> ports/emacs/quiet-day-theme.el
-	$(GO) run ./cmd/quiet port emacs \
-		spec/quiet-night.json \
-		> ports/emacs/quiet-night-theme.el
+		> ports/machine/quiet.json
 
 .PHONY: neovim
 neovim:
@@ -233,6 +185,50 @@ neovim:
 		spec/quiet-night.json \
 		> ports/neovim/quiet-night.lua
 
+.PHONY: terminal-app-smoke
+terminal-app-smoke:
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "Terminal.app smoke test requires macOS"; \
+		exit 2; \
+	fi
+	mkdir -p tmp
+	swift $(TERMINAL_APP_DIR)/generate.swift \
+		$(TERMINAL_APP_DIR)/testdata/sentinel.json \
+		tmp/quiet-terminal-sentinel.terminal
+	plutil -lint tmp/quiet-terminal-sentinel.terminal
+
+.PHONY: terminal-app-profiles
+terminal-app-profiles: build
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "Terminal.app profile generation requires macOS"; \
+		exit 2; \
+	fi
+	mkdir -p tmp
+	$(BIN) port terminal \
+		spec/quiet-day.json \
+		> tmp/quiet-day-terminal.json
+	$(BIN) port terminal \
+		spec/quiet-night.json \
+		> tmp/quiet-night-terminal.json
+	swift $(TERMINAL_APP_DIR)/generate.swift \
+		tmp/quiet-day-terminal.json \
+		$(TERMINAL_APP_DAY)
+	swift $(TERMINAL_APP_DIR)/generate.swift \
+		tmp/quiet-night-terminal.json \
+		$(TERMINAL_APP_NIGHT)
+	plutil -lint \
+		$(TERMINAL_APP_DAY) \
+		$(TERMINAL_APP_NIGHT)
+
+.PHONY: vim
+vim:
+	$(GO) run ./cmd/quiet port vim \
+		spec/quiet-day.json \
+		> ports/vim/quiet-day.vim
+	$(GO) run ./cmd/quiet port vim \
+		spec/quiet-night.json \
+		> ports/vim/quiet-night.vim
+
 .PHONY: vscode
 vscode:
 	$(GO) run ./cmd/quiet port vscode \
@@ -242,3 +238,27 @@ vscode:
 		spec/quiet-night.json \
 		> ports/vscode/themes/quiet-night-color-theme.json
 
+.PHONY: web
+web:
+	$(GO) run ./cmd/quiet port web \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/web/quiet.css
+
+.PHONY: wezterm
+wezterm:
+	$(GO) run ./cmd/quiet port wezterm \
+		spec/quiet-day.json \
+		> 'ports/wezterm/Quiet Day.toml'
+	$(GO) run ./cmd/quiet port wezterm \
+		spec/quiet-night.json \
+		> 'ports/wezterm/Quiet Night.toml'
+
+.PHONY: xcode
+xcode:
+	$(GO) run ./cmd/quiet port xcode \
+		spec/quiet-day.json \
+		> 'ports/xcode/Quiet Day.xcworkspacecolortheme'
+	$(GO) run ./cmd/quiet port xcode \
+		spec/quiet-night.json \
+		> 'ports/xcode/Quiet Night.xcworkspacecolortheme'

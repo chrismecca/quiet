@@ -1,4 +1,4 @@
-// @(#)quiet / go / cmd/quiet/main.go / 2026-10-18
+// @(#)quiet / go / cmd/quiet/main.go / 2026-10-19
 
 // Command quiet is the reference command-line implementation for inspecting,
 // deriving, validating, and porting Quiet Core color data.
@@ -11,25 +11,21 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
-
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
-	"github.com/chrismecca/quiet/internal/port/machine"
-	"github.com/chrismecca/quiet/internal/port/web"
-
 	"github.com/chrismecca/quiet/internal/port/dircolors"
-	"github.com/chrismecca/quiet/internal/port/x11"
-
+	"github.com/chrismecca/quiet/internal/port/emacs"
 	"github.com/chrismecca/quiet/internal/port/ghostty"
 	"github.com/chrismecca/quiet/internal/port/iterm2"
 	"github.com/chrismecca/quiet/internal/port/kitty"
-	"github.com/chrismecca/quiet/internal/port/terminal"
-	"github.com/chrismecca/quiet/internal/port/wezterm"
-
-	"github.com/chrismecca/quiet/internal/port/emacs"
+	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/neovim"
+	"github.com/chrismecca/quiet/internal/port/terminal"
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/vscode"
+	"github.com/chrismecca/quiet/internal/port/web"
+	"github.com/chrismecca/quiet/internal/port/wezterm"
+	"github.com/chrismecca/quiet/internal/port/x11"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 )
 
@@ -38,6 +34,146 @@ const (
 	exitError = 1
 	exitUsage = 2
 )
+
+type portCommand struct {
+	name  string
+	usage string
+	argc  int
+	run   func(io.Writer, []string) error
+}
+
+// portCommands is the single canonical ordering for port dispatch and usage.
+// Keep this list alphabetic. Imports and helper functions mirror the same order.
+var portCommands = []portCommand{
+	{
+		name:  "base16",
+		usage: "base16 PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portBase16(w, args[0])
+		},
+	},
+	{
+		name:  "base24",
+		usage: "base24 PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portBase24(w, args[0])
+		},
+	},
+	{
+		name:  "dircolors",
+		usage: "dircolors",
+		argc:  0,
+		run: func(w io.Writer, _ []string) error {
+			return portDircolors(w)
+		},
+	},
+	{
+		name:  "emacs",
+		usage: "emacs PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portEmacs(w, args[0])
+		},
+	},
+	{
+		name:  "ghostty",
+		usage: "ghostty PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portGhostty(w, args[0])
+		},
+	},
+	{
+		name:  "iterm2",
+		usage: "iterm2 DAY NIGHT",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portITerm2(w, args[0], args[1])
+		},
+	},
+	{
+		name:  "kitty",
+		usage: "kitty PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portKitty(w, args[0])
+		},
+	},
+	{
+		name:  "machine",
+		usage: "machine DAY_PALETTE NIGHT_PALETTE",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portMachine(w, args[0], args[1])
+		},
+	},
+	{
+		name:  "neovim",
+		usage: "neovim PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portNeovim(w, args[0])
+		},
+	},
+	{
+		name:  "terminal",
+		usage: "terminal PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portTerminal(w, args[0])
+		},
+	},
+	{
+		name:  "vim",
+		usage: "vim PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portVim(w, args[0])
+		},
+	},
+	{
+		name:  "vscode",
+		usage: "vscode PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portVSCode(w, args[0])
+		},
+	},
+	{
+		name:  "web",
+		usage: "web DAY_PALETTE NIGHT_PALETTE",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portWeb(w, args[0], args[1])
+		},
+	},
+	{
+		name:  "wezterm",
+		usage: "wezterm PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portWezTerm(w, args[0])
+		},
+	},
+	{
+		name:  "x11",
+		usage: "x11 PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portX11(w, args[0])
+		},
+	},
+	{
+		name:  "xcode",
+		usage: "xcode PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portXcode(w, args[0])
+		},
+	},
+}
 
 func main() {
 	os.Exit(
@@ -76,12 +212,7 @@ func run(
 			stdout,
 			args[1],
 		); err != nil {
-			fmt.Fprintf(
-				stderr,
-				"quiet: %v\n",
-				err,
-			)
-			return exitError
+			return commandError(stderr, err)
 		}
 
 		return exitOK
@@ -97,12 +228,7 @@ func run(
 			args[1],
 			args[2],
 		); err != nil {
-			fmt.Fprintf(
-				stderr,
-				"quiet: %v\n",
-				err,
-			)
-			return exitError
+			return commandError(stderr, err)
 		}
 
 		return exitOK
@@ -117,12 +243,7 @@ func run(
 			stdout,
 			args[1],
 		); err != nil {
-			fmt.Fprintf(
-				stderr,
-				"quiet: %v\n",
-				err,
-			)
-			return exitError
+			return commandError(stderr, err)
 		}
 
 		return exitOK
@@ -139,12 +260,7 @@ func run(
 			args[2:],
 		)
 		if err != nil {
-			fmt.Fprintf(
-				stderr,
-				"quiet: %v\n",
-				err,
-			)
-			return exitError
+			return commandError(stderr, err)
 		}
 
 		if !passed {
@@ -154,343 +270,11 @@ func run(
 		return exitOK
 
 	case "port":
-		if len(args) < 2 {
-			usage(stderr)
-			return exitUsage
-		}
-
-		switch args[1] {
-		case "base16":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portBase16(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "base24":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portBase24(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "machine":
-			if len(args) != 4 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portMachine(
-				stdout,
-				args[2],
-				args[3],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "web":
-			if len(args) != 4 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portWeb(
-				stdout,
-				args[2],
-				args[3],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "x11":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portX11(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "dircolors":
-			if len(args) != 2 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portDircolors(
-				stdout,
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "terminal":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portTerminal(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "kitty":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portKitty(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "wezterm":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portWezTerm(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "iterm2":
-			if len(args) != 4 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portITerm2(
-				stdout,
-				args[2],
-				args[3],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "ghostty":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portGhostty(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "emacs":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portEmacs(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "vim":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portVim(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "neovim":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portNeovim(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "xcode":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portXcode(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		case "vscode":
-			if len(args) != 3 {
-				usage(stderr)
-				return exitUsage
-			}
-
-			if err := portVSCode(
-				stdout,
-				args[2],
-			); err != nil {
-				fmt.Fprintf(
-					stderr,
-					"quiet: %v\n",
-					err,
-				)
-				return exitError
-			}
-
-			return exitOK
-
-		default:
-			fmt.Fprintf(
-				stderr,
-				"quiet: unknown port %q\n",
-				args[1],
-			)
-			usage(stderr)
-			return exitUsage
-		}
+		return runPort(
+			args[1:],
+			stdout,
+			stderr,
+		)
 
 	default:
 		fmt.Fprintf(
@@ -501,6 +285,59 @@ func run(
 		usage(stderr)
 		return exitUsage
 	}
+}
+
+func runPort(
+	args []string,
+	stdout io.Writer,
+	stderr io.Writer,
+) int {
+	if len(args) == 0 {
+		usage(stderr)
+		return exitUsage
+	}
+
+	for _, command := range portCommands {
+		if args[0] != command.name {
+			continue
+		}
+
+		portArgs := args[1:]
+		if len(portArgs) != command.argc {
+			usage(stderr)
+			return exitUsage
+		}
+
+		if err := command.run(
+			stdout,
+			portArgs,
+		); err != nil {
+			return commandError(stderr, err)
+		}
+
+		return exitOK
+	}
+
+	fmt.Fprintf(
+		stderr,
+		"quiet: unknown port %q\n",
+		args[0],
+	)
+	usage(stderr)
+	return exitUsage
+}
+
+func commandError(
+	stderr io.Writer,
+	err error,
+) int {
+	fmt.Fprintf(
+		stderr,
+		"quiet: %v\n",
+		err,
+	)
+
+	return exitError
 }
 
 func portBase16(
@@ -543,84 +380,13 @@ func portBase24(
 	)
 }
 
-func portMachine(
-	w io.Writer,
-	dayPath string,
-	nightPath string,
-) error {
-	day, err := core.LoadPaletteFile(dayPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Day palette: %w",
-			err,
-		)
-	}
-
-	night, err := core.LoadPaletteFile(nightPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Night palette: %w",
-			err,
-		)
-	}
-
-	return machine.EncodeJSON(
-		w,
-		day,
-		night,
-	)
-}
-
-func portWeb(
-	w io.Writer,
-	dayPath string,
-	nightPath string,
-) error {
-	day, err := core.LoadPaletteFile(dayPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Day palette: %w",
-			err,
-		)
-	}
-
-	night, err := core.LoadPaletteFile(nightPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Night palette: %w",
-			err,
-		)
-	}
-
-	return web.EncodeCSS(
-		w,
-		day,
-		night,
-	)
-}
-
-func portX11(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	return x11.EncodeXResources(
-		w,
-		x11.Resolve(palette),
-	)
-}
-
 func portDircolors(
 	w io.Writer,
 ) error {
 	return dircolors.Encode(w)
 }
 
-func portTerminal(
+func portEmacs(
 	w io.Writer,
 	path string,
 ) error {
@@ -629,18 +395,13 @@ func portTerminal(
 		return err
 	}
 
-	resolved, err := terminal.Resolve(palette)
-	if err != nil {
-		return err
-	}
-
-	return terminal.EncodeJSON(
+	return emacs.Encode(
 		w,
-		resolved,
+		palette,
 	)
 }
 
-func portKitty(
+func portGhostty(
 	w io.Writer,
 	path string,
 ) error {
@@ -654,27 +415,7 @@ func portKitty(
 		return err
 	}
 
-	return kitty.Encode(
-		w,
-		resolved,
-	)
-}
-
-func portWezTerm(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	resolved, err := terminal.Resolve(palette)
-	if err != nil {
-		return err
-	}
-
-	return wezterm.Encode(
+	return ghostty.Encode(
 		w,
 		resolved,
 	)
@@ -712,7 +453,7 @@ func portITerm2(
 	)
 }
 
-func portGhostty(
+func portKitty(
 	w io.Writer,
 	path string,
 ) error {
@@ -726,13 +467,41 @@ func portGhostty(
 		return err
 	}
 
-	return ghostty.Encode(
+	return kitty.Encode(
 		w,
 		resolved,
 	)
 }
 
-func portEmacs(
+func portMachine(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return machine.EncodeJSON(
+		w,
+		day,
+		night,
+	)
+}
+
+func portNeovim(
 	w io.Writer,
 	path string,
 ) error {
@@ -741,9 +510,29 @@ func portEmacs(
 		return err
 	}
 
-	return emacs.Encode(
+	return neovim.Encode(
 		w,
 		palette,
+	)
+}
+
+func portTerminal(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return terminal.EncodeJSON(
+		w,
+		resolved,
 	)
 }
 
@@ -767,7 +556,7 @@ func portVim(
 	)
 }
 
-func portNeovim(
+func portVSCode(
 	w io.Writer,
 	path string,
 ) error {
@@ -776,9 +565,72 @@ func portNeovim(
 		return err
 	}
 
-	return neovim.Encode(
+	return vscode.Encode(
 		w,
 		palette,
+	)
+}
+
+func portWeb(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return web.EncodeCSS(
+		w,
+		day,
+		night,
+	)
+}
+
+func portWezTerm(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return wezterm.Encode(
+		w,
+		resolved,
+	)
+}
+
+func portX11(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return x11.EncodeXResources(
+		w,
+		x11.Resolve(palette),
 	)
 }
 
@@ -799,21 +651,6 @@ func portXcode(
 	return xcode.EncodeJSON(
 		w,
 		theme,
-	)
-}
-
-func portVSCode(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	return vscode.Encode(
-		w,
-		palette,
 	)
 }
 
@@ -1011,109 +848,17 @@ func check(
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(
-		w,
-		"usage:",
-	)
+	fmt.Fprintln(w, "usage:")
+	fmt.Fprintln(w, "  quiet inspect HEX")
+	fmt.Fprintln(w, "  quiet contrast HEX HEX")
+	fmt.Fprintln(w, "  quiet derive PALETTE")
+	fmt.Fprintln(w, "  quiet check CONTRACT PALETTE [PALETTE ...]")
 
-	fmt.Fprintln(
-		w,
-		"  quiet inspect HEX",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet contrast HEX HEX",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet derive PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet check CONTRACT PALETTE [PALETTE ...]",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port base16 PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port base24 PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port machine DAY_PALETTE NIGHT_PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port x11 PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port dircolors",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port terminal PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port kitty PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port wezterm PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port ghostty PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port emacs PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port vim PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port neovim PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port xcode PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port vscode PALETTE",
-	)
-
-	fmt.Fprintln(
-		w,
-		"  quiet port iterm2 DAY NIGHT",
-	)
-
+	for _, command := range portCommands {
+		fmt.Fprintf(
+			w,
+			"  quiet port %s\n",
+			command.usage,
+		)
+	}
 }
