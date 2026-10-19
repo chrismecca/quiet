@@ -83,9 +83,7 @@ The native exports preserve Quiet's own semantic vocabulary.
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
 
-| Alacritty
 | link:ports/wezterm/[WezTerm]
-| Windows Terminal
 | link:ports/emacs/[Emacs]
 
 | link:ports/vim/[Vim]
@@ -96,12 +94,9 @@ The native exports preserve Quiet's own semantic vocabulary.
 | link:ports/xcode/[Xcode]
 | Firefox
 | Chrome
-| Slack
 
 | link:ports/tmux/[tmux]
-| Zellij
 | fzf
-| bat
 
 | delta
 |
