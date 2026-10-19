@@ -26,6 +26,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/terminal"
 	"github.com/chrismecca/quiet/internal/port/wezterm"
 
+	"github.com/chrismecca/quiet/internal/port/emacs"
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 )
@@ -379,6 +380,26 @@ func run(
 
 			return exitOK
 
+		case "emacs":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portEmacs(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "vim":
 			if len(args) != 3 {
 				usage(stderr)
@@ -666,6 +687,21 @@ func portGhostty(
 	return ghostty.Encode(
 		w,
 		resolved,
+	)
+}
+
+func portEmacs(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return emacs.Encode(
+		w,
+		palette,
 	)
 }
 
@@ -976,6 +1012,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port ghostty PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port emacs PALETTE",
 	)
 
 	fmt.Fprintln(

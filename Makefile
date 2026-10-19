@@ -215,3 +215,12 @@ wezterm:
 		spec/quiet-night.json \
 		> 'ports/wezterm/Quiet Night.toml'
 
+.PHONY: emacs
+emacs:
+	$(GO) run ./cmd/quiet port emacs \
+		spec/quiet-day.json \
+		> ports/emacs/quiet-day-theme.el
+	$(GO) run ./cmd/quiet port emacs \
+		spec/quiet-night.json \
+		> ports/emacs/quiet-night-theme.el
+
