@@ -1,0 +1,148 @@
+// @(#)quiet / asciidoc / ports/x11/README.adoc / 2026-10-18
+
+= Quiet X11 resources
+
+The Quiet X11 reference port maps Quiet onto the X Toolkit resource database
+used by Xt and Athena-style applications.
+
+It does not attempt to theme every application that happens to display
+through an X server.
+
+Modern applications using GTK, Qt, or other independent toolkit stacks do
+not generally consume these resources.
+
+== Artifacts
+
+----
+ports/x11/quiet-day.Xresources
+ports/x11/quiet-night.Xresources
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Scope
+
+The generic X11 port uses resource classes and a small number of common
+Athena widget classes.
+
+The broad mappings are:
+
+[cols="1,1"]
+|===
+| X resource | Quiet role
+
+| `Background`
+| Field
+
+| `Foreground`
+| Ink
+
+| `BorderColor`
+| Line
+|===
+
+Common Athena controls additionally use:
+
+[cols="1,1"]
+|===
+| Widget resource | Quiet role
+
+| `Command.background`
+| Surface
+
+| `Toggle.background`
+| Surface
+
+| `MenuButton.background`
+| Structure
+
+| `SimpleMenu.background`
+| Surface
+
+| `SmeLine.foreground`
+| Line
+
+| `Scrollbar.background`
+| Structure
+
+| `Scrollbar.foreground`
+| Mineral
+|===
+
+Athena Scrollbar uses its foreground color to draw the movable thumb.
+Mineral therefore represents the active control while Structure remains the
+track.
+
+== Semantic restraint
+
+The generic resource model does not provide reliable universal roles for all
+Quiet semantics.
+
+The X11 port therefore does not emit Moss, Ochre, or Rust merely to expose
+the complete Quiet palette.
+
+Application-specific ports may use those families when the application
+actually exposes corresponding semantic roles.
+
+== Selection and contextual roles
+
+The generic Xt resource vocabulary does not provide one universal Selection
+resource applicable across every widget set.
+
+Selection is therefore intentionally absent from this generic port.
+
+Application- or toolkit-specific ports SHOULD map Quiet Selection when the
+host exposes a genuine selection role.
+
+The same principle applies to contextual roles such as Subtle.
+
+== xrdb
+
+A generated resource file may be merged into the current X resource database:
+
+----
+xrdb -merge ports/x11/quiet-day.Xresources
+----
+
+or:
+
+----
+xrdb -merge ports/x11/quiet-night.Xresources
+----
+
+The files deliberately contain only color resources.
+
+Quiet does not modify fonts, geometry, widget dimensions, translations, or
+other unrelated X settings.
+
+== app-defaults
+
+Xt application defaults are application-specific resource databases.
+
+There is no single universal Quiet app-defaults file that can correctly
+describe every Xt application.
+
+The generated Xresources files provide the shared semantic baseline.
+
+A first-party application-specific app-defaults port SHOULD start from these
+mappings and add only resources whose host semantics are understood.
+
+See:
+
+----
+PORTING.adoc
+----
+
+== Generation
+
+Regenerate both canonical variants with:
+
+----
+make x11
+----
+
+The repository tests verify that the committed artifacts exactly match the
+reference generator.
+

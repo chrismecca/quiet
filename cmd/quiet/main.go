@@ -17,6 +17,8 @@ import (
 	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/web"
 
+	"github.com/chrismecca/quiet/internal/port/x11"
+
 	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
@@ -229,6 +231,26 @@ func run(
 
 			return exitOK
 
+		case "x11":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portX11(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "terminal":
 			if len(args) != 3 {
 				usage(stderr)
@@ -363,6 +385,21 @@ func portWeb(
 		w,
 		day,
 		night,
+	)
+}
+
+func portX11(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return x11.EncodeXResources(
+		w,
+		x11.Resolve(palette),
 	)
 }
 
@@ -623,6 +660,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port web DAY_PALETTE NIGHT_PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port x11 PALETTE",
 	)
 
 	fmt.Fprintln(
