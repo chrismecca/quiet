@@ -1,8 +1,6 @@
 // @(#)quiet / asciidoc / README.adoc / 2026-10-18
 
 = Quiet.
-:toc:
-:toclevels: 2
 
 A restrained color system for long-duration work.
 
@@ -10,276 +8,292 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
+// The eventual repository hero belongs here.
+//
+// image::docs/assets/quiet-reference.png[Quiet Day and Quiet Night reference specimen]
+
 == What Quiet is
 
 Quiet is a semantic interface color system designed for software used for
 hours at a time.
 
-It defines a small set of stable visual roles, two adaptations for different
-display conditions, deterministic derived colors, accessibility constraints,
-and reference mappings onto real interfaces.
+It is built around a small vocabulary of visual roles rather than a collection
+of application-specific color choices.
 
-Quiet is not a collection of unrelated application themes.
+Quiet defines:
 
-The system is:
+* ten canonical semantic anchors;
+* Quiet Day and Quiet Night adaptations;
+* deterministic derived colors;
+* explicit readability constraints;
+* contextual color rules;
+* reference and compatibility exports;
+* ports onto real software and operating environments.
 
-----
-Quiet Core
-    |
-    +-- Quiet Day
-    |
-    +-- Quiet Night
-            |
-            +-- reference and compatibility exports
-            |
-            +-- application and platform ports
-----
+Quiet is not a theme pack.
 
-A port maps the semantics of Quiet onto the native color vocabulary of its
-host.
+A port maps Quiet's semantics onto the native color vocabulary of its host.
 
 Quiet ports color systems.
 
 It does not skin applications.
 
-== Design intent
-
-Quiet favors:
-
-* low-chroma structural color;
-* strong reading contrast without stark black-on-white presentation;
-* limited and restrained chromatic signaling;
-* stable semantic roles;
-* reproducible derivation instead of hand-selected secondary colors;
-* accessibility requirements that are part of the system rather than an
-  afterthought.
-
-Large visual fields are intended to recede.
-
-Chromatic colors are intended to communicate structure or state without
-becoming the dominant visual feature.
-
-Consequential meaning must not depend on hue alone.
-
-== Semantic system
+== The system
 
 Quiet Core defines ten canonical anchors.
 
-[cols="1,3"]
+[cols="1,1,1,1,1"]
 |===
-| Role | Meaning
+5+| Structure and reading
 
 | Field
-| Primary application or document background.
-
 | Surface
-| Secondary surface, panel, or contained region.
-
 | Structure
-| Interface chrome, navigation, tabs, and related architecture.
-
 | Ink
-| Primary readable foreground.
-
 | Muted
-| Secondary readable foreground.
+
+5+| Supporting structure and semantic signal
 
 | Line
-| Quiet separators and nonessential boundaries.
-
 | Mineral
-| Information, focus, and active state.
-
 | Moss
-| Success, nominal state, and positive state.
-
 | Ochre
-| Warning and attention.
-
 | Rust
-| Error, destructive action, and failure.
 |===
 
-Quiet also defines deterministic derived roles including Selection and
-Callout.
+The structural roles organize the interface.
 
-Subtle is contextual rather than a universal opaque color.
+The chromatic families carry limited semantic signal:
 
-== Quiet Day and Quiet Night
+[cols="1,3"]
+|===
+| Family | Typical meaning
 
-Quiet Day and Quiet Night implement the same semantic system.
+| Mineral
+| information, focus, active state
 
-They are adaptations, not mathematical inversions.
+| Moss
+| success, nominal state, positive state
 
-A corresponding role should remain recognizable across both modes, but the
-two adaptations are not required to preserve identical numerical lightness,
-chroma, hue, or perceptual rank.
+| Ochre
+| warning, attention
 
-The current canonical palettes live in:
+| Rust
+| error, destructive action, failure
+|===
+
+Color does not carry consequential meaning by itself.
+
+Text, shape, position, iconography, typography, or another structural cue
+must remain available when the distinction matters.
+
+== Day and Night
+
+Quiet Day and Quiet Night are adaptations of one semantic system.
+
+They are not mathematical inversions.
+
+Corresponding roles preserve semantic identity and recognizable color-family
+character, but they are not required to preserve identical perceptual
+lightness, chroma, hue, or prominence.
+
+The canonical palette data is:
 
 ----
 spec/quiet-day.json
 spec/quiet-night.json
 ----
 
-The human-readable specification lives in:
+The specification is:
 
 ----
 spec/quiet-core.adoc
 ----
 
-The machine-readable Core contract lives in:
+== Use Quiet
 
-----
-spec/quiet-core.json
-----
+The most direct Quiet-native outputs are currently:
 
-== Reference exports
-
-Quiet currently provides the following reference and compatibility outputs.
-
-[cols="2,1,3"]
+[cols="1,2"]
 |===
-| Export | Status | Purpose
+| Output | Location
 
-| Generic ANSI 16
-| Complete
-| Generic terminal color model and host-independent terminal mapping.
+| CSS / Web semantic variables
+| `ports/web/quiet.css`
 
-| CSS / Web
-| Complete
-| Native semantic CSS custom properties for Quiet roles.
+| Machine-readable semantic export
+| `ports/machine/quiet.json`
 
-| Base16
-| Complete
-| Lossy compatibility projection for the Base16 ecosystem.
+| Generic ANSI terminal mapping
+| `quiet port terminal`
 
-| Base24
-| Complete
-| Base24 compatibility projection extending the Base16 mapping.
-
-| Quiet machine export
-| Complete
-| Quiet-native generated interchange containing both modes, anchors,
-derived roles, and contextual derivation metadata.
+| Terminal.app
+| `ports/terminal/terminal-app/`
 |===
 
-The generic machine-readable export is:
+Compatibility exports are also available for ecosystems that require them:
 
 ----
-ports/machine/quiet.json
+ports/base16/
+ports/base24/
 ----
 
-It represents Quiet in Quiet's own vocabulary rather than projecting the
-system through another palette model.
+Base16 and Base24 are intentionally lossy compatibility projections.
+
+They are not Quiet Core.
+
+== Reference interface
+
+A small reference interface exercises Quiet's structural and semantic roles
+without introducing an application-specific theme vocabulary.
+
+----
+examples/reference-interface/
+----
+
+It consumes the generated Quiet CSS port directly.
+
+The reference interface exists to test the system.
+
+It is not intended to define what Quiet applications should look like.
 
 == Ports
-
-Reference ports are intended to demonstrate that Quiet Core can be mapped
-onto real software without private knowledge from the original author.
-
-Current port status:
 
 [cols="2,1"]
 |===
 | Target | Status
 
 | Generic ANSI 16
-| Complete
+| complete
 
 | CSS / Web
-| Complete
+| complete
 
 | Base16
-| Complete
+| complete
 
 | Base24
-| Complete
+| complete
 
-| Generic machine-readable export
-| Complete
+| Quiet machine export
+| complete
 
 | Terminal.app
-| Complete
+| complete
 
 | X11
-| Planned
+| planned
 
 | CDE
-| Planned
+| planned
 
 | GNU dircolors
-| Planned
+| planned
 
 | SGI
-| Planned
+| planned
 
 | Ghostty
-| Planned
+| planned
 
 | iTerm2
-| Planned
+| planned
 
 | kitty
-| Planned
+| planned
 
 | Alacritty
-| Planned
+| planned
 
 | WezTerm
-| Planned
+| planned
 
 | Windows Terminal
-| Planned
+| planned
 
 | Emacs
-| Planned
+| planned
 
 | Vim
-| Planned
+| planned
 
 | Neovim
-| Planned
+| planned
 
 | VS Code
-| Planned
+| planned
 
 | JetBrains IDEs
-| Planned
+| planned
 
 | Xcode
-| Planned
+| planned
 
 | Firefox
-| Planned
+| planned
 
 | Chrome
-| Planned
+| planned
 
 | Slack
-| Planned
+| planned
 
 | tmux
-| Planned
+| planned
 
 | Zellij
-| Planned
+| planned
 
 | fzf
-| Planned
+| planned
 
 | bat
-| Planned
+| planned
 
 | delta
-| Planned
+| planned
 |===
 
-== Using the reference implementation
+Native Quiet ports should consume Quiet semantics directly.
 
-The Go reference implementation is available through `quiet`.
+Compatibility formats should not become an intermediate design language for
+first-party ports.
 
-Build it with:
+== Engineering
+
+Quiet treats color as a constrained system rather than a palette-selection
+exercise.
+
+The current reference implementation includes:
+
+* sRGB as the canonical display space;
+* OKLab and OKLCH for perceptual derivation;
+* deterministic Selection and Callout derivations;
+* contextual Subtle composition;
+* WCAG 2.x contrast validation;
+* nineteen current Core contrast requirements;
+* sRGB gamut validation;
+* color-vision-deficiency screening;
+* external human review;
+* controlled visual comparison when canonical values change.
+
+The current canonical palettes pass the Core contract:
+
+----
+Quiet Day: PASS (19/19)
+Quiet Night: PASS (19/19)
+----
+
+The canonical colors are intentionally conservative.
+
+A passing color should not change merely because another value is
+aesthetically interesting.
+
+Changes should be supported by evidence.
+
+== Reference implementation
+
+Build:
 
 ----
 make build
@@ -294,13 +308,6 @@ Validate the canonical palettes:
     spec/quiet-night.json
 ----
 
-Expected result:
-
-----
-Quiet Day: PASS (19/19)
-Quiet Night: PASS (19/19)
-----
-
 Inspect a color:
 
 ----
@@ -313,66 +320,35 @@ Calculate contrast:
 ./bin/quiet contrast '#1B1F1C' '#EEEADF'
 ----
 
-Derive the current semantic display colors:
+Derive semantic display colors:
 
 ----
 ./bin/quiet derive spec/quiet-day.json
 ----
 
-Generate a reference or compatibility port:
+Generate an export:
 
 ----
-./bin/quiet port terminal spec/quiet-day.json
-
 ./bin/quiet port web \
     spec/quiet-day.json \
     spec/quiet-night.json
-
-./bin/quiet port base16 spec/quiet-day.json
-
-./bin/quiet port base24 spec/quiet-day.json
-
-./bin/quiet port machine \
-    spec/quiet-day.json \
-    spec/quiet-night.json
 ----
 
-== Validation
+All reference exports are reproducible from the canonical palette data.
 
-Quiet treats validation as part of the design process.
+== Source and evidence
 
-The current Core contract includes nineteen contrast requirements covering
-primary text, secondary text, chromatic foregrounds, derived selection, and
-supported structural surfaces.
-
-Canonical palettes are also evaluated through:
-
-* deterministic color-space calculations;
-* sRGB gamut checks;
-* color-vision-deficiency simulation;
-* representative reference ports;
-* external human review;
-* controlled visual testing when a palette change is proposed.
-
-Canonical colors are intentionally conservative.
-
-A passing color is not changed merely because another value is aesthetically
-interesting.
-
-Changes should be supported by a reproducible problem or evidence.
-
-== Repository layout
+The repository is organized around a separation between authored specification,
+reference implementation, generated exports, and evidence.
 
 ----
-cmd/                 reference CLI
-internal/color/      generic color mathematics
-internal/core/       Quiet Core implementation
-internal/port/       reference-port implementations
-
-spec/                 canonical specification and palette data
-ports/                generated exports and host-specific ports
-reports/              analytical evidence and published reports
-examples/             reference examples
+spec/                 specification and canonical palette data
+internal/color/       generic color mathematics
+internal/core/        Quiet Core implementation
+internal/port/        reference export implementations
+ports/                generated and host-specific outputs
+examples/             reference interfaces
+reports/              analytical evidence
 ----
 
 Project prose is written in AsciiDoc.
@@ -385,22 +361,15 @@ Markdown is intentionally not used.
 
 Quiet Core 0.1 is under development.
 
-The current canonical Day and Night anchors remain candidate data pending
-broader testing and additional reference-port work.
+The Day and Night palettes remain candidate data while broader reference-port
+work and testing continue.
 
-The existing reference exports are reproducible from the canonical palette
-data and are covered by the repository test suite.
+The existing reference exports are reproducible and covered by the repository
+test suite.
 
 == Contributing
 
-See:
-
-----
-CONTRIBUTING.adoc
-----
-
-Port contributions should preserve Quiet semantics before attempting to
-reproduce superficial visual resemblance.
+See `CONTRIBUTING.adoc`.
 
 When a host requires a role that Quiet does not define directly, prefer:
 
@@ -413,19 +382,11 @@ Port-specific extensions are not Quiet Core anchors.
 
 == License
 
-Quiet is released under the MIT License.
+MIT.
 
-See:
+See `LICENSE`.
 
-----
-LICENSE
-----
-
-== Principle
+'''
 
 _The interface should become scenery._
-
-Color is allowed to organize.
-
-It is not allowed to shout.
 
