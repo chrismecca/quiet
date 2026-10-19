@@ -13,10 +13,7 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
-image::docs/assets/header/quiet-header.png[
-  Quiet Day and Quit Night in Terminal.app with vim and Xcode,
-  align=center
-]
+image::docs/assets/header/quiet-header.png[Quiet Day and Quiet Night in Terminal.app with Vim and Xcode,align=center]
 
 == Why
 
