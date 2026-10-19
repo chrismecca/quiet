@@ -1,0 +1,171 @@
+// @(#)quiet / asciidoc / ports/ghostty/README.adoc / 2026-10-19
+
+= Quiet Ghostty
+
+The Quiet Ghostty port serializes Quiet's generic terminal palette into
+Ghostty's native theme format.
+
+It introduces no independent color policy.
+
+== Artifacts
+
+----
+ports/ghostty/Quiet Day
+ports/ghostty/Quiet Night
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Architecture
+
+The port is layered as:
+
+----
+Quiet Core
+    |
+    v
+generic terminal mapping
+    |
+    v
+Ghostty serializer
+----
+
+All ANSI color derivation occurs in the generic terminal reference port.
+
+Ghostty consumes the resolved result.
+
+== Mapping
+
+[cols="2,2"]
+|===
+| Ghostty role | Generic terminal role
+
+| `background`
+| Background
+
+| `foreground`
+| Text
+
+| `cursor-color`
+| Cursor
+
+| `cursor-text`
+| Background
+
+| `selection-background`
+| Selection
+
+| `selection-foreground`
+| Text
+
+| `palette 0..15`
+| ANSI 0..15
+|===
+
+The Ghostty port does not derive new chromatic families or alter the generic
+ANSI mapping.
+
+== Scope
+
+The theme controls color only.
+
+It does not define:
+
+* font family;
+* font size;
+* window decoration;
+* background opacity;
+* cursor shape;
+* shell integration;
+* key bindings;
+* window or tab behavior.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Installation
+
+Ghostty discovers named custom themes under:
+
+----
+$XDG_CONFIG_HOME/ghostty/themes
+----
+
+or, when `XDG_CONFIG_HOME` is unset:
+
+----
+~/.config/ghostty/themes
+----
+
+Install both themes with:
+
+----
+mkdir -p ~/.config/ghostty/themes
+
+cp 'ports/ghostty/Quiet Day' \
+   ~/.config/ghostty/themes/
+
+cp 'ports/ghostty/Quiet Night' \
+   ~/.config/ghostty/themes/
+----
+
+Select one explicitly:
+
+----
+theme = Quiet Day
+----
+
+or:
+
+----
+theme = Quiet Night
+----
+
+Ghostty can also follow the system appearance:
+
+----
+theme = dark:Quiet Night,light:Quiet Day
+----
+
+User configuration may override settings supplied by a theme.
+
+== Testing
+
+On macOS, the application bundle contains the Ghostty executable at:
+
+----
+/Applications/Ghostty.app/Contents/MacOS/ghostty
+----
+
+The installed version may be checked with:
+
+----
+osascript -e 'tell application "Ghostty" to get version'
+----
+
+After installing the themes, verify they are discoverable with:
+
+----
+/Applications/Ghostty.app/Contents/MacOS/ghostty +list-themes
+----
+
+Then load Quiet Day and Quiet Night in the actual application and inspect
+normal text, ANSI colors, selection, and cursor behavior.
+
+A port is not considered complete until both adaptations have been visually
+validated in Ghostty.
+
+== Generation
+
+Regenerate both canonical themes with:
+
+----
+make ghostty
+----
+
+The repository tests verify that the committed artifacts exactly match the
+generic terminal mapping.
+

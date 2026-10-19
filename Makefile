@@ -181,3 +181,12 @@ vim:
 		spec/quiet-night.json \
 		> ports/vim/quiet-night.vim
 
+.PHONY: ghostty
+ghostty:
+	$(GO) run ./cmd/quiet port ghostty \
+		spec/quiet-day.json \
+		> 'ports/ghostty/Quiet Day'
+	$(GO) run ./cmd/quiet port ghostty \
+		spec/quiet-night.json \
+		> 'ports/ghostty/Quiet Night'
+
