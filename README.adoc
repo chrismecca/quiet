@@ -13,8 +13,22 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
-image::docs/assets/header/terminal-vim.png[Quiet Day and Quiet Night in Terminal.app with vim,460,,align=center]
-image::docs/assets/header/xcode.png[Quiet Day and Quiet Night in Xcode,460,,align=center]
+[cols="49,2,49",frame=none,grid=none,options="noheader"]
+|===
+^a|
+image::docs/assets/header/terminal-vim.png[
+  Quiet Day and Quiet Night in Terminal.app with Vim,
+  320
+]
+
+|
+
+^a|
+image::docs/assets/header/xcode.png[
+  Quiet Day and Quiet Night in Xcode,
+  320
+]
+|===
 
 == Why
 
