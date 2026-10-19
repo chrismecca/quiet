@@ -17,6 +17,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/web"
 
+	"github.com/chrismecca/quiet/internal/port/dircolors"
 	"github.com/chrismecca/quiet/internal/port/x11"
 
 	"github.com/chrismecca/quiet/internal/port/terminal"
@@ -251,6 +252,25 @@ func run(
 
 			return exitOK
 
+		case "dircolors":
+			if len(args) != 2 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portDircolors(
+				stdout,
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "terminal":
 			if len(args) != 3 {
 				usage(stderr)
@@ -401,6 +421,12 @@ func portX11(
 		w,
 		x11.Resolve(palette),
 	)
+}
+
+func portDircolors(
+	w io.Writer,
+) error {
+	return dircolors.Encode(w)
 }
 
 func portTerminal(
@@ -665,6 +691,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port x11 PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port dircolors",
 	)
 
 	fmt.Fprintln(

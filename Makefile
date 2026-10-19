@@ -158,3 +158,8 @@ machine:
 		spec/quiet-night.json \
 		> ports/machine/quiet.json
 
+.PHONY: dircolors
+dircolors:
+	$(GO) run ./cmd/quiet port dircolors \
+		> ports/dircolors/quiet.dircolors
+

@@ -1,0 +1,194 @@
+// @(#)quiet / asciidoc / ports/dircolors/README.adoc / 2026-10-18
+
+= Quiet GNU dircolors
+
+The Quiet GNU dircolors port maps filesystem object semantics onto the
+generic Quiet ANSI terminal palette.
+
+It contains no concrete Quiet colors.
+
+== Artifact
+
+----
+ports/dircolors/quiet.dircolors
+----
+
+One artifact is shared by Quiet Day and Quiet Night.
+
+The active terminal port supplies the actual colors assigned to ANSI slots.
+
+== Architecture
+
+The port is layered as:
+
+----
+filesystem semantics
+        |
+        v
+quiet.dircolors
+        |
+        v
+generic ANSI slots
+        |
+        v
+Quiet terminal palette
+        |
+        +-- Quiet Day
+        |
+        +-- Quiet Night
+----
+
+This keeps filesystem policy independent of a particular Quiet adaptation.
+
+== Mapping
+
+[cols="2,2,2"]
+|===
+| Filesystem role | ANSI family | Quiet meaning
+
+| regular file
+| terminal default
+| Ink
+
+| directory
+| blue
+| Mineral
+
+| symbolic link
+| cyan
+| compatibility Cyan
+
+| executable
+| green
+| Moss
+
+| FIFO
+| yellow
+| Ochre
+
+| block or character device
+| yellow
+| Ochre
+
+| socket or door
+| magenta
+| compatibility Magenta
+
+| broken or missing path
+| red
+| Rust
+
+| setuid or setgid
+| bold red
+| emphasized Rust
+
+| file capability
+| bold red
+| emphasized Rust
+
+| other-writable directory
+| bold red
+| emphasized Rust
+
+| sticky and other-writable directory
+| bold yellow
+| emphasized Ochre
+
+| sticky directory
+| yellow
+| Ochre
+|===
+
+The ANSI family names above identify terminal slots.
+
+They do not define RGB values.
+
+== Ordinary files
+
+Ordinary files deliberately receive no color treatment.
+
+Their names use the terminal's normal foreground, which is Ink under a Quiet
+terminal port.
+
+A source tree should not become colorful merely because it contains many
+different filename suffixes.
+
+== Filename extensions
+
+Quiet defines no filename-extension rules.
+
+GNU's default dircolors database contains classifications for archives,
+images, media, and many other filename suffixes.
+
+The Quiet port intentionally omits them.
+
+Filename extensions are generally content-format hints rather than
+filesystem state.
+
+Quiet does not assign chromatic meaning to them merely to increase visual
+differentiation.
+
+== Special and security-sensitive state
+
+Broken paths use Rust.
+
+Privilege-bearing or risky writable states use bold in addition to color.
+
+This provides a non-hue visual cue and gives those uncommon states greater
+prominence without introducing colored backgrounds.
+
+The port deliberately uses no background-color SGR sequences.
+
+== Compatibility colors
+
+Cyan and Magenta are terminal-specific compatibility families already
+defined by the generic ANSI reference port.
+
+They are useful here for filesystem object classes that benefit from
+distinction but do not correspond to additional Quiet Core semantic
+families.
+
+They remain terminal-port extensions.
+
+They are not Quiet Core anchors.
+
+== Use
+
+GNU dircolors converts the configuration into `LS_COLORS`.
+
+For a Bourne-compatible shell:
+
+----
+eval "$(dircolors ports/dircolors/quiet.dircolors)"
+----
+
+The configuration is intended to accompany a Quiet terminal palette.
+
+When used with a non-Quiet terminal palette, the same semantic ANSI slots are
+selected, but their actual appearance is determined by that terminal.
+
+== Scope
+
+This port controls filesystem color classification only.
+
+It does not:
+
+* change shell prompts;
+* change terminal palette values;
+* classify programming languages;
+* color filename extensions;
+* modify fonts;
+* modify `ls` formatting;
+* introduce icons or glyphs.
+
+== Generation
+
+Regenerate the artifact with:
+
+----
+make dircolors
+----
+
+The repository tests verify that the committed artifact exactly matches the
+reference generator.
+
