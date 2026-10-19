@@ -74,7 +74,7 @@ The native exports preserve Quiet's own semantic vocabulary.
 | link:ports/terminal/terminal-app/[Terminal.app]
 | link:ports/x11/[X11]
 | CDE
-| GNU dircolors
+| link:ports/dircolors/[GNU dircolors]
 
 | SGI 4Dwm
 | Ghostty
