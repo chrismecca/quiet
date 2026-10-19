@@ -1,0 +1,657 @@
+// @(#)quiet / asciidoc / PORTING.adoc / 2026-10-18
+
+= Porting Quiet
+:toc:
+:toclevels: 3
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+This document describes how to translate Quiet Core onto another interface,
+application, terminal, toolkit, operating environment, or compatibility
+format.
+
+It is intended for authors of first-party and third-party Quiet ports.
+
+The normative semantic and perceptual rules remain defined by:
+
+----
+spec/quiet-core.adoc
+----
+
+This document describes how those rules should be applied when the host
+system has its own color vocabulary, role model, implementation constraints,
+or historical conventions.
+
+== Porting model
+
+A Quiet port is a semantic translation.
+
+It is not a search for visually similar colors.
+
+The preferred direction is:
+
+----
+host role
+    |
+    v
+Quiet semantic role
+    |
+    v
+canonical or derived Quiet color
+----
+
+A port SHOULD first determine what a host color means.
+
+It SHOULD NOT begin by asking which Quiet color visually resembles the
+host's existing color.
+
+For example, if a host exposes a color named:
+
+----
+warningForeground
+----
+
+the first question is whether that role semantically represents warning or
+attention.
+
+If it does, Ochre is the natural Quiet family.
+
+The fact that the host's default implementation may currently use orange,
+yellow, red, or another hue is not relevant to the semantic mapping.
+
+== Source hierarchy
+
+When a host requires a color, a port SHOULD select its source in this order:
+
+. an existing canonical Quiet anchor;
+. an existing derived Quiet role;
+. a documented contextual derivation;
+. a port-specific extension as a last resort.
+
+This order is intentional.
+
+A port SHOULD NOT create a new color merely because the host exposes more
+named roles than Quiet Core.
+
+== Canonical anchors
+
+Quiet Core defines ten canonical anchors:
+
+----
+Field
+Surface
+Structure
+Ink
+Muted
+Line
+Mineral
+Moss
+Ochre
+Rust
+----
+
+These anchors are authored semantic data.
+
+A port MUST NOT modify their canonical values and present the result as the
+same Quiet anchor.
+
+If a host-specific implementation requires a transformed value, the port
+MUST document that transformation.
+
+== Derived roles
+
+Quiet defines deterministic derived roles such as:
+
+----
+Selection
+Callout
+----
+
+A port SHOULD use the reference derivation instead of copying a previously
+generated hexadecimal value when it is capable of running the derivation.
+
+Generated exports MAY contain the opaque resolved value for consumers that
+do not implement Quiet Core.
+
+Derived roles are not additional canonical anchors.
+
+== Contextual roles
+
+Some Quiet roles depend on their actual surrounding context.
+
+Subtle is the current example.
+
+Subtle is:
+
+----
+55 percent Muted over the actual local background
+----
+
+using legacy gamma-encoded sRGB composition.
+
+There is deliberately no universal opaque Subtle color.
+
+A port MUST NOT flatten a contextual role into one global token unless the
+host makes the relevant background context fixed and the limitation is
+documented.
+
+For example, a Subtle foreground over Field and a Subtle foreground over
+Surface are different resolved colors.
+
+== Host semantics before host names
+
+Host color names are often historical, overloaded, or misleading.
+
+A port SHOULD determine how a host role is actually used before mapping it.
+
+Names such as:
+
+----
+background
+foreground
+accent
+highlight
+selection
+border
+primary
+secondary
+success
+warning
+danger
+error
+blue
+green
+red
+----
+
+do not by themselves establish a Quiet mapping.
+
+The implementation context matters.
+
+A role named `blue` may be semantic, syntactic, decorative, or purely
+historical.
+
+A role named `accent` may describe focus, selection, branding, links, or a
+dozen unrelated states.
+
+Ports SHOULD document ambiguous mappings.
+
+== More host roles than Quiet roles
+
+Many hosts expose more color roles than Quiet Core.
+
+That does not imply that Quiet requires more canonical colors.
+
+When several host roles share one Quiet meaning, they MAY map to the same
+Quiet role.
+
+Collapsing distinctions is often preferable to inventing unsupported
+semantic differences.
+
+For example, a host may distinguish:
+
+----
+warning
+warningStrong
+warningIcon
+warningText
+----
+
+If all four represent the same warning semantics, they may all derive from
+Ochre, possibly with documented structural treatment supplied by the host.
+
+A port SHOULD prefer typography, weight, shape, border treatment, or layout
+over unnecessary color proliferation.
+
+== Fewer host roles than Quiet roles
+
+Some hosts expose only a small fixed palette.
+
+A port MAY collapse multiple Quiet roles when the host cannot represent them
+independently.
+
+The port SHOULD preserve the most important semantic distinctions first.
+
+Reading contrast and structural hierarchy take priority over preserving every
+chromatic distinction.
+
+A port MUST document significant semantic loss imposed by the host.
+
+== Port-specific extensions
+
+A host may require a role that Quiet Core cannot express directly.
+
+A port-specific extension MAY be introduced when:
+
+* no canonical anchor correctly represents the host role;
+* no existing derived role is appropriate;
+* no contextual derivation describes it;
+* collapsing the role would materially damage the host interface.
+
+A port-specific extension MUST:
+
+* be documented;
+* be reproducibly derived where practical;
+* remain subordinate to Quiet Core;
+* avoid implying that it is a new canonical Quiet role.
+
+Port-specific extensions MUST NOT be added to canonical palette data.
+
+Examples include the compatibility Cyan and Magenta families used by the
+generic ANSI reference port.
+
+They exist because the host model requires them.
+
+They are not Quiet Core anchors.
+
+== Intermediate formats
+
+A first-party Quiet port SHOULD consume Quiet semantics as directly as
+practical.
+
+For example:
+
+----
+Quiet Core
+    |
+    v
+Emacs port
+----
+
+is preferred over:
+
+----
+Quiet Core
+    |
+    v
+Base16
+    |
+    v
+Emacs
+----
+
+when a native Emacs port exists.
+
+Compatibility formats introduce their own semantics and may collapse,
+duplicate, or reinterpret Quiet roles.
+
+They are therefore not preferred design intermediates for native ports.
+
+An intermediate representation is appropriate when it exists specifically
+to preserve the required Quiet semantics.
+
+For example, a host serializer may consume an already resolved generic
+terminal palette if the serializer itself should contain no color policy.
+
+== Compatibility exports
+
+Base16 and Base24 are compatibility projections.
+
+They are intentionally lossy.
+
+Their role systems do not correspond one-for-one with Quiet Core.
+
+A compatibility export MAY:
+
+* duplicate Quiet roles across multiple compatibility slots;
+* collapse several compatibility roles onto one Quiet family;
+* introduce documented compatibility-only derived colors.
+
+A compatibility export MUST NOT redefine Quiet Core to match the target
+format.
+
+The target format adapts to Quiet.
+
+Quiet does not adapt its canonical semantics to satisfy the format.
+
+== Structural roles
+
+Quiet separates interface architecture from primary reading content.
+
+Typical structural mappings include:
+
+[cols="1,3"]
+|===
+| Quiet role | Typical use
+
+| Field
+| primary document or application field
+
+| Surface
+| secondary panel or contained surface
+
+| Structure
+| navigation, chrome, tabs, framing architecture
+
+| Line
+| quiet separators and nonessential boundaries
+
+| Ink
+| primary readable foreground
+
+| Muted
+| secondary readable foreground
+|===
+
+These mappings are guidance rather than application-specific styling rules.
+
+A port should respect the host's native structure.
+
+Quiet does not require an application to invent panels, borders, tabs, or
+other widgets merely to expose every role.
+
+== Chromatic roles
+
+Quiet defines four canonical chromatic families:
+
+[cols="1,3"]
+|===
+| Family | Typical semantics
+
+| Mineral
+| information, focus, active state
+
+| Moss
+| success, nominal state, positive state
+
+| Ochre
+| warning, attention
+
+| Rust
+| error, destructive action, failure
+|===
+
+These associations describe semantic intent.
+
+They do not permit consequential state to depend on hue alone.
+
+== Semantic redundancy
+
+Consequential meaning MUST NOT depend on color alone.
+
+When a distinction affects comprehension or action, a port MUST preserve or
+provide another cue such as:
+
+* text;
+* iconography;
+* shape;
+* position;
+* typography;
+* border treatment;
+* interaction state;
+* another structural cue.
+
+For example, warning and error MUST NOT be distinguished only by Ochre and
+Rust.
+
+A host that already provides redundant state cues should generally retain
+them.
+
+A Quiet port should not remove useful non-color information in pursuit of a
+cleaner visual result.
+
+== Readability and contrast
+
+A port MUST preserve the readability requirements defined by Quiet Core when
+the relevant Quiet role is used as a foreground on a supported background.
+
+A host may impose additional accessibility requirements.
+
+Those requirements MAY make a host-specific mapping more restrictive than
+Quiet Core.
+
+A port SHOULD test the actual rendered role relationships rather than
+assuming that canonical anchor values guarantee accessibility in every host
+configuration.
+
+Font rendering, transparency, compositing, blending, state overlays, and host
+transformations may change the effective result.
+
+== Transparency
+
+A port SHOULD avoid introducing transparency merely for visual effect.
+
+When transparency is required by host behavior, contrast and semantic
+relationships should be evaluated against the actual composited result.
+
+A transparent host role MUST NOT be treated as equivalent to an opaque Quiet
+anchor without verification.
+
+== Color transformations
+
+A port SHOULD avoid arbitrary lightening, darkening, saturation changes, or
+hue rotations.
+
+When a transformation is required, it SHOULD be:
+
+* motivated by a host requirement;
+* deterministic;
+* documented;
+* reproducible;
+* tested against relevant Quiet constraints.
+
+Hand-selected secondary values should be a last resort.
+
+== Color space
+
+Quiet canonical colors are defined in sRGB.
+
+Perceptual derivation uses OKLab and OKLCH where specified.
+
+A port MUST NOT silently clip an out-of-gamut derived color.
+
+If the target environment uses another color representation, the conversion
+SHOULD preserve the canonical sRGB appearance as closely as the host permits.
+
+Future wider-gamut Quiet specifications may define additional rules.
+
+They do not exist today.
+
+== Generated and authored artifacts
+
+A port should clearly distinguish between:
+
+* authored mapping policy;
+* deterministic implementation;
+* generated host artifacts.
+
+Generated files SHOULD NOT contain independent design decisions.
+
+If a generated artifact differs from its generator, the generator is the
+source that should be corrected.
+
+Where practical, repository tests SHOULD verify that committed generated
+artifacts exactly match current generator output.
+
+== Host serializers
+
+A host serializer SHOULD contain as little color policy as practical.
+
+The preferred shape is:
+
+----
+Quiet semantics
+    |
+    v
+resolved host-neutral model
+    |
+    v
+host serializer
+----
+
+For example, the Terminal.app serializer consumes the generic terminal
+palette rather than reimplementing Quiet-to-ANSI policy.
+
+This prevents host file formats from becoming accidental sources of design
+logic.
+
+== First-party scope
+
+A first-party Quiet port maps color.
+
+It does not attempt to redesign the host application.
+
+A port SHOULD NOT replace:
+
+* icons;
+* typography;
+* layout;
+* widget geometry;
+* window decorations;
+* application artwork;
+* unrelated appearance settings;
+
+unless the host requires such changes solely to express the color mapping.
+
+The governing rule is:
+
+----
+Quiet ports color systems.
+
+It does not skin applications.
+----
+
+A complete application theme may exist outside the first-party Quiet porting
+scope.
+
+== Native behavior
+
+A port SHOULD preserve useful native host behavior.
+
+This includes features such as:
+
+* focus indication;
+* hover state;
+* disabled state;
+* selection behavior;
+* semantic icons;
+* accessibility affordances;
+* platform conventions.
+
+Quiet should not make the host less understandable merely to make the visual
+result more uniform.
+
+== Day and Night
+
+Quiet Day and Quiet Night are adaptations of one semantic system.
+
+A host port SHOULD preserve correspondence between the same semantic role in
+both modes.
+
+The modes are not mathematical inversions.
+
+A port MUST NOT assume that a Day value can be mechanically inverted to
+produce Night, or vice versa.
+
+Where the host supports automatic appearance switching, the port SHOULD map
+Day and Night to the host's native mechanism when practical.
+
+== Port documentation
+
+A significant port SHOULD include a README describing:
+
+* the target system;
+* how to install or activate the port;
+* the mapping from important host roles to Quiet roles;
+* host-specific extensions;
+* semantic compromises;
+* unsupported host capabilities;
+* generated artifacts;
+* regeneration procedure;
+* testing procedure.
+
+The README does not need to repeat Quiet Core.
+
+It should document what is unique about the translation.
+
+== Testing
+
+A first-party port SHOULD test as much of its mapping as practical.
+
+Useful tests include:
+
+* deterministic generation;
+* canonical expected values;
+* contrast requirements;
+* derived-role correctness;
+* generated-artifact drift;
+* valid host syntax;
+* serializer round trips;
+* host import or smoke tests;
+* preservation of Day and Night correspondence.
+
+Tests SHOULD protect semantic policy rather than merely implementation
+details.
+
+== Visual review
+
+Automated validation does not replace visual review.
+
+A port SHOULD be examined in representative real interfaces.
+
+Review should consider:
+
+* long-duration readability;
+* structural hierarchy;
+* whether large fields remain quiet;
+* whether Ink remains visually dominant over chrome;
+* whether Muted remains readable without competing with Ink;
+* whether chromatic roles communicate without dominating;
+* whether focus and selection remain discoverable;
+* whether native host behavior remains understandable.
+
+A visual review SHOULD evaluate the port as working software rather than as a
+palette display.
+
+== Historical systems
+
+Older systems may expose rigid palette models, indexed colors, limited
+dynamic range, unusual widget hierarchies, or assumptions that predate modern
+accessibility practice.
+
+A Quiet port MAY adapt to those constraints.
+
+Historical authenticity is not itself a Quiet requirement.
+
+A port should preserve the host's useful interaction model without turning
+Quiet into a historical visual recreation.
+
+== When a port reveals a Core problem
+
+A representative port may expose a defect or missing concept in Quiet Core.
+
+That does not automatically justify changing Core.
+
+The preferred process is:
+
+. document the host problem;
+. determine whether the problem is host-specific or general;
+. test whether an existing Quiet role or derivation can solve it;
+. use a port-specific extension if the need is local;
+. propose a Core change only if multiple legitimate mappings reveal a general
+  semantic gap.
+
+Ports are evidence.
+
+They are not permission to expand Core casually.
+
+== Review questions
+
+Before considering a port complete, ask:
+
+* Does each important host color have a semantic reason for its mapping?
+* Did the port reuse existing Quiet roles before inventing new colors?
+* Are host-specific extensions clearly identified?
+* Does consequential meaning remain redundant with non-color cues?
+* Are required foreground relationships readable?
+* Are Day and Night recognizable as adaptations of the same system?
+* Did the port preserve useful native host behavior?
+* Can the generated result be reproduced?
+* Are important compromises documented?
+* Does the port color the host rather than redesign it?
+
+If the answers are clear, the port is probably behaving as a Quiet port rather
+than merely using Quiet colors.
+
