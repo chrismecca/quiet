@@ -163,3 +163,12 @@ dircolors:
 	$(GO) run ./cmd/quiet port dircolors \
 		> ports/dircolors/quiet.dircolors
 
+.PHONY: xcode
+xcode:
+	$(GO) run ./cmd/quiet port xcode \
+		spec/quiet-day.json \
+		> 'ports/xcode/Quiet Day.xcworkspacecolortheme'
+	$(GO) run ./cmd/quiet port xcode \
+		spec/quiet-night.json \
+		> 'ports/xcode/Quiet Night.xcworkspacecolortheme'
+

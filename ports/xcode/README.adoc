@@ -1,0 +1,199 @@
+// @(#)quiet / asciidoc / ports/xcode/README.adoc / 2026-10-18
+
+= Quiet Xcode
+
+The Quiet Xcode port maps Quiet Core semantics onto Xcode's native workspace
+color-theme model.
+
+The current port targets the native `.xcworkspacecolortheme` format.
+
+== Artifacts
+
+----
+ports/xcode/Quiet Day.xcworkspacecolortheme
+ports/xcode/Quiet Night.xcworkspacecolortheme
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Design
+
+Quiet does not map programming-language token classes onto unrelated semantic
+state colors merely to maximize syntax differentiation.
+
+Strings are not success.
+
+Numbers are not warnings.
+
+Regular expressions are not errors.
+
+Xcode syntax therefore uses a restrained hierarchy:
+
+----
+Ink       ordinary source content
+Muted     secondary, documentation, and external/system identifiers
+Mineral   language structure, links, declarations, and active state
+----
+
+Quiet's state-bearing chromatic families are reserved for roles that actually
+carry corresponding semantics.
+
+For example:
+
+----
+Moss      diff addition
+Rust      diff deletion
+Mineral   debugger and insertion focus
+----
+
+Ochre is not currently required by Xcode's native theme-controlled roles.
+
+That is intentional.
+
+== Mapping
+
+The principal mappings include:
+
+[cols="2,1"]
+|===
+| Xcode role | Quiet role
+
+| editor background
+| Field
+
+| plain text
+| Ink
+
+| comments
+| Muted
+
+| emphasized comments
+| Ink
+
+| keywords
+| Mineral
+
+| declarations
+| Mineral
+
+| project types
+| Mineral
+
+| project members
+| Ink
+
+| external and system identifiers
+| Muted
+
+| selection background
+| Selection
+
+| insertion point
+| Mineral
+
+| current line
+| Callout
+
+| invisibles
+| Line
+
+| diff addition
+| Moss
+
+| diff deletion
+| Rust
+
+| debugger
+| Mineral
+|===
+
+== Xcode palette seeds
+
+Xcode derives additional workspace colors from primary and secondary palette
+seeds.
+
+Quiet maps:
+
+----
+primary    Mineral
+secondary  Field
+----
+
+Mineral represents information, focus, and active state.
+
+Field remains the environmental base.
+
+Plain editor text is explicitly mapped to Ink and therefore does not inherit
+the primary palette seed.
+
+== Color representation
+
+Quiet canonical colors are sRGB.
+
+The native Xcode format represents explicit colors using OKLCH components
+with hue expressed in radians.
+
+The generator converts canonical Quiet sRGB values into that representation
+and declares:
+
+----
+gamut: sRGB
+----
+
+The port does not promote Quiet colors into Display P3.
+
+== Scope
+
+The port controls Xcode theme colors.
+
+It does not set:
+
+* editor fonts;
+* font sizes;
+* cursor shape;
+* application layout;
+* navigator arrangement;
+* window geometry;
+* unrelated Xcode preferences.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Installation
+
+Copy the generated files into:
+
+----
+~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+----
+
+For example:
+
+----
+mkdir -p ~/Library/Developer/Xcode/UserData/FontAndColorThemes
+
+cp 'ports/xcode/Quiet Day.xcworkspacecolortheme' \
+   ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+
+cp 'ports/xcode/Quiet Night.xcworkspacecolortheme' \
+   ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+----
+
+Open Xcode Settings and choose the desired theme under Appearance.
+
+Restart Xcode if a newly copied theme does not immediately appear.
+
+== Generation
+
+Regenerate both themes with:
+
+----
+make xcode
+----
+
+The repository tests verify that the committed artifacts exactly match the
+reference generator.
+

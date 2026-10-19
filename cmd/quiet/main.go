@@ -21,6 +21,8 @@ import (
 	"github.com/chrismecca/quiet/internal/port/x11"
 
 	"github.com/chrismecca/quiet/internal/port/terminal"
+
+	"github.com/chrismecca/quiet/internal/port/xcode"
 )
 
 const (
@@ -291,6 +293,26 @@ func run(
 
 			return exitOK
 
+		case "xcode":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portXcode(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -446,6 +468,26 @@ func portTerminal(
 	return terminal.EncodeJSON(
 		w,
 		resolved,
+	)
+}
+
+func portXcode(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	theme, err := xcode.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return xcode.EncodeJSON(
+		w,
+		theme,
 	)
 }
 
@@ -701,5 +743,10 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port terminal PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port xcode PALETTE",
 	)
 }
