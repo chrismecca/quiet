@@ -20,6 +20,7 @@ HEADER_FILES := \
 	CONTRIBUTING.adoc \
 	Makefile \
 	README.adoc \
+	ports/emacs/quiet-themes.el \
 	$(GOFILES) \
 	$(DOCFILES) \
 	$(PORTFILES)

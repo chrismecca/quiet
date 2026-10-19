@@ -1,0 +1,186 @@
+// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-19
+
+= Quiet for GNU Emacs
+
+Quiet provides two GNU Emacs Custom themes:
+
+----
+quiet-day
+quiet-night
+----
+
+The themes map Quiet semantic roles onto Emacs faces without imposing font,
+weight, slant, underline, box, or other typography policy.
+
+The generated theme files are:
+
+----
+quiet-day-theme.el
+quiet-night-theme.el
+----
+
+The package entry point is:
+
+----
+quiet-themes.el
+----
+
+== Requirements
+
+The packaged Quiet Emacs port targets GNU Emacs 29.1 or later.
+
+== Install directly from Git
+
+GNU Emacs can install Quiet directly from its public Git repository with
+`package-vc-install`.
+
+Evaluate:
+
+[source,elisp]
+----
+(package-vc-install
+ '(quiet-themes
+   :url "https://github.com/chrismecca/quiet.git"
+   :lisp-dir "ports/emacs"
+   :main-file "quiet-themes.el"))
+----
+
+The package is then managed by the normal Emacs package system.
+
+== use-package
+
+Current Emacs releases can also install the package through `use-package` and
+`package-vc`:
+
+[source,elisp]
+----
+(use-package quiet-themes
+  :vc (:url "https://github.com/chrismecca/quiet.git"
+       :lisp-dir "ports/emacs"
+       :main-file "quiet-themes.el"
+       :rev :newest)
+  :config
+  (load-theme 'quiet-night t))
+----
+
+`:rev :newest` selects the current public candidate rather than a tagged
+release.
+
+== Load a theme
+
+Interactively:
+
+----
+M-x load-theme RET quiet-day RET
+----
+
+or:
+
+----
+M-x load-theme RET quiet-night RET
+----
+
+From Emacs Lisp:
+
+[source,elisp]
+----
+(load-theme 'quiet-day t)
+----
+
+or:
+
+[source,elisp]
+----
+(load-theme 'quiet-night t)
+----
+
+== Switch Day and Night
+
+Quiet Day and Quiet Night are members of the same native Emacs theme family.
+
+With exactly one Quiet theme active:
+
+----
+M-x theme-choose-variant
+----
+
+switches to the other adaptation.
+
+Quiet does not implement a separate theme-switching command where the host
+already provides the appropriate mechanism.
+
+== Package archives
+
+The package name is:
+
+----
+quiet-themes
+----
+
+Archive installation will use the ordinary package interface:
+
+----
+M-x package-install RET quiet-themes RET
+----
+
+once Quiet is accepted into an Emacs package archive.
+
+No `quiet-themes-pkg.el` is stored in this repository. Package archives
+generate package metadata from `quiet-themes.el`.
+
+== Manual installation
+
+For installations that do not use package management, add this directory to
+`custom-theme-load-path`:
+
+[source,elisp]
+----
+(add-to-list
+ 'custom-theme-load-path
+ "/path/to/quiet/ports/emacs")
+----
+
+Then load either theme normally.
+
+== Semantic mapping
+
+Quiet treats programming-language syntax as hierarchy rather than a collection
+of unrelated token colors.
+
+Ordinary source text remains Ink.
+
+Comments and documentary text use Muted.
+
+Language structure such as keywords, types, built-ins, and preprocessors uses
+Mineral.
+
+Semantic status colors remain reserved for status:
+
+----
+Moss     success
+Ochre    warning
+Rust     error
+----
+
+The port does not assign unrelated chromatic colors to strings, variables,
+constants, functions, or other token classes merely to increase color variety.
+
+== Scope
+
+Quiet controls color.
+
+It does not set:
+
+----
+font family
+font size
+font weight
+font slant
+underline
+overline
+strike-through
+box decoration
+----
+
+Those remain under the control of Emacs and the user.
+

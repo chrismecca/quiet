@@ -29,49 +29,122 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.palette, func(t *testing.T) {
-			palette, err := core.LoadPaletteFile(
-				repoPath(
-					t,
-					"spec",
-					tt.palette,
-				),
-			)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			var got bytes.Buffer
-
-			if err := Encode(
-				&got,
-				palette,
-			); err != nil {
-				t.Fatal(err)
-			}
-
-			want, err := os.ReadFile(
-				repoPath(
-					t,
-					"ports",
-					"emacs",
-					tt.artifact,
-				),
-			)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if !bytes.Equal(
-				got.Bytes(),
-				want,
-			) {
-				t.Fatalf(
-					"generated Emacs theme differs from %q",
-					tt.artifact,
+		t.Run(
+			tt.palette,
+			func(t *testing.T) {
+				palette, err := core.LoadPaletteFile(
+					repoPath(
+						t,
+						"spec",
+						tt.palette,
+					),
 				)
-			}
-		})
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				var got bytes.Buffer
+
+				if err := Encode(
+					&got,
+					palette,
+				); err != nil {
+					t.Fatal(err)
+				}
+
+				want, err := os.ReadFile(
+					repoPath(
+						t,
+						"ports",
+						"emacs",
+						tt.artifact,
+					),
+				)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				if !bytes.Equal(
+					got.Bytes(),
+					want,
+				) {
+					t.Fatalf(
+						"generated Emacs theme differs from %q",
+						tt.artifact,
+					)
+				}
+			},
+		)
+	}
+}
+
+func TestThemeDeclaresNativeVariantMetadata(
+	t *testing.T,
+) {
+	tests := []struct {
+		name           string
+		palette        string
+		theme          string
+		backgroundMode string
+	}{
+		{
+			name:           "day",
+			palette:        "quiet-day.json",
+			theme:          "quiet-day",
+			backgroundMode: "light",
+		},
+		{
+			name:           "night",
+			palette:        "quiet-night.json",
+			theme:          "quiet-night",
+			backgroundMode: "dark",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(
+			tt.name,
+			func(t *testing.T) {
+				palette, err := core.LoadPaletteFile(
+					repoPath(
+						t,
+						"spec",
+						tt.palette,
+					),
+				)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				var output bytes.Buffer
+
+				if err := Encode(
+					&output,
+					palette,
+				); err != nil {
+					t.Fatal(err)
+				}
+
+				got := output.String()
+
+				for _, want := range []string{
+					";;;###autoload\n(deftheme " + tt.theme,
+					":background-mode '" + tt.backgroundMode,
+					":kind 'color-scheme",
+					":family 'quiet",
+				} {
+					if !strings.Contains(
+						got,
+						want,
+					) {
+						t.Errorf(
+							"theme missing native variant metadata %q",
+							want,
+						)
+					}
+				}
+			},
+		)
 	}
 }
 
@@ -182,6 +255,20 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	got := output.String()
+
+	start := strings.Index(
+		got,
+		"(custom-theme-set-faces",
+	)
+	if start < 0 {
+		t.Fatal(
+			"generated Emacs theme has no custom-theme-set-faces",
+		)
+	}
+
+	faceDefinitions := got[start:]
+
 	for _, forbidden := range []string{
 		":family",
 		":height",
@@ -193,7 +280,7 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 		":box",
 	} {
 		if strings.Contains(
-			output.String(),
+			faceDefinitions,
 			forbidden,
 		) {
 			t.Errorf(
@@ -201,6 +288,18 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 				forbidden,
 			)
 		}
+	}
+}
+
+func TestThemeBackgroundModeRejectsUnknownMode(
+	t *testing.T,
+) {
+	if _, err := themeBackgroundMode(
+		core.Mode("unknown"),
+	); err == nil {
+		t.Fatal(
+			"themeBackgroundMode accepted an unknown mode",
+		)
 	}
 }
 
