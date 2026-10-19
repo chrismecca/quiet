@@ -72,7 +72,7 @@ The native exports preserve Quiet's own semantic vocabulary.
 [cols="^1,^1,^1,^1",options="noheader"]
 |===
 | link:ports/terminal/terminal-app/[Terminal.app]
-| X11
+| link:ports/x11/[X11]
 | CDE
 | GNU dircolors
 
