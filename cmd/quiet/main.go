@@ -22,6 +22,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/port/ghostty"
 	"github.com/chrismecca/quiet/internal/port/iterm2"
+	"github.com/chrismecca/quiet/internal/port/kitty"
 	"github.com/chrismecca/quiet/internal/port/terminal"
 
 	"github.com/chrismecca/quiet/internal/port/vim"
@@ -296,6 +297,26 @@ func run(
 
 			return exitOK
 
+		case "kitty":
+			if len(args) != 3 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portKitty(
+				stdout,
+				args[2],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		case "iterm2":
 			if len(args) != 4 {
 				usage(stderr)
@@ -530,6 +551,26 @@ func portTerminal(
 	}
 
 	return terminal.EncodeJSON(
+		w,
+		resolved,
+	)
+}
+
+func portKitty(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return kitty.Encode(
 		w,
 		resolved,
 	)
@@ -879,6 +920,11 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port terminal PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port kitty PALETTE",
 	)
 
 	fmt.Fprintln(

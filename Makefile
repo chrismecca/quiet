@@ -197,3 +197,12 @@ iterm2:
 		spec/quiet-night.json \
 		> 'ports/iterm2/Quiet.itermcolors'
 
+.PHONY: kitty
+kitty:
+	$(GO) run ./cmd/quiet port kitty \
+		spec/quiet-day.json \
+		> 'ports/kitty/Quiet Day.conf'
+	$(GO) run ./cmd/quiet port kitty \
+		spec/quiet-night.json \
+		> 'ports/kitty/Quiet Night.conf'
+

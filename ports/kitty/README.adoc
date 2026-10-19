@@ -1,0 +1,175 @@
+// @(#)quiet / asciidoc / ports/kitty/README.adoc / 2026-10-19
+
+= Quiet kitty
+
+The Quiet kitty port serializes Quiet's generic terminal palette into kitty's
+native color configuration format.
+
+It introduces no independent color policy.
+
+== Artifacts
+
+----
+ports/kitty/Quiet Day.conf
+ports/kitty/Quiet Night.conf
+----
+
+The files are generated artifacts.
+
+They MUST NOT be edited independently of the reference implementation.
+
+== Architecture
+
+----
+Quiet Core
+    |
+    v
+generic terminal mapping
+    |
+    v
+kitty serializer
+----
+
+All ANSI derivation occurs in the generic terminal reference port.
+
+== Mapping
+
+[cols="2,2"]
+|===
+| kitty role | Generic terminal role
+
+| `foreground`
+| Text
+
+| `background`
+| Background
+
+| `cursor`
+| Cursor
+
+| `cursor_text_color`
+| Background
+
+| `selection_foreground`
+| Text
+
+| `selection_background`
+| Selection
+
+| `url_color`
+| Cursor
+
+| `color0..15`
+| ANSI 0..15
+|===
+
+The Cursor role is derived from Quiet Mineral by the generic terminal model.
+Using it for `url_color` preserves Quiet's information/focus semantics.
+
+== Scope
+
+The theme controls color only.
+
+It does not define:
+
+* fonts;
+* font size;
+* window decoration;
+* title-bar treatment;
+* opacity;
+* cursor shape;
+* tab layout;
+* key bindings;
+* shell behavior.
+
+Quiet ports color systems.
+
+It does not skin applications.
+
+== Installation
+
+Custom kitty themes normally live under:
+
+----
+~/.config/kitty/themes
+----
+
+Install both themes:
+
+----
+mkdir -p ~/.config/kitty/themes
+
+cp 'ports/kitty/Quiet Day.conf' \
+   ~/.config/kitty/themes/
+
+cp 'ports/kitty/Quiet Night.conf' \
+   ~/.config/kitty/themes/
+----
+
+They can then be selected with kitty's theme kitten.
+
+For example:
+
+----
+kitten themes 'Quiet Day'
+----
+
+or:
+
+----
+kitten themes 'Quiet Night'
+----
+
+== Automatic Day / Night
+
+kitty can follow the operating-system color-scheme preference using:
+
+----
+~/.config/kitty/light-theme.auto.conf
+~/.config/kitty/dark-theme.auto.conf
+----
+
+For Quiet:
+
+----
+cp 'ports/kitty/Quiet Day.conf' \
+   ~/.config/kitty/light-theme.auto.conf
+
+cp 'ports/kitty/Quiet Night.conf' \
+   ~/.config/kitty/dark-theme.auto.conf
+----
+
+Restart kitty after initially creating the automatic theme files.
+
+Subsequent operating-system appearance changes are handled automatically.
+
+== Testing
+
+Verify the installed kitty version:
+
+----
+kitty --version
+----
+
+Load each adaptation in the actual application and inspect:
+
+* ordinary foreground and background;
+* ANSI colors 0 through 15;
+* cursor and cursor text;
+* selection;
+* URLs.
+
+A port is not considered complete until both adaptations have been visually
+validated in kitty.
+
+== Generation
+
+Regenerate both canonical themes with:
+
+----
+make kitty
+----
+
+The repository tests verify that the committed artifacts exactly match the
+generic terminal mapping.
+
