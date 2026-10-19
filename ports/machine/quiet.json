@@ -1,0 +1,58 @@
+{
+  "schema": "quiet.export/v1",
+  "reference": {
+    "color_space": "sRGB",
+    "white_point": "D65",
+    "dynamic_range": "SDR"
+  },
+  "modes": {
+    "day": {
+      "name": "Quiet Day",
+      "status": "candidate",
+      "anchors": {
+        "field": "#EEEADF",
+        "surface": "#E6E9E2",
+        "structure": "#E4EAED",
+        "ink": "#1B1F1C",
+        "muted": "#616B65",
+        "line": "#CDD1CA",
+        "mineral": "#4A6E7A",
+        "moss": "#586E5C",
+        "ochre": "#85602E",
+        "rust": "#8F5A42"
+      },
+      "derived": {
+        "selection": "#D4DDE1",
+        "callout": "#E8ECE2"
+      }
+    },
+    "night": {
+      "name": "Quiet Night",
+      "status": "candidate",
+      "anchors": {
+        "field": "#1C1E1C",
+        "surface": "#242925",
+        "structure": "#222A2D",
+        "ink": "#E2E0D7",
+        "muted": "#9AA29C",
+        "line": "#343B38",
+        "mineral": "#789AA3",
+        "moss": "#879A83",
+        "ochre": "#B49A67",
+        "rust": "#C47D6B"
+      },
+      "derived": {
+        "selection": "#344246",
+        "callout": "#262D28"
+      }
+    }
+  },
+  "contextual": {
+    "subtle": {
+      "foreground": "muted",
+      "opacity": 0.55,
+      "background": "local",
+      "compositing": "legacy-srgb"
+    }
+  }
+}

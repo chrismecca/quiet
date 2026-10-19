@@ -1,0 +1,103 @@
+// @(#)quiet / asciidoc / ports/machine/README.adoc / 2026-10-18
+
+= Quiet machine-readable export
+
+The Quiet machine-readable export provides a generated semantic interchange
+document for consumers that want Quiet data without implementing Quiet Core
+derivation rules themselves.
+
+It is not an authored palette source.
+
+== Artifact
+
+----
+ports/machine/quiet.json
+----
+
+The artifact contains both Quiet Day and Quiet Night.
+
+== Source of truth
+
+The canonical authored palette sources remain:
+
+----
+spec/quiet-day.json
+spec/quiet-night.json
+----
+
+Those files contain canonical anchors only.
+
+The machine-readable export is generated from those inputs and includes
+opaque derived roles.
+
+== Schema
+
+The current export identifies:
+
+----
+quiet.export/v1
+----
+
+This schema identifier versions the generated interchange representation.
+
+It is not a Quiet release number.
+
+== Opaque roles
+
+Each adaptation contains:
+
+* the ten canonical anchors;
+* Selection;
+* Callout.
+
+Selection and Callout are generated from Quiet Core rules.
+
+They are included so consumers do not need to reproduce perceptual color
+derivations merely to consume Quiet.
+
+== Contextual roles
+
+Subtle is not an opaque global color.
+
+The export therefore represents Subtle as derivation metadata:
+
+----
+foreground: muted
+opacity: 0.55
+background: local
+compositing: legacy-srgb
+----
+
+`legacy-srgb` identifies composition of gamma-encoded sRGB channel values.
+
+A consumer must composite Muted over the actual local background.
+
+The export deliberately does not include `subtle` under either mode's
+`derived` object.
+
+== Scope
+
+The machine export contains Quiet semantic data only.
+
+It does not contain:
+
+* ANSI terminal extensions;
+* compatibility Cyan or Magenta roles;
+* Base16 roles;
+* Base24 roles;
+* host-specific aliases;
+* application styling.
+
+Those belong to their respective ports.
+
+== Generation
+
+Regenerate the artifact with:
+
+----
+make machine
+----
+
+The repository test suite verifies that the committed artifact is exactly
+the output generated from the canonical Quiet palettes.
+

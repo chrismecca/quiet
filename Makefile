@@ -151,4 +151,10 @@ base24:
 		spec/quiet-night.json \
 		> ports/base24/quiet-night.yaml
 
+.PHONY: machine
+machine:
+	$(GO) run ./cmd/quiet port machine \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/machine/quiet.json
 

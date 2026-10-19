@@ -14,6 +14,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
+	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/web"
 
 	"github.com/chrismecca/quiet/internal/port/terminal"
@@ -227,6 +228,27 @@ func run(
 
 			return exitOK
 
+		case "machine":
+			if len(args) != 4 {
+				usage(stderr)
+				return exitUsage
+			}
+
+			if err := portMachine(
+				stdout,
+				args[2],
+				args[3],
+			); err != nil {
+				fmt.Fprintf(
+					stderr,
+					"quiet: %v\n",
+					err,
+				)
+				return exitError
+			}
+
+			return exitOK
+
 		default:
 			fmt.Fprintf(
 				stderr,
@@ -334,6 +356,34 @@ func portBase24(
 	return base24.EncodeYAML(
 		w,
 		scheme,
+	)
+}
+
+func portMachine(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return machine.EncodeJSON(
+		w,
+		day,
+		night,
 	)
 }
 
@@ -574,5 +624,10 @@ func usage(w io.Writer) {
 	fmt.Fprintln(
 		w,
 		"  quiet port base24 PALETTE",
+	)
+
+	fmt.Fprintln(
+		w,
+		"  quiet port machine DAY_PALETTE NIGHT_PALETTE",
 	)
 }
