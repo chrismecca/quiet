@@ -23,7 +23,25 @@
       },
       "derived": {
         "selection": "#D4DDE1",
-        "callout": "#E8ECE2"
+        "callout": "#E8ECE2",
+        "wash": {
+          "mineral": {
+            "line": "#E1EEE9",
+            "emphasis": "#C9E7E9"
+          },
+          "moss": {
+            "line": "#E5EED8",
+            "emphasis": "#D3E8C7"
+          },
+          "ochre": {
+            "line": "#F7E8D1",
+            "emphasis": "#F5DCB8"
+          },
+          "rust": {
+            "line": "#FAE6D4",
+            "emphasis": "#FCD8C0"
+          }
+        }
       }
     },
     "night": {
@@ -43,7 +61,25 @@
       },
       "derived": {
         "selection": "#344246",
-        "callout": "#262D28"
+        "callout": "#262D28",
+        "wash": {
+          "mineral": {
+            "line": "#102122",
+            "emphasis": "#042A30"
+          },
+          "moss": {
+            "line": "#172015",
+            "emphasis": "#182A15"
+          },
+          "ochre": {
+            "line": "#211D11",
+            "emphasis": "#2D2309"
+          },
+          "rust": {
+            "line": "#251B16",
+            "emphasis": "#341E15"
+          }
+        }
       }
     }
   },

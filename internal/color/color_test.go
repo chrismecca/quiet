@@ -172,6 +172,62 @@ func TestOKLabRoundTrip(t *testing.T) {
 	)
 }
 
+// The displacement contract is geometric: lightness moves only by deltaL and
+// the OKLab distance equals hypot(deltaL, distance), whatever the hue. The
+// tolerance matches TestOKLabRoundTrip because measuring the result converts
+// back through sRGB with the published ten-digit matrix coefficients.
+func TestDisplaceOKLabGeometry(t *testing.T) {
+	base := MustParseHex(quietDaySurface)
+
+	for _, hue := range []float64{
+		0,
+		72.4,
+		220.8,
+	} {
+		got := DisplaceOKLab(
+			base,
+			-0.03,
+			0.04,
+			hue,
+		)
+
+		assertNear(
+			t,
+			"L",
+			got.OKLab().L,
+			base.OKLab().L-0.03,
+			1e-7,
+		)
+
+		assertNear(
+			t,
+			"distance",
+			DeltaEOK(got, base),
+			0.05,
+			1e-7,
+		)
+	}
+}
+
+func TestDisplaceOKLabZeroIsIdentity(t *testing.T) {
+	want := MustParseHex(quietDayMineral)
+
+	got := DisplaceOKLab(
+		want,
+		0,
+		0,
+		123,
+	)
+
+	if got.MustHex() != quietDayMineral {
+		t.Fatalf(
+			"zero displacement = %s, want %s",
+			got.MustHex(),
+			quietDayMineral,
+		)
+	}
+}
+
 func assertNear(
 	t *testing.T,
 	name string,

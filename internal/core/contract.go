@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/contract.go / 2026-10-16
+// @(#)quiet / go / internal/core/contract.go / 2026-10-24
 
 package core
 
@@ -37,6 +37,16 @@ const (
 
 	RoleSelection Role = "selection"
 	RoleCallout   Role = "callout"
+
+	// Wash roles are the canonical Field-grounded washes.
+	RoleMineralWash         Role = "mineral-wash"
+	RoleMineralWashEmphasis Role = "mineral-wash-emphasis"
+	RoleMossWash            Role = "moss-wash"
+	RoleMossWashEmphasis    Role = "moss-wash-emphasis"
+	RoleOchreWash           Role = "ochre-wash"
+	RoleOchreWashEmphasis   Role = "ochre-wash-emphasis"
+	RoleRustWash            Role = "rust-wash"
+	RoleRustWashEmphasis    Role = "rust-wash-emphasis"
 )
 
 // Contract is the machine-readable portion of the candidate Quiet Core
@@ -272,7 +282,15 @@ func knownRole(role Role) bool {
 		RoleOchre,
 		RoleRust,
 		RoleSelection,
-		RoleCallout:
+		RoleCallout,
+		RoleMineralWash,
+		RoleMineralWashEmphasis,
+		RoleMossWash,
+		RoleMossWashEmphasis,
+		RoleOchreWash,
+		RoleOchreWashEmphasis,
+		RoleRustWash,
+		RoleRustWashEmphasis:
 		return true
 
 	default:

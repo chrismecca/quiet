@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-18
+// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-24
 
 = Quiet Core
 :toc:
@@ -408,6 +408,130 @@ Subtle is intended only for redundant or nonessential information.
 
 Essential text or state information MUST NOT depend on Subtle-level contrast.
 
+=== Wash
+
+Wash is a faint chromatic field that marks a region with the meaning of one
+chromatic family.
+
+Typical uses include diff additions and deletions, changed lines, and lines
+carrying an error, warning, or informational diagnostic.
+
+Wash is a rule over a local ground.
+
+The ground is displaced in OKLab toward the hue of the family anchor by a
+fixed distance:
+
+----
+h      = family anchor OKLCH hue
+result = ( ground.L + delta_L,
+           ground.a + distance * cos(h),
+           ground.b + distance * sin(h) )
+----
+
+Wash does not interpolate toward the family anchor.
+
+The chromatic anchors are readable foregrounds and are therefore far from the
+ground in lightness.  Interpolating toward them would mostly darken Quiet Day
+or lighten Quiet Night rather than tint either one.
+
+A fixed distance also gives each family the same perceptual strength over a
+given ground, regardless of how near the ground's own hue lies to the family.
+
+Wash has two tiers:
+
+[cols="1,1,1,1"]
+|===
+| Tier | Mode | Delta L | Distance
+
+| Line
+| Day
+| `0.000`
+| `0.020`
+
+| Line
+| Night
+| `0.000`
+| `0.020`
+
+| Emphasis
+| Day
+| `-0.030`
+| `0.040`
+
+| Emphasis
+| Night
+| `+0.030`
+| `0.040`
+|===
+
+The line tier marks a whole region and preserves the ground's lightness.
+Every foreground readable on the ground therefore remains readable on the
+line wash.
+
+The emphasis tier marks a span within a line wash, such as the changed words
+within a changed line.  It moves away from the ground in lightness so it can
+carry more chroma while remaining in gamut.  Emphasis is intended for Ink
+content.
+
+A family anchor whose OKLCH chroma is below `0.020` does not have a
+meaningful hue and MUST NOT be washed.
+
+A wash MUST remain in sRGB gamut.  A wash that leaves the gamut is a
+derivation failure, not a color to clip.
+
+Field is the canonical ground.
+
+The Field-grounded washes are opaque derived roles named:
+
+----
+mineral-wash    mineral-wash-emphasis
+moss-wash       moss-wash-emphasis
+ochre-wash      ochre-wash-emphasis
+rust-wash       rust-wash-emphasis
+----
+
+For the current canonical anchors these produce:
+
+[cols="1,1,1,1,1"]
+|===
+| Family | Day line | Day emphasis | Night line | Night emphasis
+
+| Mineral
+| `#E1EEE9`
+| `#C9E7E9`
+| `#102122`
+| `#042A30`
+
+| Moss
+| `#E5EED8`
+| `#D3E8C7`
+| `#172015`
+| `#182A15`
+
+| Ochre
+| `#F7E8D1`
+| `#F5DCB8`
+| `#211D11`
+| `#2D2309`
+
+| Rust
+| `#FAE6D4`
+| `#FCD8C0`
+| `#251B16`
+| `#341E15`
+|===
+
+These hexadecimal values are consequences of the derivation and are not
+additional canonical anchors.
+
+A wash over any other ground is a different color.  A port that places a
+wash over another ground MUST derive it over that actual ground and SHOULD
+verify the relevant foreground contrast there.  Over Quiet Day Surface, for
+example, Mineral and Rust line foregrounds fall slightly below `4.5:1`.
+
+Wash supports meaning but MUST NOT be its sole carrier.  A diff addition, for
+example, keeps its `+` marker or equivalent host cue.
+
 == Contrast requirements
 
 Quiet applies contrast requirements to relationships in which readable
@@ -465,9 +589,23 @@ This requirement applies independently to:
 * Ochre;
 * Rust.
 
+=== Washes
+
+Each Field-grounded line wash MUST meet the same foreground requirements as
+Field:
+
+* Ink at least `7.0:1`;
+* Muted at least `4.5:1`;
+* each chromatic anchor at least `4.5:1`.
+
+Ink on each Field-grounded emphasis wash MUST have a contrast ratio of at
+least `7.0:1`.
+
+Other foregrounds have no requirement on emphasis washes.
+
 === Current executable contract
 
-The current machine-readable contract contains nineteen hard contrast
+The current machine-readable contract contains forty-seven hard contrast
 relationships:
 
 [cols="2,1"]
@@ -530,6 +668,90 @@ relationships:
 
 | Rust on Structure
 | `4.5`
+
+| Ink on Mineral wash
+| `7.0`
+
+| Muted on Mineral wash
+| `4.5`
+
+| Mineral on Mineral wash
+| `4.5`
+
+| Moss on Mineral wash
+| `4.5`
+
+| Ochre on Mineral wash
+| `4.5`
+
+| Rust on Mineral wash
+| `4.5`
+
+| Ink on Mineral wash emphasis
+| `7.0`
+
+| Ink on Moss wash
+| `7.0`
+
+| Muted on Moss wash
+| `4.5`
+
+| Mineral on Moss wash
+| `4.5`
+
+| Moss on Moss wash
+| `4.5`
+
+| Ochre on Moss wash
+| `4.5`
+
+| Rust on Moss wash
+| `4.5`
+
+| Ink on Moss wash emphasis
+| `7.0`
+
+| Ink on Ochre wash
+| `7.0`
+
+| Muted on Ochre wash
+| `4.5`
+
+| Mineral on Ochre wash
+| `4.5`
+
+| Moss on Ochre wash
+| `4.5`
+
+| Ochre on Ochre wash
+| `4.5`
+
+| Rust on Ochre wash
+| `4.5`
+
+| Ink on Ochre wash emphasis
+| `7.0`
+
+| Ink on Rust wash
+| `7.0`
+
+| Muted on Rust wash
+| `4.5`
+
+| Mineral on Rust wash
+| `4.5`
+
+| Moss on Rust wash
+| `4.5`
+
+| Ochre on Rust wash
+| `4.5`
+
+| Rust on Rust wash
+| `4.5`
+
+| Ink on Rust wash emphasis
+| `7.0`
 |===
 
 The JSON representation in `quiet-core.json` is the machine-readable form of
@@ -547,7 +769,9 @@ requirement:
 * Structure against Surface;
 * Line against neighboring surfaces;
 * Callout against Structure;
-* Selection fill against Field.
+* Selection fill against Field;
+* a wash against its ground;
+* an emphasis wash against the corresponding line wash.
 
 A port MUST NOT invent a `3:1` or `4.5:1` requirement for these relationships
 merely because those thresholds are used elsewhere.
@@ -712,8 +936,8 @@ quiet check \
 the expected result is:
 
 ----
-Quiet Day: PASS (19/19)
-Quiet Night: PASS (19/19)
+Quiet Day: PASS (47/47)
+Quiet Night: PASS (47/47)
 ----
 
 == Porting principles

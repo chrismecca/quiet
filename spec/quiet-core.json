@@ -121,7 +121,178 @@
       "foreground": "rust",
       "background": "structure",
       "minimum": 4.5
+    },
+
+    {
+      "id": "ink-on-mineral-wash",
+      "foreground": "ink",
+      "background": "mineral-wash",
+      "minimum": 7.0
+    },
+    {
+      "id": "muted-on-mineral-wash",
+      "foreground": "muted",
+      "background": "mineral-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-mineral-wash",
+      "foreground": "mineral",
+      "background": "mineral-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-mineral-wash",
+      "foreground": "moss",
+      "background": "mineral-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-mineral-wash",
+      "foreground": "ochre",
+      "background": "mineral-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-mineral-wash",
+      "foreground": "rust",
+      "background": "mineral-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ink-on-mineral-wash-emphasis",
+      "foreground": "ink",
+      "background": "mineral-wash-emphasis",
+      "minimum": 7.0
+    },
+
+    {
+      "id": "ink-on-moss-wash",
+      "foreground": "ink",
+      "background": "moss-wash",
+      "minimum": 7.0
+    },
+    {
+      "id": "muted-on-moss-wash",
+      "foreground": "muted",
+      "background": "moss-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-moss-wash",
+      "foreground": "mineral",
+      "background": "moss-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-moss-wash",
+      "foreground": "moss",
+      "background": "moss-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-moss-wash",
+      "foreground": "ochre",
+      "background": "moss-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-moss-wash",
+      "foreground": "rust",
+      "background": "moss-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ink-on-moss-wash-emphasis",
+      "foreground": "ink",
+      "background": "moss-wash-emphasis",
+      "minimum": 7.0
+    },
+
+    {
+      "id": "ink-on-ochre-wash",
+      "foreground": "ink",
+      "background": "ochre-wash",
+      "minimum": 7.0
+    },
+    {
+      "id": "muted-on-ochre-wash",
+      "foreground": "muted",
+      "background": "ochre-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-ochre-wash",
+      "foreground": "mineral",
+      "background": "ochre-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-ochre-wash",
+      "foreground": "moss",
+      "background": "ochre-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-ochre-wash",
+      "foreground": "ochre",
+      "background": "ochre-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-ochre-wash",
+      "foreground": "rust",
+      "background": "ochre-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ink-on-ochre-wash-emphasis",
+      "foreground": "ink",
+      "background": "ochre-wash-emphasis",
+      "minimum": 7.0
+    },
+
+    {
+      "id": "ink-on-rust-wash",
+      "foreground": "ink",
+      "background": "rust-wash",
+      "minimum": 7.0
+    },
+    {
+      "id": "muted-on-rust-wash",
+      "foreground": "muted",
+      "background": "rust-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "mineral-on-rust-wash",
+      "foreground": "mineral",
+      "background": "rust-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "moss-on-rust-wash",
+      "foreground": "moss",
+      "background": "rust-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ochre-on-rust-wash",
+      "foreground": "ochre",
+      "background": "rust-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "rust-on-rust-wash",
+      "foreground": "rust",
+      "background": "rust-wash",
+      "minimum": 4.5
+    },
+    {
+      "id": "ink-on-rust-wash-emphasis",
+      "foreground": "ink",
+      "background": "rust-wash-emphasis",
+      "minimum": 7.0
     }
   ]
 }
-

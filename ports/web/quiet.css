@@ -15,6 +15,14 @@
   --quiet-rust: #8F5A42;
   --quiet-selection: #D4DDE1;
   --quiet-callout: #E8ECE2;
+  --quiet-mineral-wash: #E1EEE9;
+  --quiet-mineral-wash-emphasis: #C9E7E9;
+  --quiet-moss-wash: #E5EED8;
+  --quiet-moss-wash-emphasis: #D3E8C7;
+  --quiet-ochre-wash: #F7E8D1;
+  --quiet-ochre-wash-emphasis: #F5DCB8;
+  --quiet-rust-wash: #FAE6D4;
+  --quiet-rust-wash-emphasis: #FCD8C0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +40,14 @@
     --quiet-rust: #C47D6B;
     --quiet-selection: #344246;
     --quiet-callout: #262D28;
+    --quiet-mineral-wash: #102122;
+    --quiet-mineral-wash-emphasis: #042A30;
+    --quiet-moss-wash: #172015;
+    --quiet-moss-wash-emphasis: #182A15;
+    --quiet-ochre-wash: #211D11;
+    --quiet-ochre-wash-emphasis: #2D2309;
+    --quiet-rust-wash: #251B16;
+    --quiet-rust-wash-emphasis: #341E15;
   }
 }
 
@@ -49,4 +65,12 @@
   --quiet-rust: #C47D6B;
   --quiet-selection: #344246;
   --quiet-callout: #262D28;
+  --quiet-mineral-wash: #102122;
+  --quiet-mineral-wash-emphasis: #042A30;
+  --quiet-moss-wash: #172015;
+  --quiet-moss-wash-emphasis: #182A15;
+  --quiet-ochre-wash: #211D11;
+  --quiet-ochre-wash-emphasis: #2D2309;
+  --quiet-rust-wash: #251B16;
+  --quiet-rust-wash-emphasis: #341E15;
 }
