@@ -1,0 +1,42 @@
+// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-24
+
+= Quiet changelog
+
+Notable changes to Quiet: the Core specification, the canonical palettes,
+the machine-readable contract, the reference implementation, and the
+first-party ports.
+
+A Quiet version covers the whole repository.
+
+Schema identifiers such as `quiet.core/v1` version serialized data formats
+independently.  They are not Quiet release numbers.
+
+Before Quiet 1.0, any release may change canonical anchors, derivations, or
+contract constraints.  Such changes are always listed here.
+
+The candidate Core and its initial ports predate this changelog.
+
+== Unreleased
+
+=== Core
+
+* Added Wash, a derived role for regions that carry a chromatic family's
+  meaning, such as diff lines and diagnostic lines.  Wash has a line tier
+  and an emphasis tier.
+* Added eight Field-grounded wash roles to the contract, such as
+  `moss-wash` and `moss-wash-emphasis`.
+* Extended the Core contract from 19 to 47 contrast constraints.
+
+=== Exports
+
+* The machine-readable export and the web CSS export carry the
+  Field-grounded washes.
+
+=== Project
+
+* Added continuous integration: `make check`, regeneration of every
+  generated port, and Terminal.app profile regeneration on macOS.
+* Added committed-artifact drift tests for the tmux and CDE ports.
+* Added this changelog.
+* The Emacs package header now names Chris Mecca with a contact address,
+  matching `LICENSE`.

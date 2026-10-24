@@ -1,0 +1,59 @@
+# @(#)quiet / yaml / .github/workflows/check.yml / 2026-10-24
+
+# Every change must leave Quiet reproducible: Core conformance passes and
+# every committed generated artifact equals current generator output.
+
+name: check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Headers, format, vet, tests, Core conformance
+        run: make check
+
+      # The Go tests already compare most artifacts byte for byte. This step
+      # also exercises the Makefile targets that regenerate them.
+      - name: Generated ports match committed artifacts
+        run: |
+          make generate
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+  terminal-app:
+    name: Terminal.app profiles
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Serializer smoke test
+        run: make terminal-app-smoke
+
+      # The profiles are NSKeyedArchiver output. If a macOS release changes
+      # the archive bytes, this step fails rather than hiding the change.
+      - name: Profiles match committed artifacts
+        run: |
+          make terminal-app-profiles
+          git diff --exit-code -- ports/terminal/terminal-app
