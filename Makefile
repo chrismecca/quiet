@@ -42,6 +42,7 @@ GENERATED_PORTS := \
 	cde \
 	dircolors \
 	emacs \
+	fzf \
 	ghostty \
 	iterm2 \
 	kitty \
@@ -187,6 +188,15 @@ emacs:
 	$(GO) run ./cmd/quiet port emacs \
 		spec/quiet-night.json \
 		> ports/emacs/quiet-night-theme.el
+
+.PHONY: fzf
+fzf:
+	$(GO) run ./cmd/quiet port fzf \
+		spec/quiet-day.json \
+		> ports/fzf/quiet-day.fzfrc
+	$(GO) run ./cmd/quiet port fzf \
+		spec/quiet-night.json \
+		> ports/fzf/quiet-night.fzfrc
 
 .PHONY: ghostty
 ghostty:

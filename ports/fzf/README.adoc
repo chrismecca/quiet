@@ -1,0 +1,115 @@
+// @(#)quiet / asciidoc / ports/fzf/README.adoc / 2026-10-24
+
+= quiet for fzf
+
+quiet's fzf port is a set of `--color` options for fzf's interface.
+
+It does not change fzf's layout, key bindings, previews, or search
+behavior.
+
+== Files
+
+----
+quiet-day.fzfrc
+quiet-night.fzfrc
+----
+
+Both files are generated from the canonical quiet palettes.
+
+== Loading
+
+Point fzf at the options file:
+
+----
+export FZF_DEFAULT_OPTS_FILE=~/src/quiet/ports/fzf/quiet-night.fzfrc
+----
+
+fzf reads `FZF_DEFAULT_OPTS_FILE` before `FZF_DEFAULT_OPTS`, so options in
+`FZF_DEFAULT_OPTS` still apply and can override quiet.
+
+The colors are 24-bit.  Use a terminal with truecolor support.
+
+== Semantic mapping
+
+[cols="2,2"]
+|===
+| fzf element | quiet role
+
+| Text and background
+| Ink on Field
+
+| Matched characters
+| Mineral
+
+| Current line
+| Ink on Selection
+
+| Matched characters on the current line
+| Ink, bold
+
+| Pointer and prompt
+| Mineral
+
+| Multi-select background
+| Callout
+
+| Multi-select marker
+| Ochre
+
+| Info, header, footer, labels, disabled query
+| Muted
+
+| Preview window
+| Ink on Surface
+
+| Borders and separators
+| Line
+
+| Scrollbars
+| Muted
+|===
+
+fzf color names inherit from their parents.  The port sets parents and
+overrides children only where their meaning differs.
+
+The base scheme is `light` for quiet-day and `dark` for quiet-night, so any
+element quiet does not map still suits the background.
+
+== Matches on the current line
+
+Matched characters elsewhere are Mineral.  On the current line they are Ink
+in bold.
+
+Mineral on Selection falls below 4.5:1, and quiet-core guarantees only Ink
+there.  Typography carries the match instead of hue.
+
+The current line itself uses regular weight, so the bold match stands out.
+
+== Multi-select marker
+
+The marker uses Ochre, matching the tmux port's marked pane: a marked item
+calls for attention.
+
+== Non-text marks
+
+The pointer and marker are glyphs on the current line's Selection
+background.  They are not readable text, and the current line is already
+distinguished by its background, so they are not held to 4.5:1.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed files match generator output;
+* every text-bearing element reaches 4.5:1 on the background fzf draws it
+  on;
+* current-line matches are bold;
+* fzf itself accepts the generated options, when fzf is installed.
+
+The reference port is tested against fzf 0.74.
+
+== Generation
+
+----
+make fzf
+----

@@ -92,7 +92,7 @@ The native exports preserve quiet's own semantic vocabulary.
 | Firefox
 | Chrome
 | link:ports/tmux/[tmux]
-| fzf
+| link:ports/fzf/[fzf]
 | delta
 |
 |
