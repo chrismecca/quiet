@@ -48,6 +48,7 @@ GENERATED_PORTS := \
 	kitty \
 	machine \
 	neovim \
+	tmtheme \
 	tmux \
 	vim \
 	vscode \
@@ -238,6 +239,15 @@ neovim:
 	$(GO) run ./cmd/quiet port neovim \
 		spec/quiet-night.json \
 		> ports/neovim/quiet-night.lua
+
+.PHONY: tmtheme
+tmtheme:
+	$(GO) run ./cmd/quiet port tmtheme \
+		spec/quiet-day.json \
+		> ports/tmtheme/quiet-day.tmTheme
+	$(GO) run ./cmd/quiet port tmtheme \
+		spec/quiet-night.json \
+		> ports/tmtheme/quiet-night.tmTheme
 
 .PHONY: tmux
 tmux:

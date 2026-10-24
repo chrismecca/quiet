@@ -1,0 +1,156 @@
+// @(#)quiet / asciidoc / ports/tmtheme/README.adoc / 2026-10-24
+
+= quiet for tmTheme hosts
+
+quiet's tmTheme port writes quiet as TextMate `.tmTheme` color schemes.
+
+tmTheme is the theme format of bat, Sublime Text, and delta.  delta has its
+own quiet port, which builds on this one.
+
+== Files
+
+----
+quiet-day.tmTheme
+quiet-night.tmTheme
+----
+
+Both files are generated from the canonical quiet palettes.
+
+Hosts name a tmTheme after its file, so the themes appear as `quiet-day` and
+`quiet-night`.
+
+== bat
+
+Install the themes into bat's configuration and rebuild its cache:
+
+----
+mkdir -p "$(bat --config-dir)/themes"
+cp ports/tmtheme/quiet-day.tmTheme \
+   ports/tmtheme/quiet-night.tmTheme \
+   "$(bat --config-dir)/themes/"
+bat cache --build
+----
+
+Select one theme:
+
+----
+bat --theme quiet-night
+----
+
+or let bat follow the terminal's appearance:
+
+----
+bat --theme auto --theme-light quiet-day --theme-dark quiet-night
+----
+
+The same settings can be placed in bat's configuration file.
+
+== Sublime Text
+
+Copy the files into the `Packages/User` directory, then choose the scheme
+with *UI: Select Color Scheme*.
+
+== Syntax
+
+The syntax rules are quiet's shared TextMate scope policy, the same rules
+the VS Code port uses:
+
+[cols="2,1"]
+|===
+| Scopes | quiet role
+
+| Comments, quotations
+| Muted
+
+| Ordinary source: constants, strings, variables, functions, punctuation
+| Ink
+
+| Language structure: keywords, operators, types, directives
+| Mineral
+
+| Markup headings, links, tags
+| Mineral
+
+| Invalid code
+| Rust
+
+| Deprecated code
+| Ochre
+|===
+
+The tmTheme also maps diff scopes, matching the Vim and Neovim diff
+mapping:
+
+[cols="2,1"]
+|===
+| Scopes | quiet role
+
+| Diff headers, ranges, index lines
+| Mineral
+
+| `markup.inserted`
+| Moss
+
+| `markup.changed`
+| Ochre
+
+| `markup.deleted`
+| Rust
+|===
+
+== Editor settings
+
+[cols="2,1"]
+|===
+| Setting | quiet role
+
+| Background, gutter
+| Field
+
+| Foreground
+| Ink
+
+| Caret
+| Mineral
+
+| Selection
+| Selection, with Ink text
+
+| Current line, find highlight
+| Callout
+
+| Gutter numbers, active indent guide
+| Muted
+
+| Indent guides
+| Line
+
+| Invisibles
+| Subtle over Field
+|===
+
+Selected text is forced to Ink.  quiet-core guarantees only Ink on
+Selection; syntax colors such as Mineral fall below 4.5:1 there.
+
+Invisibles use Subtle, which is a contextual role.  The editor ground is
+always Field, so it resolves to one color.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed files match generator output;
+* the files are well-formed XML;
+* selected text is Ink;
+* `plutil` accepts the files, where it is installed;
+* bat compiles the themes and renders a Go keyword in Mineral and a comment
+  in Muted, where bat is installed.  The bat test uses a temporary cache and
+  never touches the user's bat configuration.
+
+The reference port is tested against bat 0.26.
+
+== Generation
+
+----
+make tmtheme
+----

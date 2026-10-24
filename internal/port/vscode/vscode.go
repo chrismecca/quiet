@@ -12,6 +12,7 @@ import (
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
 	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/textmate"
 )
 
 type document struct {
@@ -75,11 +76,16 @@ func Encode(
 		return err
 	}
 
+	tokenColors, err := textMateColors(p)
+	if err != nil {
+		return err
+	}
+
 	doc := document{
 		Type:                 themeType,
 		SemanticHighlighting: true,
 		Colors:               workbenchColors(c),
-		TokenColors:          textMateColors(c),
+		TokenColors:          tokenColors,
 		SemanticTokenColors:  semanticColors(c),
 	}
 
@@ -305,96 +311,33 @@ func workbenchColors(
 	return result
 }
 
+// textMateColors serializes quiet's shared TextMate scope policy, so VS Code
+// and tmTheme hosts cannot drift apart.
 func textMateColors(
-	c resolved,
-) []tokenRule {
-	return []tokenRule{
-		{
-			Name: "Comments",
-			Scope: []string{
-				"comment",
-				"punctuation.definition.comment",
-			},
+	p core.Palette,
+) ([]tokenRule, error) {
+	var rules []tokenRule
+
+	for _, rule := range textmate.SourceRules(p) {
+		hex, err := rule.Color.Hex()
+		if err != nil {
+			return nil, fmt.Errorf(
+				"%s: %w",
+				rule.Name,
+				err,
+			)
+		}
+
+		rules = append(rules, tokenRule{
+			Name:  rule.Name,
+			Scope: rule.Scopes,
 			Settings: tokenSettings{
-				Foreground: c.muted,
+				Foreground: hex,
 			},
-		},
-		{
-			Name: "Ordinary source",
-			Scope: []string{
-				"constant",
-				"string",
-				"variable",
-				"variable.parameter",
-				"entity.name.function",
-				"entity.name.function.member",
-				"entity.name.method",
-				"entity.other.attribute-name",
-				"punctuation",
-			},
-			Settings: tokenSettings{
-				Foreground: c.ink,
-			},
-		},
-		{
-			Name: "Language structure",
-			Scope: []string{
-				"keyword",
-				"keyword.operator",
-				"storage.type",
-				"storage.modifier",
-				"entity.name.type",
-				"entity.other.inherited-class",
-				"support.type",
-				"support.class",
-				"support.function",
-				"meta.preprocessor",
-				"keyword.control.directive",
-				"punctuation.definition.directive",
-			},
-			Settings: tokenSettings{
-				Foreground: c.mineral,
-			},
-		},
-		{
-			Name: "Markup structure",
-			Scope: []string{
-				"markup.heading",
-				"markup.link",
-				"entity.name.tag",
-			},
-			Settings: tokenSettings{
-				Foreground: c.mineral,
-			},
-		},
-		{
-			Name: "Markup quotation",
-			Scope: []string{
-				"markup.quote",
-			},
-			Settings: tokenSettings{
-				Foreground: c.muted,
-			},
-		},
-		{
-			Name: "Invalid",
-			Scope: []string{
-				"invalid.illegal",
-			},
-			Settings: tokenSettings{
-				Foreground: c.rust,
-			},
-		},
-		{
-			Name: "Deprecated",
-			Scope: []string{
-				"invalid.deprecated",
-			},
-			Settings: tokenSettings{
-				Foreground: c.ochre,
-			},
-		},
+		})
 	}
+
+	return rules, nil
 }
 
 func semanticColors(

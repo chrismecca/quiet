@@ -94,7 +94,8 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/tmux/[tmux]
 | link:ports/fzf/[fzf]
 | delta
-|
+| link:ports/tmtheme/[bat]
+| link:ports/tmtheme/[Sublime Text]
 |
 |
 |===

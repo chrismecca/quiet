@@ -24,6 +24,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/neovim"
 	"github.com/chrismecca/quiet/internal/port/terminal"
+	"github.com/chrismecca/quiet/internal/port/tmtheme"
 	"github.com/chrismecca/quiet/internal/port/tmux"
 	"github.com/chrismecca/quiet/internal/port/vim"
 	"github.com/chrismecca/quiet/internal/port/vscode"
@@ -144,6 +145,14 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portTerminal(w, args[0])
+		},
+	},
+	{
+		name:  "tmtheme",
+		usage: "tmtheme PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portTmTheme(w, args[0])
 		},
 	},
 	{
@@ -614,6 +623,21 @@ func portTerminal(
 	return terminal.EncodeJSON(
 		w,
 		resolved,
+	)
+}
+
+func portTmTheme(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return tmtheme.Encode(
+		w,
+		palette,
 	)
 }
 
