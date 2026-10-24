@@ -836,6 +836,11 @@ distinguishability.
 quiet therefore treats semantic redundancy as the conformance mechanism
 rather than attempting to guarantee meaning through hue distance alone.
 
+The screening is reproduced in `reports/src/cvd.org`.  Under simulated
+deuteranopia, the Moss and Rust washes that mark diff additions and
+deletions nearly coincide, which is why Wash MUST NOT be the sole carrier
+of meaning.
+
 == Day and Night correspondence
 
 quiet-day and quiet-night are adaptations of one semantic system.

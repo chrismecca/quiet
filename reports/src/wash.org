@@ -1,0 +1,121 @@
+# @(#)quiet / org / reports/src/wash.org / 2026-10-24
+
+#+TITLE: Wash derivation evidence
+#+SUBTITLE: Why Wash displaces its ground in OKLab
+#+SETUPFILE: setup.org
+
+* Purpose
+
+quiet-core defines Wash as a displacement of the local ground in OKLab,
+toward the hue of a chromatic family, by a fixed distance.  The line tier
+preserves the ground's lightness.
+
+This report records the evidence for that definition: the alternatives that
+were rejected, the gamut limit on the line distance, and the reason Field is
+the canonical ground.
+
+* Requirements
+
+A wash marks a region, such as a diff line or a diagnostic line, with the
+meaning of one chromatic family.  The line tier must:
+
+1. carry the family's hue visibly;
+2. keep every foreground that is readable on Field readable on the wash;
+3. give all four families the same perceptual strength;
+4. remain inside sRGB without clipping.
+
+In the tables below, /lowest/ is the lowest contrast among the foregrounds
+that must reach 4.5:1: Muted and the four chromatic anchors.  Ink, at 7:1,
+is never the binding constraint here.
+
+* Rejected: interpolation toward the anchor
+
+Selection is derived by interpolating from Structure toward Mineral in
+OKLab.  The same operation from Field toward each family anchor was
+evaluated first.
+
+#+CAPTION: Lowest 4.5-class contrast on Field interpolated toward each family.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/wash-interpolation.org"
+
+The chromatic anchors are readable foregrounds, so they are far from Field
+in lightness.  Interpolating toward them mostly darkens quiet-day rather
+than tinting it.  quiet-day falls below 4.5:1 at every amount evaluated.
+
+quiet-night tolerates small amounts, but one definition must serve both
+adaptations.  Interpolation fails requirement 2.
+
+* Rejected: fixed absolute chroma
+
+The second alternative kept Field's lightness and set a fixed absolute
+OKLCH chroma at each family's hue.  The table shows the resulting distance
+from Field.
+
+#+CAPTION: Distance from Field at a fixed chroma of 0.025.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/wash-fixed-chroma.org"
+
+quiet-day Field is warm: its own hue lies near Ochre.  At a fixed chroma,
+Ochre barely moves away from Field while Mineral moves several times as far.
+Fixed chroma fails requirement 3.
+
+* Chosen: displacement by a fixed distance
+
+The chosen rule adds a fixed-length vector in OKLab's chromatic plane,
+pointing along the family's hue, to the ground.  Lightness is unchanged in
+the line tier, so distance from Field is identical for every family by
+construction.
+
+#+CAPTION: Canonical line washes over Field.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/wash-displacement.org"
+
+Every family moves the same distance, and the lowest 4.5-class contrast
+stays above the floor in both adaptations.  Requirements 1 to 3 hold.
+
+* Gamut limit
+
+A displacement can leave sRGB.  quiet-core treats that as a derivation
+failure rather than a color to clip.  The table gives, for each family, the
+largest line distance over Field that remains in gamut.
+
+#+CAPTION: Largest in-gamut line distance over Field.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/wash-gamut.org"
+
+One line distance is shared by all families, so it is bounded by the
+smallest ceiling in either adaptation.  quiet-day Rust sets that bound.
+The chosen distance of 0.020 leaves headroom below it.  The test suite fails
+if any ceiling falls to or below the line distance.
+
+* Canonical ground
+
+A wash depends on its ground.  The table evaluates every family's line wash
+over each architectural background.
+
+#+CAPTION: Lowest 4.5-class contrast over line washes on each ground.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/wash-grounds.org"
+
+Over Field, both adaptations pass.  Over quiet-day Surface and quiet-night
+Structure, the lowest foreground falls just below 4.5:1.
+
+Field is therefore the canonical ground, and the contract evaluates washes
+over Field.  A port that places a wash on another ground must derive it
+over that ground and verify the foregrounds it actually draws there.
+
+* Emphasis tier
+
+The emphasis tier marks a span inside a line wash and is intended for Ink.
+It moves lightness away from the ground so that it can carry more chroma
+within gamut.
+
+quiet-core requires only Ink at 7:1 on each emphasis wash.  Those results
+appear in the conformance report.
+
+* Independence
+
+The canonical wash values asserted by the =internal/core= tests were
+computed by an independent implementation of the specified rule, not by the
+reference implementation.  The tables here document the reference
+implementation; the fixtures check it.

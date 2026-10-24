@@ -143,7 +143,8 @@ The reference implementation can inspect, derive, validate, and export quiet:
 | link:CONTRIBUTING.adoc[Contributing]
 |===
 
-Design evidence lives in `reports/`.
+Design evidence lives in `reports/`: quiet-core conformance, the Wash
+derivation, and color-vision deficiency screening.
 
 The reference interface lives in `examples/reference-interface/`.
 

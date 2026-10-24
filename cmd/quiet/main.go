@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
@@ -29,6 +30,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/wezterm"
 	"github.com/chrismecca/quiet/internal/port/x11"
 	"github.com/chrismecca/quiet/internal/port/xcode"
+	"github.com/chrismecca/quiet/internal/report"
 )
 
 const (
@@ -283,6 +285,23 @@ func run(
 
 		if !passed {
 			return exitError
+		}
+
+		return exitOK
+
+	case "report":
+		if len(args) != 5 {
+			usage(stderr)
+			return exitUsage
+		}
+
+		if err := writeReport(
+			args[1],
+			args[2],
+			args[3],
+			args[4],
+		); err != nil {
+			return commandError(stderr, err)
 		}
 
 		return exitOK
@@ -926,12 +945,73 @@ func check(
 	return allPassed, nil
 }
 
+// writeReport regenerates every report table under dir. Each table is one
+// Org file so authored report prose can include exactly the tables it cites.
+func writeReport(
+	dir string,
+	contractPath string,
+	dayPath string,
+	nightPath string,
+) error {
+	contract, err := core.LoadContractFile(contractPath)
+	if err != nil {
+		return err
+	}
+
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return err
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return err
+	}
+
+	tables, err := report.Build(
+		contract,
+		day,
+		night,
+	)
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return fmt.Errorf(
+			"create report directory: %w",
+			err,
+		)
+	}
+
+	for _, t := range tables {
+		path := filepath.Join(
+			dir,
+			t.Name+".org",
+		)
+
+		if err := os.WriteFile(
+			path,
+			[]byte(t.Org),
+			0o644,
+		); err != nil {
+			return fmt.Errorf(
+				"write report table: %w",
+				err,
+			)
+		}
+	}
+
+	return nil
+}
+
 func usage(w io.Writer) {
 	fmt.Fprintln(w, "usage:")
 	fmt.Fprintln(w, "  quiet inspect HEX")
 	fmt.Fprintln(w, "  quiet contrast HEX HEX")
 	fmt.Fprintln(w, "  quiet derive PALETTE")
 	fmt.Fprintln(w, "  quiet check CONTRACT PALETTE [PALETTE ...]")
+	fmt.Fprintln(w, "  quiet report DIR CONTRACT DAY_PALETTE NIGHT_PALETTE")
 
 	for _, command := range portCommands {
 		fmt.Fprintf(
