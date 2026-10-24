@@ -27,6 +27,12 @@ The candidate quiet-core and its initial ports predate this changelog.
   `moss-wash` and `moss-wash-emphasis`.
 * Extended the quiet-core contract from 19 to 47 contrast constraints.
 
+=== Ports
+
+* Added the fzf port: `--color` options for `FZF_DEFAULT_OPTS_FILE`.
+  Matches on the current line are Ink in bold, because Mineral on
+  Selection falls below 4.5:1.
+
 === Naming
 
 * The project, adaptations, and specification are named `quiet`,

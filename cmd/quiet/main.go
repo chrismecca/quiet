@@ -17,6 +17,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/cde"
 	"github.com/chrismecca/quiet/internal/port/dircolors"
 	"github.com/chrismecca/quiet/internal/port/emacs"
+	"github.com/chrismecca/quiet/internal/port/fzf"
 	"github.com/chrismecca/quiet/internal/port/ghostty"
 	"github.com/chrismecca/quiet/internal/port/iterm2"
 	"github.com/chrismecca/quiet/internal/port/kitty"
@@ -87,6 +88,14 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portEmacs(w, args[0])
+		},
+	},
+	{
+		name:  "fzf",
+		usage: "fzf PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portFzf(w, args[0])
 		},
 	},
 	{
@@ -453,6 +462,21 @@ func portEmacs(
 	}
 
 	return emacs.Encode(
+		w,
+		palette,
+	)
+}
+
+func portFzf(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return fzf.Encode(
 		w,
 		palette,
 	)
