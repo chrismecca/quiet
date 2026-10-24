@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/x11/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/x11/README.adoc / 2026-10-24
 
-= Quiet X11 resources
+= quiet for X11 resources
 
-The Quiet X11 reference port maps Quiet onto the X Toolkit resource database
+The quiet X11 reference port maps quiet onto the X Toolkit resource database
 used by Xt and Athena-style applications.
 
 It does not attempt to theme every application that happens to display
@@ -31,7 +31,7 @@ The broad mappings are:
 
 [cols="1,1"]
 |===
-| X resource | Quiet role
+| X resource | quiet role
 
 | `Background`
 | Field
@@ -47,7 +47,7 @@ Common Athena controls additionally use:
 
 [cols="1,1"]
 |===
-| Widget resource | Quiet role
+| Widget resource | quiet role
 
 | `Command.background`
 | Surface
@@ -78,10 +78,10 @@ track.
 == Semantic restraint
 
 The generic resource model does not provide reliable universal roles for all
-Quiet semantics.
+quiet semantics.
 
 The X11 port therefore does not emit Moss, Ochre, or Rust merely to expose
-the complete Quiet palette.
+the complete quiet palette.
 
 Application-specific ports may use those families when the application
 actually exposes corresponding semantic roles.
@@ -93,7 +93,7 @@ resource applicable across every widget set.
 
 Selection is therefore intentionally absent from this generic port.
 
-Application- or toolkit-specific ports SHOULD map Quiet Selection when the
+Application- or toolkit-specific ports SHOULD map quiet Selection when the
 host exposes a genuine selection role.
 
 The same principle applies to contextual roles such as Subtle.
@@ -114,14 +114,14 @@ xrdb -merge ports/x11/quiet-night.Xresources
 
 The files deliberately contain only color resources.
 
-Quiet does not modify fonts, geometry, widget dimensions, translations, or
+quiet does not modify fonts, geometry, widget dimensions, translations, or
 other unrelated X settings.
 
 == app-defaults
 
 Xt application defaults are application-specific resource databases.
 
-There is no single universal Quiet app-defaults file that can correctly
+There is no single universal quiet app-defaults file that can correctly
 describe every Xt application.
 
 The generated Xresources files provide the shared semantic baseline.

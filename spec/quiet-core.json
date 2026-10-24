@@ -1,6 +1,6 @@
 {
   "schema": "quiet.core/v1",
-  "name": "Quiet Core",
+  "name": "quiet-core",
   "status": "candidate",
   "contrast_constraints": [
     {

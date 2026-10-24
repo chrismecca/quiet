@@ -1,14 +1,14 @@
-// @(#)quiet / asciidoc / ports/tmux/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/tmux/README.adoc / 2026-10-24
 
-= Quiet for tmux
+= quiet for tmux
 
-Quiet's tmux port is a color overlay for tmux interface chrome.
+quiet's tmux port is a color overlay for tmux interface chrome.
 
 It does not replace a user's tmux configuration.
 
 == Scope
 
-Quiet controls color for:
+quiet controls color for:
 
 * the status line;
 * window status;
@@ -21,7 +21,7 @@ Quiet controls color for:
 * display-panes overlays;
 * pane scrollbars.
 
-Quiet deliberately does not configure:
+quiet deliberately does not configure:
 
 * `status-left` or `status-right` content;
 * status or window formats;
@@ -45,7 +45,7 @@ quiet-day.conf
 quiet-night.conf
 ----
 
-Both files are generated from the canonical Quiet palettes.
+Both files are generated from the canonical quiet palettes.
 
 == Loading
 
@@ -55,20 +55,20 @@ Source the desired adaptation after the rest of the tmux configuration:
 source-file ~/src/quiet/ports/tmux/quiet-night.conf
 ----
 
-For Quiet Day:
+For quiet-day:
 
 ----
 source-file ~/src/quiet/ports/tmux/quiet-day.conf
 ----
 
-Loading Quiet last is intentional.
+Loading quiet last is intentional.
 
 A plugin or later configuration statement that changes tmux colors will
-override the Quiet overlay.
+override the quiet overlay.
 
 == Existing configuration
 
-Generated Quiet assignments use tmux's append form:
+Generated quiet assignments use tmux's append form:
 
 ----
 set-option -ag ...
@@ -84,17 +84,17 @@ For example, an existing:
 window-status-current-style underscore
 ----
 
-can retain `underscore` while Quiet supplies its foreground and background
+can retain `underscore` while quiet supplies its foreground and background
 colors.
 
-Quiet does not inspect or rewrite color directives embedded directly inside
+quiet does not inspect or rewrite color directives embedded directly inside
 user-authored format strings.
 
 == Semantic mapping
 
 [cols="2,2"]
 |===
-| tmux role | Quiet role
+| tmux role | quiet role
 
 | Status background
 | Structure
@@ -140,11 +140,11 @@ user-authored format strings.
 
 tmux exposes several pane states through the active pane border.
 
-Quiet maps them as:
+quiet maps them as:
 
 [cols="2,1"]
 |===
-| tmux state | Quiet role
+| tmux state | quiet role
 
 | Normal active pane
 | Mineral
@@ -174,12 +174,12 @@ The reference port is tested against tmux 3.8.
 
 The generated files use hexadecimal sRGB colors directly.
 
-Quiet does not alter terminal feature detection, `terminal-features`,
+quiet does not alter terminal feature detection, `terminal-features`,
 `terminal-overrides`, or other terminal capability configuration.
 
 == Design boundary
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not redesign tmux.
 

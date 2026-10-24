@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/iterm2/iterm2.go / 2026-10-19
+// @(#)quiet / go / internal/port/iterm2/iterm2.go / 2026-10-24
 
-// Package iterm2 serializes Quiet's generic terminal palettes into iTerm2's
+// Package iterm2 serializes quiet's generic terminal palettes into iTerm2's
 // native .itermcolors property-list format.
 package iterm2
 
@@ -15,11 +15,11 @@ import (
 
 // Encode writes one adaptive iTerm2 color preset.
 //
-// Unsuffixed values use Quiet Night as the compatibility fallback.
-// Explicit (Dark) values use Quiet Night.
-// Explicit (Light) values use Quiet Day.
+// Unsuffixed values use quiet-night as the compatibility fallback.
+// Explicit (Dark) values use quiet-night.
+// Explicit (Light) values use quiet-day.
 //
-// No Quiet color derivation occurs here. Both inputs are already-resolved
+// No quiet color derivation occurs here. Both inputs are already-resolved
 // generic terminal palettes.
 func Encode(
 	w io.Writer,
@@ -241,7 +241,7 @@ func writeColor(
 	return nil
 }
 
-// canonicalSRGB applies the same 8-bit export boundary used by Quiet's other
+// canonicalSRGB applies the same 8-bit export boundary used by quiet's other
 // host artifacts before recovering normalized components for plist encoding.
 func canonicalSRGB(
 	value color.SRGB,

@@ -1,15 +1,15 @@
-// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-24
 
-= Quiet for GNU Emacs
+= quiet for GNU Emacs
 
-Quiet provides two GNU Emacs Custom themes:
+quiet provides two GNU Emacs Custom themes:
 
 ----
 quiet-day
 quiet-night
 ----
 
-The themes map Quiet semantic roles onto Emacs faces without imposing font,
+The themes map quiet semantic roles onto Emacs faces without imposing font,
 weight, slant, underline, box, or other typography policy.
 
 The generated theme files are:
@@ -27,11 +27,11 @@ quiet-themes.el
 
 == Requirements
 
-The packaged Quiet Emacs port targets GNU Emacs 29.1 or later.
+The packaged quiet Emacs port targets GNU Emacs 29.1 or later.
 
 == Install directly from Git
 
-GNU Emacs can install Quiet directly from its public Git repository with
+GNU Emacs can install quiet directly from its public Git repository with
 `package-vc-install`.
 
 Evaluate:
@@ -96,9 +96,9 @@ or:
 
 == Switch Day and Night
 
-Quiet Day and Quiet Night are members of the same native Emacs theme family.
+quiet-day and quiet-night are members of the same native Emacs theme family.
 
-With exactly one Quiet theme active:
+With exactly one quiet theme active:
 
 ----
 M-x theme-choose-variant
@@ -106,7 +106,7 @@ M-x theme-choose-variant
 
 switches to the other adaptation.
 
-Quiet does not implement a separate theme-switching command where the host
+quiet does not implement a separate theme-switching command where the host
 already provides the appropriate mechanism.
 
 == Package archives
@@ -123,7 +123,7 @@ Archive installation will use the ordinary package interface:
 M-x package-install RET quiet-themes RET
 ----
 
-once Quiet is accepted into an Emacs package archive.
+once quiet is accepted into an Emacs package archive.
 
 No `quiet-themes-pkg.el` is stored in this repository. Package archives
 generate package metadata from `quiet-themes.el`.
@@ -144,7 +144,7 @@ Then load either theme normally.
 
 == Semantic mapping
 
-Quiet treats programming-language syntax as hierarchy rather than a collection
+quiet treats programming-language syntax as hierarchy rather than a collection
 of unrelated token colors.
 
 Ordinary source text remains Ink.
@@ -167,7 +167,7 @@ constants, functions, or other token classes merely to increase color variety.
 
 == Scope
 
-Quiet controls color.
+quiet controls color.
 
 It does not set:
 

@@ -1,6 +1,6 @@
 {
   "schema": "quiet.palette/v1",
-  "name": "Quiet Day",
+  "name": "quiet-day",
   "mode": "day",
   "status": "candidate",
   "anchors": {

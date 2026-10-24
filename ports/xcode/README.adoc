@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/xcode/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/xcode/README.adoc / 2026-10-24
 
-= Quiet Xcode
+= quiet for Xcode
 
-The Quiet Xcode port maps Quiet Core semantics onto Xcode's native workspace
+The quiet Xcode port maps quiet-core semantics onto Xcode's native workspace
 color-theme model.
 
 The current port targets the native `.xcworkspacecolortheme` format.
@@ -10,8 +10,8 @@ The current port targets the native `.xcworkspacecolortheme` format.
 == Artifacts
 
 ----
-ports/xcode/Quiet Day.xcworkspacecolortheme
-ports/xcode/Quiet Night.xcworkspacecolortheme
+ports/xcode/quiet-day.xcworkspacecolortheme
+ports/xcode/quiet-night.xcworkspacecolortheme
 ----
 
 The files are generated artifacts.
@@ -20,7 +20,7 @@ They MUST NOT be edited independently of the reference implementation.
 
 == Design
 
-Quiet does not map programming-language token classes onto unrelated semantic
+quiet does not map programming-language token classes onto unrelated semantic
 state colors merely to maximize syntax differentiation.
 
 Strings are not success.
@@ -37,7 +37,7 @@ Muted     secondary, documentation, and external/system identifiers
 Mineral   language structure, links, declarations, and active state
 ----
 
-Quiet's state-bearing chromatic families are reserved for roles that actually
+quiet's state-bearing chromatic families are reserved for roles that actually
 carry corresponding semantics.
 
 For example:
@@ -58,7 +58,7 @@ The principal mappings include:
 
 [cols="2,1"]
 |===
-| Xcode role | Quiet role
+| Xcode role | quiet role
 
 | editor background
 | Field
@@ -114,7 +114,7 @@ The principal mappings include:
 Xcode derives additional workspace colors from primary and secondary palette
 seeds.
 
-Quiet maps:
+quiet maps:
 
 ----
 primary    Mineral
@@ -130,19 +130,19 @@ the primary palette seed.
 
 == Color representation
 
-Quiet canonical colors are sRGB.
+quiet canonical colors are sRGB.
 
 The native Xcode format represents explicit colors using OKLCH components
 with hue expressed in radians.
 
-The generator converts canonical Quiet sRGB values into that representation
+The generator converts canonical quiet sRGB values into that representation
 and declares:
 
 ----
 gamut: sRGB
 ----
 
-The port does not promote Quiet colors into Display P3.
+The port does not promote quiet colors into Display P3.
 
 == Scope
 
@@ -158,7 +158,7 @@ It does not set:
 * window geometry;
 * unrelated Xcode preferences.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -175,10 +175,10 @@ For example:
 ----
 mkdir -p ~/Library/Developer/Xcode/UserData/FontAndColorThemes
 
-cp 'ports/xcode/Quiet Day.xcworkspacecolortheme' \
+cp 'ports/xcode/quiet-day.xcworkspacecolortheme' \
    ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
 
-cp 'ports/xcode/Quiet Night.xcworkspacecolortheme' \
+cp 'ports/xcode/quiet-night.xcworkspacecolortheme' \
    ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
 ----
 

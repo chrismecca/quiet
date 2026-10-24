@@ -1,6 +1,6 @@
 // @(#)quiet / go / internal/port/web/css.go / 2026-10-24
 
-// Package web exports Quiet Core semantics as CSS custom properties.
+// Package web exports quiet-core semantics as CSS custom properties.
 package web
 
 import (
@@ -22,10 +22,10 @@ type scheme struct {
 	tokens      []token
 }
 
-// EncodeCSS writes a complete Quiet Day/Night CSS custom-property stylesheet.
+// EncodeCSS writes a complete quiet-day/Night CSS custom-property stylesheet.
 //
-// Quiet Day is the default adaptation. When no explicit data-quiet-theme
-// attribute is present, prefers-color-scheme selects Quiet Night for users
+// quiet-day is the default adaptation. When no explicit data-quiet-theme
+// attribute is present, prefers-color-scheme selects quiet-night for users
 // requesting a dark interface.
 //
 // Explicit data-quiet-theme="day" or data-quiet-theme="night" always wins.
@@ -56,7 +56,7 @@ func EncodeCSS(
 	)
 	if err != nil {
 		return fmt.Errorf(
-			"resolve Quiet Day web scheme: %w",
+			"resolve quiet-day web scheme: %w",
 			err,
 		)
 	}
@@ -67,7 +67,7 @@ func EncodeCSS(
 	)
 	if err != nil {
 		return fmt.Errorf(
-			"resolve Quiet Night web scheme: %w",
+			"resolve quiet-night web scheme: %w",
 			err,
 		)
 	}

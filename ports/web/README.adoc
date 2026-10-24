@@ -1,14 +1,14 @@
 // @(#)quiet / asciidoc / ports/web/README.adoc / 2026-10-24
 
-= Quiet CSS / Web reference port
+= quiet CSS / Web reference port
 
-The Quiet web reference port exposes Quiet Core semantic colors as CSS
+The quiet web reference port exposes quiet-core semantic colors as CSS
 custom properties.
 
 It does not define application layout, typography, widgets, or component
 styling.
 
-Quiet ports color systems.  It does not skin applications.
+quiet ports color systems.  It does not skin applications.
 
 == Artifact
 
@@ -18,13 +18,13 @@ The generated stylesheet is:
 ports/web/quiet.css
 ----
 
-It is generated from the canonical Quiet Day and Quiet Night palette data.
+It is generated from the canonical quiet-day and quiet-night palette data.
 
 The stylesheet MUST NOT be edited independently of the generator.
 
 == Variables
 
-The web port exposes the ten canonical Quiet anchors:
+The web port exposes the ten canonical quiet anchors:
 
 ----
 --quiet-field
@@ -58,19 +58,19 @@ The wash variables are the canonical washes over Field.  A wash placed on
 another background is a different color and should be derived with the
 reference implementation.
 
-These names preserve Quiet Core semantics directly.
+These names preserve quiet-core semantics directly.
 
 The web port does not create aliases such as `--quiet-background`,
 `--quiet-success`, or `--quiet-error`.
 
-Applications MAY define their own aliases from Quiet roles.
+Applications MAY define their own aliases from quiet roles.
 
 == Day and Night
 
-Without an explicit override, Quiet Day is the default adaptation.
+Without an explicit override, quiet-day is the default adaptation.
 
 When the root document has no `data-quiet-theme` attribute, the stylesheet
-uses `prefers-color-scheme: dark` to select Quiet Night for users requesting
+uses `prefers-color-scheme: dark` to select quiet-night for users requesting
 a dark interface.
 
 An explicit theme may be selected with:
@@ -89,7 +89,7 @@ Explicit selection takes precedence over the system preference.
 
 == Subtle
 
-Quiet Subtle is contextual.
+quiet Subtle is contextual.
 
 There is deliberately no:
 
@@ -150,7 +150,7 @@ a {
 
 These mappings illustrate semantic use.
 
-They are not a complete Quiet application skin.
+They are not a complete quiet application skin.
 
 == Generation
 
@@ -161,7 +161,7 @@ make web
 ----
 
 The repository test suite verifies that the committed stylesheet is exactly
-the output produced from the canonical Quiet palettes.
+the output produced from the canonical quiet palettes.
 
 == Source of truth
 

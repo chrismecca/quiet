@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/base16/base16.go / 2026-10-18
+// @(#)quiet / go / internal/port/base16/base16.go / 2026-10-24
 
-// Package base16 projects Quiet Core onto the Base16 compatibility model.
+// Package base16 projects quiet-core onto the Base16 compatibility model.
 package base16
 
 import (
@@ -15,9 +15,9 @@ const minimumForegroundContrast = 4.5
 
 // Scheme is a resolved Base16 compatibility scheme.
 //
-// Base16 is not a representation of Quiet Core. It has its own fixed set of
+// Base16 is not a representation of quiet-core. It has its own fixed set of
 // sixteen roles. Values in this structure are a compatibility projection and
-// must not be interpreted as additional Quiet canonical anchors.
+// must not be interpreted as additional quiet canonical anchors.
 type Scheme struct {
 	Name        string
 	Slug        string
@@ -27,12 +27,12 @@ type Scheme struct {
 	Palette     [16]color.SRGB
 }
 
-// Resolve projects one Quiet palette onto Base16.
+// Resolve projects one quiet palette onto Base16.
 func Resolve(p core.Palette) (Scheme, error) {
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Scheme{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -53,7 +53,7 @@ func Resolve(p core.Palette) (Scheme, error) {
 
 	default:
 		return Scheme{}, fmt.Errorf(
-			"unsupported Quiet mode %q",
+			"unsupported quiet mode %q",
 			fmt.Sprint(p.Mode),
 		)
 	}
@@ -69,7 +69,7 @@ func Resolve(p core.Palette) (Scheme, error) {
 	}
 
 	// Base16 base04 is a foreground between its secondary/comment foreground
-	// and default foreground. Quiet has no canonical role corresponding
+	// and default foreground. quiet has no canonical role corresponding
 	// exactly to that slot, so the compatibility port derives the midpoint
 	// between Muted and Ink in OKLab.
 	base04 := color.MixOKLab(
@@ -87,7 +87,7 @@ func Resolve(p core.Palette) (Scheme, error) {
 	result := Scheme{
 		Name:        p.Name,
 		Slug:        slug,
-		Author:      "Quiet",
+		Author:      "quiet",
 		Description: "A Base16 compatibility projection of " + p.Name + ".",
 		Variant:     variant,
 
@@ -115,8 +115,8 @@ func Resolve(p core.Palette) (Scheme, error) {
 	}
 
 	// Base16 uses base03 through base0F extensively as foreground syntax
-	// colors. Quiet's compatibility projection keeps every such color at the
-	// same readable-foreground floor used by Quiet Core where possible.
+	// colors. quiet's compatibility projection keeps every such color at the
+	// same readable-foreground floor used by quiet-core where possible.
 	for i := 3; i < len(result.Palette); i++ {
 		actual := color.Contrast(
 			result.Palette[i],

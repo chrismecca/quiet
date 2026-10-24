@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/wezterm/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/wezterm/README.adoc / 2026-10-24
 
-= Quiet WezTerm
+= quiet for WezTerm
 
-The Quiet WezTerm port serializes Quiet's generic terminal palette into
+The quiet WezTerm port serializes quiet's generic terminal palette into
 WezTerm's native TOML color-scheme format.
 
 It introduces no independent color policy.
@@ -10,8 +10,8 @@ It introduces no independent color policy.
 == Artifacts
 
 ----
-ports/wezterm/Quiet Day.toml
-ports/wezterm/Quiet Night.toml
+ports/wezterm/quiet-day.toml
+ports/wezterm/quiet-night.toml
 ----
 
 The files are generated artifacts.
@@ -21,7 +21,7 @@ They MUST NOT be edited independently of the reference implementation.
 == Architecture
 
 ----
-Quiet Core
+quiet-core
     |
     v
 generic terminal mapping
@@ -81,7 +81,7 @@ It intentionally does not define:
 * cursor shape;
 * key bindings.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -98,30 +98,30 @@ Install both adaptations:
 ----
 mkdir -p ~/.config/wezterm/colors
 
-cp 'ports/wezterm/Quiet Day.toml' \
+cp 'ports/wezterm/quiet-day.toml' \
    ~/.config/wezterm/colors/
 
-cp 'ports/wezterm/Quiet Night.toml' \
+cp 'ports/wezterm/quiet-night.toml' \
    ~/.config/wezterm/colors/
 ----
 
 Select one from the user's WezTerm configuration:
 
 ----
-config.color_scheme = 'Quiet Day'
+config.color_scheme = 'quiet-day'
 ----
 
 or:
 
 ----
-config.color_scheme = 'Quiet Night'
+config.color_scheme = 'quiet-night'
 ----
 
 == Automatic Day / Night
 
 WezTerm can select a scheme from the operating-system appearance.
 
-This is user configuration rather than part of the Quiet color artifact.
+This is user configuration rather than part of the quiet color artifact.
 
 A minimal example is:
 
@@ -138,10 +138,10 @@ end
 
 local function quiet_scheme()
   if appearance():find 'Dark' then
-    return 'Quiet Night'
+    return 'quiet-night'
   end
 
-  return 'Quiet Day'
+  return 'quiet-day'
 end
 
 return {
@@ -162,11 +162,11 @@ wezterm --version
 Load each scheme directly without changing the permanent configuration:
 
 ----
-wezterm --config 'color_scheme="Quiet Day"' start
+wezterm --config 'color_scheme="quiet-day"' start
 ----
 
 ----
-wezterm --config 'color_scheme="Quiet Night"' start
+wezterm --config 'color_scheme="quiet-night"' start
 ----
 
 Inspect:

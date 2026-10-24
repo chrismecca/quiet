@@ -1,8 +1,8 @@
 // @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-24
 
-= Contributing to Quiet
+= Contributing to quiet
 
-Quiet is currently a candidate specification under active development.
+quiet is currently a candidate specification under active development.
 
 The project values reproducibility, restraint, and evidence over palette
 preference.
@@ -15,12 +15,37 @@ Analytical report sources are written in Org mode and exported to PDF.
 
 Markdown files are not used.
 
-Go is the reference implementation for Quiet Core validation and
+Go is the reference implementation for quiet-core validation and
 generation.
 
 Generated and tool-managed files should remain conventional for their
 respective tools.  Project conventions should not be forced into formats
 that do not naturally support them.
+
+== Naming
+
+The project, its adaptations, and its specification have one name each,
+written in lowercase everywhere, including at the start of a sentence:
+
+----
+quiet
+quiet-day
+quiet-night
+quiet-core
+----
+
+The same string is used in prose, file names, host theme names, package
+names, and palette data.  Host theme pickers therefore show `quiet-day` and
+`quiet-night`.
+
+Semantic roles are capitalized in prose and lowercase in code and data:
+
+----
+prose:  Ink on Field, Mineral, Selection, Wash
+code:   ink, field, mineral, selection, moss-wash
+----
+
+The capital marks a semantic role rather than an ordinary word.
 
 == File identification
 
@@ -41,7 +66,7 @@ For example:
 The identification line is normally the first line of the file.
 
 When a format requires a leading interpreter, magic, or file-local
-directive, that required line comes first and the Quiet identification
+directive, that required line comes first and the quiet identification
 follows immediately.
 
 The date records the last intentional semantic revision of the file.  It
@@ -83,7 +108,7 @@ Gamut mapping is a design decision and must remain explicit.
 Quantization to 8-bit sRGB is an export operation, not part of continuous
 color calculations.
 
-Numerical behavior that is important to Quiet should have a frozen test
+Numerical behavior that is important to quiet should have a frozen test
 fixture derived independently of the implementation under test.
 
 Dependencies should be added when they materially improve correctness or
@@ -104,7 +129,7 @@ A change should not introduce:
 * missing file-identification headers;
 * `go vet` failures;
 * test failures;
-* Quiet Core validation failures;
+* quiet-core validation failures;
 * generated artifacts that differ from current generator output.
 
 Continuous integration runs the same checks on every push to `main` and on
@@ -115,7 +140,7 @@ Notable changes are recorded in `CHANGELOG.adoc` under `Unreleased`.
 
 == Canonical colors
 
-The canonical Quiet anchors are intentionally conservative.
+The canonical quiet anchors are intentionally conservative.
 
 A passing canonical anchor should not be changed solely because another
 color is aesthetically preferred.
@@ -126,7 +151,7 @@ A proposed anchor change should identify a concrete reason, such as:
 * an accessibility problem;
 * a reproducible implementation problem;
 * independent user-testing evidence;
-* a documented inconsistency in Quiet Core.
+* a documented inconsistency in quiet-core.
 
 When possible, changes should minimize perceptual movement from the
 existing canonical value.
@@ -141,13 +166,13 @@ another non-color cue when the distinction is consequential.
 
 == Day and Night
 
-Quiet Day and Quiet Night are adaptations of the same semantic system.
+quiet-day and quiet-night are adaptations of the same semantic system.
 
 They are not required to be mathematical inversions or to preserve
 identical perceptual prominence ordering.
 
 Changes should preserve semantic role, recognizable color-family
-identity, readability, and the restrained character of Quiet.
+identity, readability, and the restrained character of quiet.
 
 == Reports
 

@@ -1,8 +1,8 @@
 system: "base16"
-name: "Quiet Night"
+name: "quiet-night"
 slug: "quiet-night"
-author: "Quiet"
-description: "A Base16 compatibility projection of Quiet Night."
+author: "quiet"
+description: "A Base16 compatibility projection of quiet-night."
 variant: "dark"
 palette:
   base00: "#1C1E1C"

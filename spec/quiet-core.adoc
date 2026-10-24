@@ -1,20 +1,20 @@
 // @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-24
 
-= Quiet Core
+= quiet-core
 :toc:
 :toclevels: 3
 :sectnums:
 
-Quiet Core defines the semantic and perceptual rules shared by Quiet Day,
-Quiet Night, and conforming Quiet ports.
+quiet-core defines the semantic and perceptual rules shared by quiet-day,
+quiet-night, and conforming quiet ports.
 
 This document describes the current candidate specification.
 
-It is not yet a stable Quiet release.
+It is not yet a stable quiet release.
 
 == Status
 
-Quiet Core is under active development.
+quiet-core is under active development.
 
 The canonical Day and Night anchors remain candidate data pending broader
 testing and additional reference-port work.
@@ -36,13 +36,13 @@ The Go reference implementation evaluates those files directly.
 
 == Design intent
 
-Quiet is a restrained interface color system for long-duration work.
+quiet is a restrained interface color system for long-duration work.
 
 The interface should become scenery.
 
 Color is allowed to organize.  It is not allowed to shout.
 
-Quiet favors:
+quiet favors:
 
 * low-chroma structural color;
 * strong reading contrast without stark black-on-white presentation;
@@ -51,7 +51,7 @@ Quiet favors:
 * explicit accessibility constraints;
 * reproducible derivation rather than hand-selected secondary colors.
 
-Quiet is not intended to maximize visual separation between every adjacent
+quiet is not intended to maximize visual separation between every adjacent
 interface region.
 
 Subtle architectural relationships are deliberate.
@@ -70,7 +70,7 @@ departed from when an implementation has a documented reason.
 
 == Reference environment
 
-Quiet Core is currently defined for:
+quiet-core is currently defined for:
 
 [cols="1,2"]
 |===
@@ -102,7 +102,7 @@ Derived opaque display colors MUST remain in sRGB gamut.
 A conforming implementation MUST NOT silently clip an out-of-gamut derived
 color.
 
-Gamut mapping, if introduced in a future Quiet specification, will be an
+Gamut mapping, if introduced in a future quiet specification, will be an
 explicit operation.
 
 == Color representations
@@ -128,13 +128,13 @@ into intermediate perceptual calculations.
 
 === OKLab
 
-Quiet uses OKLab where rectangular perceptual interpolation is required.
+quiet uses OKLab where rectangular perceptual interpolation is required.
 
 In particular, Selection is derived by interpolation in OKLab.
 
 === OKLCH
 
-Quiet uses OKLCH where a derivation intentionally adjusts perceptual
+quiet uses OKLCH where a derivation intentionally adjusts perceptual
 lightness and chroma while retaining a color family.
 
 In particular, Callout is derived from Surface in OKLCH.
@@ -144,7 +144,7 @@ meaningful merely because a numeric hue angle can be computed.
 
 == Canonical anchors
 
-Every Quiet Day or Quiet Night palette contains exactly ten canonical
+Every quiet-day or quiet-night palette contains exactly ten canonical
 anchors.
 
 Derived colors are not canonical anchors.
@@ -170,7 +170,7 @@ secondary architecture.
 | Secondary readable foreground for information subordinate to Ink.
 
 | Line
-| Quiet structural linework, separators, and nonessential boundaries.
+| quiet structural linework, separators, and nonessential boundaries.
 
 | Mineral
 | Cool chromatic signal associated with information, focus, or active state.
@@ -190,9 +190,9 @@ The four chromatic anchors define semantic families.
 Their hues support meaning but MUST NOT be the sole carrier of consequential
 meaning.
 
-== Quiet Day
+== quiet-day
 
-The current candidate Quiet Day anchors are:
+The current candidate quiet-day anchors are:
 
 [cols="1,1"]
 |===
@@ -229,9 +229,9 @@ The current candidate Quiet Day anchors are:
 | `#8F5A42`
 |===
 
-== Quiet Night
+== quiet-night
 
-The current candidate Quiet Night anchors are:
+The current candidate quiet-night anchors are:
 
 [cols="1,1"]
 |===
@@ -270,7 +270,7 @@ The current candidate Quiet Night anchors are:
 
 == Derived roles
 
-Quiet distinguishes canonical anchors from semantic colors that can be
+quiet distinguishes canonical anchors from semantic colors that can be
 reproduced deterministically from those anchors.
 
 A conforming implementation SHOULD derive these values rather than storing
@@ -431,8 +431,8 @@ result = ( ground.L + delta_L,
 Wash does not interpolate toward the family anchor.
 
 The chromatic anchors are readable foregrounds and are therefore far from the
-ground in lightness.  Interpolating toward them would mostly darken Quiet Day
-or lighten Quiet Night rather than tint either one.
+ground in lightness.  Interpolating toward them would mostly darken quiet-day
+or lighten quiet-night rather than tint either one.
 
 A fixed distance also gives each family the same perceptual strength over a
 given ground, regardless of how near the ground's own hue lies to the family.
@@ -526,7 +526,7 @@ additional canonical anchors.
 
 A wash over any other ground is a different color.  A port that places a
 wash over another ground MUST derive it over that actual ground and SHOULD
-verify the relevant foreground contrast there.  Over Quiet Day Surface, for
+verify the relevant foreground contrast there.  Over quiet-day Surface, for
 example, Mineral and Rust line foregrounds fall slightly below `4.5:1`.
 
 Wash supports meaning but MUST NOT be its sole carrier.  A diff addition, for
@@ -534,10 +534,10 @@ example, keeps its `+` marker or equivalent host cue.
 
 == Contrast requirements
 
-Quiet applies contrast requirements to relationships in which readable
+quiet applies contrast requirements to relationships in which readable
 foreground content is intentionally used on a background.
 
-Quiet does not assign arbitrary contrast floors to every architectural
+quiet does not assign arbitrary contrast floors to every architectural
 boundary.
 
 === Primary reading contrast
@@ -759,7 +759,7 @@ this table.
 
 == Architectural contrast
 
-Quiet intentionally permits low-contrast architectural relationships.
+quiet intentionally permits low-contrast architectural relationships.
 
 The following relationships currently have no universal minimum contrast
 requirement:
@@ -779,7 +779,7 @@ merely because those thresholds are used elsewhere.
 Architectural subtlety is part of the visual system.
 
 A port MAY increase separation where required by the host interface, provided
-the result continues to preserve Quiet's restrained hierarchy.
+the result continues to preserve quiet's restrained hierarchy.
 
 == Semantic color
 
@@ -824,7 +824,7 @@ versus Rust.
 
 == Color-vision deficiency
 
-Quiet's chromatic families have been screened under simulated protanopia,
+quiet's chromatic families have been screened under simulated protanopia,
 deuteranopia, and tritanopia.
 
 Simulation is an engineering screening tool and does not replace evaluation
@@ -833,12 +833,12 @@ with people who have color-vision deficiencies.
 The screening did not establish a universal Delta E threshold for semantic
 distinguishability.
 
-Quiet therefore treats semantic redundancy as the conformance mechanism
+quiet therefore treats semantic redundancy as the conformance mechanism
 rather than attempting to guarantee meaning through hue distance alone.
 
 == Day and Night correspondence
 
-Quiet Day and Quiet Night are adaptations of one semantic system.
+quiet-day and quiet-night are adaptations of one semantic system.
 
 They are not mathematical inversions.
 
@@ -862,10 +862,10 @@ A conforming pair is not required to preserve:
 
 The current canonical palettes intentionally differ in accent prominence.
 
-Quiet Day places its four chromatic foregrounds on a nearly common
+quiet-day places its four chromatic foregrounds on a nearly common
 perceptual-lightness and contrast plane.
 
-Quiet Night permits a wider prominence range.
+quiet-night permits a wider prominence range.
 
 This is not currently considered a conformance defect.
 
@@ -880,7 +880,7 @@ Canonical palette files MUST:
 * contain no unknown fields;
 * contain no cached derived colors.
 
-The current candidate Core contract identifies schema:
+The current candidate quiet-core contract identifies schema:
 
 ----
 quiet.core/v1
@@ -888,7 +888,7 @@ quiet.core/v1
 
 Schema identifiers version serialized data formats.
 
-They are not Quiet release numbers.
+They are not quiet release numbers.
 
 == Reference implementation
 
@@ -904,7 +904,7 @@ is the reference implementation for the current candidate specification.
 
 Generic color mathematics belongs in `internal/color`.
 
-Quiet-specific semantics belong in `internal/core`.
+quiet-specific semantics belong in `internal/core`.
 
 This boundary is intentional.
 
@@ -922,7 +922,7 @@ The command:
 quiet check CONTRACT PALETTE [PALETTE ...]
 ----
 
-evaluates the machine-readable Quiet Core contract.
+evaluates the machine-readable quiet-core contract.
 
 For the canonical palettes:
 
@@ -936,22 +936,22 @@ quiet check \
 the expected result is:
 
 ----
-Quiet Day: PASS (47/47)
-Quiet Night: PASS (47/47)
+quiet-day: PASS (47/47)
+quiet-night: PASS (47/47)
 ----
 
 == Porting principles
 
-A port maps the semantics of Quiet onto the capabilities of another
+A port maps the semantics of quiet onto the capabilities of another
 interface.
 
-A port SHOULD map host-interface roles to Quiet roles before selecting
+A port SHOULD map host-interface roles to quiet roles before selecting
 colors.
 
 A port SHOULD NOT begin by replacing host colors one-for-one based only on
 visual resemblance.
 
-When the host requires a role that Quiet does not define directly, the port
+When the host requires a role that quiet does not define directly, the port
 SHOULD prefer:
 
 . an existing canonical anchor;
@@ -959,7 +959,7 @@ SHOULD prefer:
 . a documented contextual derivation;
 . a port-specific extension as a last resort.
 
-Port-specific extensions MUST NOT be presented as new Quiet Core canonical
+Port-specific extensions MUST NOT be presented as new quiet-core canonical
 anchors.
 
 A port SHOULD document significant semantic compromises imposed by its host.
@@ -973,7 +973,7 @@ color is aesthetically preferred.
 
 A proposed canonical change should be supported by evidence such as:
 
-* a failed Core requirement;
+* a failed quiet-core requirement;
 * an accessibility defect;
 * a reproducible implementation defect;
 * independent user-testing evidence;
@@ -982,17 +982,17 @@ A proposed canonical change should be supported by evidence such as:
 
 When a change is required, the preferred correction is the smallest
 perceptual movement that resolves the documented problem while preserving
-Quiet's design intent.
+quiet's design intent.
 
 == Release boundary
 
-The existence of this candidate specification does not constitute a Quiet
+The existence of this candidate specification does not constitute a quiet
 0.1 release.
 
-Before Quiet 0.1, the project is expected to include at least:
+Before quiet 0.1, the project is expected to include at least:
 
-* a stable human-readable Core specification;
-* a stable machine-readable Core contract;
+* a stable human-readable quiet-core specification;
+* a stable machine-readable quiet-core contract;
 * reproducible Day and Night palettes;
 * the reference validation implementation;
 * reproducible analytical reports;

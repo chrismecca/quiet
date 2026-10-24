@@ -1,7 +1,7 @@
 // @(#)quiet / go / cmd/quiet/main.go / 2026-10-24
 
 // Command quiet is the reference command-line implementation for inspecting,
-// deriving, validating, and porting Quiet Core color data.
+// deriving, validating, and porting quiet-core color data.
 package main
 
 import (

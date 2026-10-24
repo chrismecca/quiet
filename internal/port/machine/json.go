@@ -1,6 +1,6 @@
 // @(#)quiet / go / internal/port/machine/json.go / 2026-10-24
 
-// Package machine exports Quiet as a generic machine-readable semantic
+// Package machine exports quiet as a generic machine-readable semantic
 // document.
 package machine
 
@@ -82,7 +82,7 @@ type subtleDocument struct {
 	Compositing string  `json:"compositing"`
 }
 
-// EncodeJSON writes the generic Quiet machine-readable interchange document.
+// EncodeJSON writes the generic quiet machine-readable interchange document.
 //
 // The document contains canonical anchors and opaque derived roles for both
 // adaptations. Contextual roles are represented as derivation metadata rather
@@ -111,7 +111,7 @@ func EncodeJSON(
 	dayDocument, err := resolveMode(day)
 	if err != nil {
 		return fmt.Errorf(
-			"resolve Quiet Day machine document: %w",
+			"resolve quiet-day machine document: %w",
 			err,
 		)
 	}
@@ -119,7 +119,7 @@ func EncodeJSON(
 	nightDocument, err := resolveMode(night)
 	if err != nil {
 		return fmt.Errorf(
-			"resolve Quiet Night machine document: %w",
+			"resolve quiet-night machine document: %w",
 			err,
 		)
 	}

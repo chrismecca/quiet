@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/ghostty/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/ghostty/README.adoc / 2026-10-24
 
-= Quiet Ghostty
+= quiet for Ghostty
 
-The Quiet Ghostty port serializes Quiet's generic terminal palette into
+The quiet Ghostty port serializes quiet's generic terminal palette into
 Ghostty's native theme format.
 
 It introduces no independent color policy.
@@ -10,8 +10,8 @@ It introduces no independent color policy.
 == Artifacts
 
 ----
-ports/ghostty/Quiet Day
-ports/ghostty/Quiet Night
+ports/ghostty/quiet-day
+ports/ghostty/quiet-night
 ----
 
 The files are generated artifacts.
@@ -23,7 +23,7 @@ They MUST NOT be edited independently of the reference implementation.
 The port is layered as:
 
 ----
-Quiet Core
+quiet-core
     |
     v
 generic terminal mapping
@@ -82,7 +82,7 @@ It does not define:
 * key bindings;
 * window or tab behavior.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -105,29 +105,29 @@ Install both themes with:
 ----
 mkdir -p ~/.config/ghostty/themes
 
-cp 'ports/ghostty/Quiet Day' \
+cp 'ports/ghostty/quiet-day' \
    ~/.config/ghostty/themes/
 
-cp 'ports/ghostty/Quiet Night' \
+cp 'ports/ghostty/quiet-night' \
    ~/.config/ghostty/themes/
 ----
 
 Select one explicitly:
 
 ----
-theme = Quiet Day
+theme = quiet-day
 ----
 
 or:
 
 ----
-theme = Quiet Night
+theme = quiet-night
 ----
 
 Ghostty can also follow the system appearance:
 
 ----
-theme = dark:Quiet Night,light:Quiet Day
+theme = dark:quiet-night,light:quiet-day
 ----
 
 User configuration may override settings supplied by a theme.
@@ -152,7 +152,7 @@ After installing the themes, verify they are discoverable with:
 /Applications/Ghostty.app/Contents/MacOS/ghostty +list-themes
 ----
 
-Then load Quiet Day and Quiet Night in the actual application and inspect
+Then load quiet-day and quiet-night in the actual application and inspect
 normal text, ANSI colors, selection, and cursor behavior.
 
 A port is not considered complete until both adaptations have been visually

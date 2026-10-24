@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/vim/vim.go / 2026-10-18
+// @(#)quiet / go / internal/port/vim/vim.go / 2026-10-24
 
-// Package vim maps Quiet Core semantics onto Vim highlight groups.
+// Package vim maps quiet-core semantics onto Vim highlight groups.
 package vim
 
 import (
@@ -70,7 +70,7 @@ func Resolve(
 
 	default:
 		return Theme{}, fmt.Errorf(
-			"unsupported Quiet mode %q",
+			"unsupported quiet mode %q",
 			fmt.Sprint(p.Mode),
 		)
 	}
@@ -78,7 +78,7 @@ func Resolve(
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Theme{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}

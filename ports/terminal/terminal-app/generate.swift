@@ -1,5 +1,5 @@
 #!/usr/bin/env swift
-// @(#)quiet / swift / ports/terminal/terminal-app/generate.swift / 2026-10-16
+// @(#)quiet / swift / ports/terminal/terminal-app/generate.swift / 2026-10-24
 
 import AppKit
 import Foundation
@@ -8,7 +8,7 @@ import Foundation
 // objects embedded as Data values in an XML property list.
 //
 // This adapter deliberately uses AppKit rather than reproducing Cocoa archive
-// internals in Go. Quiet Core owns color semantics; this program owns only the
+// internals in Go. quiet-core owns color semantics; this program owns only the
 // Terminal.app host representation.
 
 private let profileVersion = 2.09
@@ -140,7 +140,7 @@ private func buildProfile(
         "DisableANSIColor": false,
     ]
 
-    // Quiet's resolved Selection color is an opaque display color. The
+    // quiet's resolved Selection color is an opaque display color. The
     // adapter therefore archives alpha=1.0 rather than inheriting
     // Terminal.app's profile-default selection opacity.
     profile["BackgroundColor"] = try archiveColor(

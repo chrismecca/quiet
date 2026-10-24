@@ -1,11 +1,11 @@
-// @(#)quiet / asciidoc / ports/terminal/ansi.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/terminal/ansi.adoc / 2026-10-24
 
-= Quiet ANSI mapping
+= quiet ANSI mapping
 :toc:
 
 The ANSI terminal model requires sixteen indexed colors.
 
-Quiet Core defines ten canonical anchors and does not contain dedicated
+quiet-core defines ten canonical anchors and does not contain dedicated
 magenta, cyan, or bright-color anchors.
 
 The reference terminal port therefore maps existing roles where possible
@@ -13,13 +13,13 @@ and derives terminal-local extensions where required.
 
 These extensions are part of the terminal reference port.
 
-They are not Quiet Core anchors.
+They are not quiet-core anchors.
 
 == Normal chromatic slots
 
 [cols="1,2"]
 |===
-| ANSI | Quiet mapping
+| ANSI | quiet mapping
 
 | 1 -- red
 | Rust
@@ -36,7 +36,7 @@ They are not Quiet Core anchors.
 
 == Cyan
 
-Quiet Core has no cyan anchor.
+quiet-core has no cyan anchor.
 
 ANSI cyan is a terminal-local extension derived between Moss and Mineral in
 OKLCH.
@@ -51,16 +51,16 @@ Current results:
 |===
 | Mode | Cyan
 
-| Quiet Day
+| quiet-day
 | `#4C706B`
 
-| Quiet Night
+| quiet-night
 | `#7A9C93`
 |===
 
 == Magenta
 
-Quiet Core has no magenta anchor.
+quiet-core has no magenta anchor.
 
 ANSI magenta fills the otherwise unoccupied hue interval from Mineral,
 through 360 degrees, to Rust.
@@ -78,10 +78,10 @@ Current results:
 |===
 | Mode | Magenta
 
-| Quiet Day
+| quiet-day
 | `#755E82`
 
-| Quiet Night
+| quiet-night
 | `#9C89B4`
 |===
 
@@ -98,7 +98,7 @@ target.C = base.C * 1.20
 target.H = base.H
 ----
 
-This gives `bright` the same intended interpretation in Quiet Day and Quiet
+This gives `bright` the same intended interpretation in quiet-day and quiet
 Night:
 
 * modestly greater perceptual lightness;
@@ -122,7 +122,7 @@ the terminal-port requirement.
 
 The previous experiment moved bright colors toward Ink in OKLab.
 
-That rule was rejected because it made Quiet Day bright backgrounds darker
+That rule was rejected because it made quiet-day bright backgrounds darker
 than their corresponding normal backgrounds.
 
 Each bright chromatic color must:
@@ -135,7 +135,7 @@ Each bright chromatic color must:
 
 == Neutral slots
 
-The four ANSI neutral slots use existing Quiet neutrals ordered by
+The four ANSI neutral slots use existing quiet neutrals ordered by
 perceptual lightness.
 
 [cols="1,2"]
@@ -155,16 +155,16 @@ perceptual lightness.
 | lighter of Field and Ink
 |===
 
-This produces a monotonic neutral ramp in both Quiet Day and Quiet Night.
+This produces a monotonic neutral ramp in both quiet-day and quiet-night.
 
 === ANSI neutral limitation
 
 ANSI neutral slots are overloaded as both foreground and background colors.
 
-In Quiet Day, ANSI bright white approaches Field and may have little or no
+In quiet-day, ANSI bright white approaches Field and may have little or no
 foreground contrast on the default background.
 
-In Quiet Night, ANSI black approaches Field and may have little or no
+In quiet-night, ANSI black approaches Field and may have little or no
 foreground contrast on the default background.
 
 This behavior is intentional in the reference mapping.
@@ -176,7 +176,7 @@ neutral slot in both light and dark adaptations.
 Applications should not rely on ANSI 0 or ANSI 15 as universally readable
 foreground colors.
 
-== Quiet Day
+== quiet-day
 
 [cols="1,1,1"]
 |===
@@ -247,7 +247,7 @@ foreground colors.
 | `#EEEADF`
 |===
 
-== Quiet Night
+== quiet-night
 
 [cols="1,1,1"]
 |===
@@ -322,8 +322,8 @@ foreground colors.
 
 ANSI applications may assign their own meanings to indexed colors.
 
-A terminal port therefore cannot guarantee Quiet Core semantics for
+A terminal port therefore cannot guarantee quiet-core semantics for
 arbitrary third-party software.
 
-The reference mapping preserves Quiet's color families and restrained
+The reference mapping preserves quiet's color families and restrained
 character while remaining compatible with the conventional ANSI model.

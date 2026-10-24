@@ -1,8 +1,8 @@
 system: "base16"
-name: "Quiet Day"
+name: "quiet-day"
 slug: "quiet-day"
-author: "Quiet"
-description: "A Base16 compatibility projection of Quiet Day."
+author: "quiet"
+description: "A Base16 compatibility projection of quiet-day."
 variant: "light"
 palette:
   base00: "#EEEADF"

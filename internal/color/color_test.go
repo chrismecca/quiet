@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/color_test.go / 2026-10-16
+// @(#)quiet / go / internal/color/color_test.go / 2026-10-24
 
 package color
 
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// The Quiet-specific fixtures below were frozen from the independent Python
+// The quiet-specific fixtures below were frozen from the independent Python
 // prototype. They intentionally cross-check this Go implementation rather than
 // deriving expected values from the code under test.
 const (

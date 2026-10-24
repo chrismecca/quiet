@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/load_test.go / 2026-10-16
+// @(#)quiet / go / internal/core/load_test.go / 2026-10-24
 
 package core
 
@@ -21,7 +21,7 @@ func TestCanonicalPalettes(t *testing.T) {
 			name:  "day",
 			file:  "quiet-day.json",
 			mode:  ModeDay,
-			title: "Quiet Day",
+			title: "quiet-day",
 			expected: map[string]string{
 				"field":     "#EEEADF",
 				"surface":   "#E6E9E2",
@@ -39,7 +39,7 @@ func TestCanonicalPalettes(t *testing.T) {
 			name:  "night",
 			file:  "quiet-night.json",
 			mode:  ModeNight,
-			title: "Quiet Night",
+			title: "quiet-night",
 			expected: map[string]string{
 				"field":     "#1C1E1C",
 				"surface":   "#242925",
@@ -137,7 +137,7 @@ func TestCanonicalPalettes(t *testing.T) {
 func TestDecodePaletteRejectsUnknownFields(t *testing.T) {
 	const document = `{
 		"schema": "quiet.palette/v1",
-		"name": "Quiet Day",
+		"name": "quiet-day",
 		"mode": "day",
 		"status": "candidate",
 		"unexpected": true,
@@ -158,7 +158,7 @@ func TestDecodePaletteRejectsUnknownFields(t *testing.T) {
 func TestDecodePaletteRejectsUnknownMode(t *testing.T) {
 	const document = `{
 		"schema": "quiet.palette/v1",
-		"name": "Quiet Dusk",
+		"name": "quiet-dusk",
 		"mode": "dusk",
 		"status": "candidate",
 		"anchors": {}

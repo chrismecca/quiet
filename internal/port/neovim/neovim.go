@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/neovim/neovim.go / 2026-10-19
+// @(#)quiet / go / internal/port/neovim/neovim.go / 2026-10-24
 
-// Package neovim maps Quiet Core semantics onto native Neovim highlight
+// Package neovim maps quiet-core semantics onto native Neovim highlight
 // groups, including Tree-sitter, diagnostics, and LSP semantic tokens.
 package neovim
 
@@ -35,7 +35,7 @@ type highlight struct {
 	link  string
 }
 
-// Encode writes one Quiet palette as a native Neovim Lua colorscheme.
+// Encode writes one quiet palette as a native Neovim Lua colorscheme.
 //
 // The port controls color only. It deliberately avoids font, weight, italic,
 // underline, undercurl, cursor shape, window layout, and other styling policy.
@@ -522,7 +522,7 @@ func resolveColors(
 	derived, err := core.Derive(p)
 	if err != nil {
 		return colors{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -583,9 +583,9 @@ func schemeInfo(
 	name string,
 ) (string, string, error) {
 	switch name {
-	case "Quiet Day":
+	case "quiet-day":
 		return "quiet-day", "light", nil
-	case "Quiet Night":
+	case "quiet-night":
 		return "quiet-night", "dark", nil
 	default:
 		return "", "", fmt.Errorf(

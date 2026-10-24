@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/kitty/kitty.go / 2026-10-19
+// @(#)quiet / go / internal/port/kitty/kitty.go / 2026-10-24
 
-// Package kitty serializes Quiet's generic terminal palette into kitty's
+// Package kitty serializes quiet's generic terminal palette into kitty's
 // native color configuration format.
 package kitty
 
@@ -15,7 +15,7 @@ import (
 
 // Encode writes one resolved generic terminal palette as a kitty theme.
 //
-// This package contains no Quiet color derivation. Semantic mapping and ANSI
+// This package contains no quiet color derivation. Semantic mapping and ANSI
 // derivation occur in terminal.Resolve before the palette reaches this
 // serializer.
 func Encode(

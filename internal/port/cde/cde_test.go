@@ -317,11 +317,11 @@ func TestCanonicalPalettesMatchCommittedArtifacts(t *testing.T) {
 	}{
 		{
 			palette:  "quiet-day.json",
-			artifact: "QuietDay.dp",
+			artifact: "quiet-day.dp",
 		},
 		{
 			palette:  "quiet-night.json",
-			artifact: "QuietNight.dp",
+			artifact: "quiet-night.dp",
 		},
 	}
 

@@ -1,10 +1,10 @@
-// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-24
 
-= Quiet Visual Studio Code
+= quiet for Visual Studio Code
 
-Quiet Day and Quiet Night for Visual Studio Code.
+quiet-day and quiet-night for Visual Studio Code.
 
-The port maps Quiet Core semantics onto the VS Code workbench, editor,
+The port maps quiet-core semantics onto the VS Code workbench, editor,
 TextMate syntax highlighting, semantic tokens, and integrated terminal.
 
 It introduces no independent color system.
@@ -12,7 +12,7 @@ It introduces no independent color system.
 == Architecture
 
 ----
-Quiet Core
+quiet-core
     |
     +----> workbench / syntax / semantic tokens
     |
@@ -23,7 +23,7 @@ Quiet Core
 ----
 
 The integrated terminal deliberately uses the same generic ANSI mapping as the
-other Quiet terminal ports.
+other quiet terminal ports.
 
 == Artifacts
 
@@ -38,7 +38,7 @@ The theme files are generated artifacts.
 
 == Syntax
 
-Quiet deliberately avoids rainbow syntax.
+quiet deliberately avoids rainbow syntax.
 
 Ordinary source remains Ink.
 
@@ -54,7 +54,7 @@ Semantic highlighting is enabled by the theme.
 
 == Integrated terminal
 
-The VS Code terminal consumes Quiet's generic terminal model.
+The VS Code terminal consumes quiet's generic terminal model.
 
 Its ANSI 0 through 15 colors therefore match the other first-party terminal
 ports rather than being independently derived by the VS Code adapter.
@@ -75,7 +75,7 @@ It does not define:
 * editor behavior;
 * key bindings.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -100,8 +100,8 @@ Command-K Command-T
 and select either:
 
 ----
-Quiet Day
-Quiet Night
+quiet-day
+quiet-night
 ----
 
 A port is not considered complete until both adaptations have been visually
@@ -115,5 +115,5 @@ make vscode
 
 The repository tests verify that the generated theme artifacts match the
 reference implementation and that the integrated terminal exactly matches
-Quiet's generic terminal palette.
+quiet's generic terminal palette.
 

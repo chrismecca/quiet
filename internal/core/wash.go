@@ -12,7 +12,7 @@ import (
 // The constants below are part of the current candidate Wash derivation
 // contract. Distances and lightness offsets are OKLab units.
 //
-// The line distance is bounded above by sRGB gamut: Quiet Day Rust over Field
+// The line distance is bounded above by sRGB gamut: quiet-day Rust over Field
 // leaves the gamut just above 0.025. The emphasis lightness offsets move away
 // from Field's extreme so emphasis can carry more chroma while remaining in
 // gamut.
@@ -32,7 +32,7 @@ const (
 	minimumWashSourceChroma = 0.020
 )
 
-// Family identifies one of the four Quiet chromatic anchor families.
+// Family identifies one of the four quiet chromatic anchor families.
 type Family string
 
 const (
@@ -119,7 +119,7 @@ func (w Washes) For(family Family) (Wash, error) {
 // The fixed distance also gives every family the same perceptual strength
 // regardless of how close the ground's own hue is to the family.
 //
-// Like Subtle, a wash depends on its local ground. Unlike Subtle, Quiet
+// Like Subtle, a wash depends on its local ground. Unlike Subtle, quiet
 // publishes the Field-grounded results as opaque derived roles.
 func WashOver(
 	p Palette,

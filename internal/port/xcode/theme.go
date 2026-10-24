@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/xcode/theme.go / 2026-10-18
+// @(#)quiet / go / internal/port/xcode/theme.go / 2026-10-24
 
-// Package xcode maps Quiet Core semantics onto Xcode's native workspace
+// Package xcode maps quiet-core semantics onto Xcode's native workspace
 // color-theme model.
 package xcode
 
@@ -16,7 +16,7 @@ const (
 	overrideColorWithOpacity = "colorWithOpacity"
 )
 
-// Override maps one native Xcode color role to a resolved Quiet color.
+// Override maps one native Xcode color role to a resolved quiet color.
 type Override struct {
 	Role  string
 	Kind  string
@@ -26,7 +26,7 @@ type Override struct {
 // Theme is the resolved host-level representation consumed by the Xcode
 // native theme serializer.
 //
-// These roles belong to Xcode. They are not additional Quiet Core semantics.
+// These roles belong to Xcode. They are not additional quiet-core semantics.
 type Theme struct {
 	Name        string
 	ColorScheme string
@@ -38,7 +38,7 @@ type Theme struct {
 	Overrides []Override
 }
 
-// Resolve maps one canonical Quiet palette onto Xcode's native workspace
+// Resolve maps one canonical quiet palette onto Xcode's native workspace
 // theme vocabulary.
 func Resolve(
 	p core.Palette,
@@ -54,7 +54,7 @@ func Resolve(
 
 	default:
 		return Theme{}, fmt.Errorf(
-			"unsupported Quiet mode %q",
+			"unsupported quiet mode %q",
 			fmt.Sprint(p.Mode),
 		)
 	}
@@ -62,7 +62,7 @@ func Resolve(
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Theme{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/kitty/kitty_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/kitty/kitty_test.go / 2026-10-24
 
 package kitty
 
@@ -22,11 +22,11 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 	}{
 		{
 			palette:  "quiet-day.json",
-			artifact: "Quiet Day.conf",
+			artifact: "quiet-day.conf",
 		},
 		{
 			palette:  "quiet-night.json",
-			artifact: "Quiet Night.conf",
+			artifact: "quiet-night.conf",
 		},
 	}
 

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/srgb.go / 2026-10-16
+// @(#)quiet / go / internal/color/srgb.go / 2026-10-24
 
 package color
 
@@ -23,7 +23,7 @@ type SRGB struct {
 }
 
 // ParseHex parses a six-digit sRGB color with an optional leading '#'. It does
-// not accept shorthand or alpha-bearing forms because Quiet's canonical color
+// not accept shorthand or alpha-bearing forms because quiet's canonical color
 // data uses explicit 24-bit sRGB values.
 func ParseHex(s string) (SRGB, error) {
 	s = strings.TrimPrefix(strings.TrimSpace(s), "#")

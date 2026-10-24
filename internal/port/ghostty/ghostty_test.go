@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/ghostty/ghostty_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/ghostty/ghostty_test.go / 2026-10-24
 
 package ghostty
 
@@ -22,11 +22,11 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 	}{
 		{
 			palette:  "quiet-day.json",
-			artifact: "Quiet Day",
+			artifact: "quiet-day",
 		},
 		{
 			palette:  "quiet-night.json",
-			artifact: "Quiet Night",
+			artifact: "quiet-night",
 		},
 	}
 

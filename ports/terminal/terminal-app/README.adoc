@@ -1,16 +1,16 @@
-// @(#)quiet / asciidoc / ports/terminal/terminal-app/README.adoc / 2026-10-17
+// @(#)quiet / asciidoc / ports/terminal/terminal-app/README.adoc / 2026-10-24
 
-= Quiet for Terminal.app
+= quiet for Terminal.app
 
 This directory contains the macOS Terminal.app host adapter and generated
-Quiet reference profiles.
+quiet reference profiles.
 
 == Profiles
 
 Importable profiles are:
 
-* link:quiet-day.terminal[Quiet Day]
-* link:quiet-night.terminal[Quiet Night]
+* link:quiet-day.terminal[quiet-day]
+* link:quiet-night.terminal[quiet-night]
 
 These files are generated artifacts.
 
@@ -19,7 +19,7 @@ They are not independent palette definitions.
 The generation path is:
 
 ----
-Quiet canonical palette
+quiet canonical palette
         |
         v
 generic ANSI reference mapping
@@ -69,15 +69,15 @@ Color values are stored as `NSKeyedArchiver`-encoded `NSColor` objects
 embedded as property-list data.
 
 The adapter uses AppKit directly rather than reproducing Cocoa archive
-internals in the Quiet Go implementation.
+internals in the quiet Go implementation.
 
-Quiet color semantics remain outside this adapter.
+quiet color semantics remain outside this adapter.
 
 == Selection
 
 Terminal.app profiles may store an alpha component for Selection.
 
-Quiet Selection is an opaque derived display color.
+quiet Selection is an opaque derived display color.
 
 The reference adapter therefore serializes Selection with alpha `1.0`
 rather than inheriting Terminal.app's profile-default selection opacity.
@@ -88,7 +88,7 @@ The Terminal.app adapter does not define ANSI color semantics.
 
 It consumes the generic reference mapping documented at:
 
-* link:../ansi.adoc[Quiet ANSI mapping]
+* link:../ansi.adoc[quiet ANSI mapping]
 
 This separation is intentional.
 
@@ -116,5 +116,5 @@ reference pipeline rather than by editing the plist manually.
 `testdata/sentinel.json` contains deliberately artificial colors used to
 exercise Terminal.app serialization.
 
-It is not a Quiet palette.
+It is not a quiet palette.
 

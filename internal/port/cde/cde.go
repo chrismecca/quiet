@@ -1,11 +1,11 @@
-// @(#)quiet / go / internal/port/cde/cde.go / 2026-10-19
+// @(#)quiet / go / internal/port/cde/cde.go / 2026-10-24
 
-// Package cde maps Quiet Core semantics onto the CDE high-color palette model.
+// Package cde maps quiet-core semantics onto the CDE high-color palette model.
 //
 // CDE palette entries are base colors. CDE/Motif derives foreground,
 // top-shadow, bottom-shadow, and selection colors from those bases.
 //
-// Direct Quiet Day and Quiet Night architectural colors were validated on a
+// Direct quiet-day and quiet-night architectural colors were validated on a
 // real CDE desktop and found to operate too near the ends of CDE's usable
 // lightness range. This port therefore applies a documented contextual OKLab
 // lightness adaptation before serialization.
@@ -31,7 +31,7 @@ type Palette struct {
 	ColorSets [8]color.SRGB
 }
 
-// Resolve maps one canonical Quiet palette onto CDE's eight high-color sets.
+// Resolve maps one canonical quiet palette onto CDE's eight high-color sets.
 //
 // Mapping:
 //
@@ -47,7 +47,7 @@ func Resolve(p core.Palette) (Palette, error) {
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Palette{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -110,7 +110,7 @@ func Resolve(p core.Palette) (Palette, error) {
 
 // Encode writes a native CDE .dp palette.
 //
-// CDE accepts sixteen-bit X color components. Quiet deliberately exports the
+// CDE accepts sixteen-bit X color components. quiet deliberately exports the
 // validated eight-bit sRGB result into the high byte of each component:
 //
 //	#RRGGBB -> #RR00GG00BB00
@@ -153,10 +153,10 @@ func Encode(
 
 func lightnessDelta(name string) (float64, error) {
 	switch name {
-	case "Quiet Day":
+	case "quiet-day":
 		return dayLightnessDelta, nil
 
-	case "Quiet Night":
+	case "quiet-night":
 		return nightLightnessDelta, nil
 
 	default:

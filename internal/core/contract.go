@@ -12,14 +12,14 @@ import (
 )
 
 const (
-	// ContractSchema identifies the machine-readable Quiet Core contract
+	// ContractSchema identifies the machine-readable quiet-core contract
 	// understood by this version of the reference implementation. It versions
-	// the serialized format, not a public Quiet release.
+	// the serialized format, not a public quiet release.
 	ContractSchema = "quiet.core/v1"
 )
 
-// Role names a color-bearing semantic role that may participate in a Quiet
-// Core rule. Roles include both canonical anchors and deterministic derived
+// Role names a color-bearing semantic role that may participate in a quiet
+// quiet-core rule. Roles include both canonical anchors and deterministic derived
 // colors.
 type Role string
 
@@ -49,7 +49,7 @@ const (
 	RoleRustWashEmphasis    Role = "rust-wash-emphasis"
 )
 
-// Contract is the machine-readable portion of the candidate Quiet Core
+// Contract is the machine-readable portion of the candidate quiet-core
 // specification.
 //
 // Human rationale belongs in the normative AsciiDoc specification. Contract
@@ -62,7 +62,7 @@ type Contract struct {
 	ContrastConstraints []ContrastConstraint
 }
 
-// ContrastConstraint requires a minimum WCAG contrast ratio between two Quiet
+// ContrastConstraint requires a minimum WCAG contrast ratio between two quiet
 // semantic roles.
 type ContrastConstraint struct {
 	ID         string
@@ -85,7 +85,7 @@ type contrastConstraintDocument struct {
 	Minimum    float64 `json:"minimum"`
 }
 
-// LoadContractFile reads and validates a machine-readable Quiet Core contract
+// LoadContractFile reads and validates a machine-readable quiet-core contract
 // from path.
 func LoadContractFile(path string) (Contract, error) {
 	f, err := os.Open(path)
@@ -110,7 +110,7 @@ func LoadContractFile(path string) (Contract, error) {
 	return contract, nil
 }
 
-// DecodeContract decodes exactly one Quiet Core contract.
+// DecodeContract decodes exactly one quiet-core contract.
 //
 // Unknown fields are rejected so misspellings and unsupported schema
 // extensions cannot silently weaken conformance checks.
