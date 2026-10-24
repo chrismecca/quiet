@@ -71,6 +71,8 @@ Night files follow the same pattern.
 * Added continuous integration: `make check`, regeneration of every
   generated port, and Terminal.app profile regeneration on macOS.
 * Added committed-artifact drift tests for the tmux and CDE ports.
+* The tmux port's mapping is now a declarative table of tmux options and
+  quiet roles.  Generated overlays are unchanged.
 * Added this changelog.
 * The Emacs package header now names Chris Mecca with a contact address,
   matching `LICENSE`.
