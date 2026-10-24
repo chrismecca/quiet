@@ -1,9 +1,9 @@
 // @(#)quiet / asciidoc / ports/machine/README.adoc / 2026-10-24
 
-= Quiet machine-readable export
+= quiet machine-readable export
 
-The Quiet machine-readable export provides a generated semantic interchange
-document for consumers that want Quiet data without implementing Quiet Core
+The quiet machine-readable export provides a generated semantic interchange
+document for consumers that want quiet data without implementing quiet-core
 derivation rules themselves.
 
 It is not an authored palette source.
@@ -14,7 +14,7 @@ It is not an authored palette source.
 ports/machine/quiet.json
 ----
 
-The artifact contains both Quiet Day and Quiet Night.
+The artifact contains both quiet-day and quiet-night.
 
 == Source of truth
 
@@ -40,7 +40,7 @@ quiet.export/v1
 
 This schema identifier versions the generated interchange representation.
 
-It is not a Quiet release number.
+It is not a quiet release number.
 
 == Opaque roles
 
@@ -51,13 +51,13 @@ Each adaptation contains:
 * Callout;
 * the line and emphasis wash for each chromatic family.
 
-Selection, Callout, and the washes are generated from Quiet Core rules.
+Selection, Callout, and the washes are generated from quiet-core rules.
 
 The washes are the canonical washes over Field.  A wash over another ground
 is a different color and is not exported.
 
 They are included so consumers do not need to reproduce perceptual color
-derivations merely to consume Quiet.
+derivations merely to consume quiet.
 
 == Contextual roles
 
@@ -81,7 +81,7 @@ The export deliberately does not include `subtle` under either mode's
 
 == Scope
 
-The machine export contains Quiet semantic data only.
+The machine export contains quiet semantic data only.
 
 It does not contain:
 
@@ -103,5 +103,5 @@ make machine
 ----
 
 The repository test suite verifies that the committed artifact is exactly
-the output generated from the canonical Quiet palettes.
+the output generated from the canonical quiet palettes.
 

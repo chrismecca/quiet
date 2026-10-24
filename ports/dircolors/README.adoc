@@ -1,11 +1,11 @@
-// @(#)quiet / asciidoc / ports/dircolors/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/dircolors/README.adoc / 2026-10-24
 
-= Quiet GNU dircolors
+= quiet for GNU dircolors
 
-The Quiet GNU dircolors port maps filesystem object semantics onto the
-generic Quiet ANSI terminal palette.
+The quiet GNU dircolors port maps filesystem object semantics onto the
+generic quiet ANSI terminal palette.
 
-It contains no concrete Quiet colors.
+It contains no concrete quiet colors.
 
 == Artifact
 
@@ -13,7 +13,7 @@ It contains no concrete Quiet colors.
 ports/dircolors/quiet.dircolors
 ----
 
-One artifact is shared by Quiet Day and Quiet Night.
+One artifact is shared by quiet-day and quiet-night.
 
 The active terminal port supplies the actual colors assigned to ANSI slots.
 
@@ -31,20 +31,20 @@ quiet.dircolors
 generic ANSI slots
         |
         v
-Quiet terminal palette
+quiet terminal palette
         |
-        +-- Quiet Day
+        +-- quiet-day
         |
-        +-- Quiet Night
+        +-- quiet-night
 ----
 
-This keeps filesystem policy independent of a particular Quiet adaptation.
+This keeps filesystem policy independent of a particular quiet adaptation.
 
 == Mapping
 
 [cols="2,2,2"]
 |===
-| Filesystem role | ANSI family | Quiet meaning
+| Filesystem role | ANSI family | quiet meaning
 
 | regular file
 | terminal default
@@ -107,7 +107,7 @@ They do not define RGB values.
 
 Ordinary files deliberately receive no color treatment.
 
-Their names use the terminal's normal foreground, which is Ink under a Quiet
+Their names use the terminal's normal foreground, which is Ink under a quiet
 terminal port.
 
 A source tree should not become colorful merely because it contains many
@@ -115,17 +115,17 @@ different filename suffixes.
 
 == Filename extensions
 
-Quiet defines no filename-extension rules.
+quiet defines no filename-extension rules.
 
 GNU's default dircolors database contains classifications for archives,
 images, media, and many other filename suffixes.
 
-The Quiet port intentionally omits them.
+The quiet port intentionally omits them.
 
 Filename extensions are generally content-format hints rather than
 filesystem state.
 
-Quiet does not assign chromatic meaning to them merely to increase visual
+quiet does not assign chromatic meaning to them merely to increase visual
 differentiation.
 
 == Special and security-sensitive state
@@ -141,14 +141,14 @@ The port deliberately uses no background-color SGR sequences.
 
 == Compatibility colors
 
-Quiet's ANSI chromatic slots are designed primarily as foreground colors
+quiet's ANSI chromatic slots are designed primarily as foreground colors
 against the terminal Field.
 
 Legacy `LS_COLORS` configurations may combine chromatic foregrounds and
-chromatic backgrounds. Those pairings are outside Quiet's terminal contrast
+chromatic backgrounds. Those pairings are outside quiet's terminal contrast
 contract and may produce poor readability.
 
-The Quiet dircolors port deliberately avoids chromatic background colors.
+The quiet dircolors port deliberately avoids chromatic background colors.
 
 Permission-sensitive states use foreground color, with bold used where an
 additional non-hue signal is useful.
@@ -163,9 +163,9 @@ For a Bourne-compatible shell:
 eval "$(dircolors ports/dircolors/quiet.dircolors)"
 ----
 
-The configuration is intended to accompany a Quiet terminal palette.
+The configuration is intended to accompany a quiet terminal palette.
 
-When used with a non-Quiet terminal palette, the same semantic ANSI slots are
+When used with a non-quiet terminal palette, the same semantic ANSI slots are
 selected, but their actual appearance is determined by that terminal.
 
 == Scope

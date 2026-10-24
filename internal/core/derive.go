@@ -26,7 +26,7 @@ const (
 	subtleAlpha = 0.55
 )
 
-// Derived contains opaque Quiet colors produced deterministically from the
+// Derived contains opaque quiet colors produced deterministically from the
 // canonical anchors.
 //
 // Subtle is intentionally absent. Unlike Selection and Callout, Subtle is not
@@ -41,7 +41,7 @@ type Derived struct {
 	Wash      Washes
 }
 
-// Derive applies the opaque candidate Quiet Core derivation rules to palette.
+// Derive applies the opaque candidate quiet-core derivation rules to palette.
 //
 // The derivations intentionally use different color operations because the
 // roles have different perceptual purposes:
@@ -79,7 +79,7 @@ func Derive(p Palette) (Derived, error) {
 }
 
 // SubtleOver returns the displayed Subtle color when Muted is composited over
-// background at the Quiet Core Subtle opacity.
+// background at the quiet-core Subtle opacity.
 //
 // The operation intentionally uses conventional gamma-encoded sRGB
 // compositing. Subtle models ordinary interface opacity behavior; it is not a

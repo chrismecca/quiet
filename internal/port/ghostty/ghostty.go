@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/ghostty/ghostty.go / 2026-10-19
+// @(#)quiet / go / internal/port/ghostty/ghostty.go / 2026-10-24
 
-// Package ghostty serializes Quiet's generic terminal palette into Ghostty's
+// Package ghostty serializes quiet's generic terminal palette into Ghostty's
 // native theme format.
 package ghostty
 
@@ -15,7 +15,7 @@ import (
 
 // Encode writes one resolved generic terminal palette as a Ghostty theme.
 //
-// This package contains no Quiet color policy. All semantic mapping and ANSI
+// This package contains no quiet color policy. All semantic mapping and ANSI
 // derivation occur in terminal.Resolve before the palette reaches this
 // serializer.
 func Encode(

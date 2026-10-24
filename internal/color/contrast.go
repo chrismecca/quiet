@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/contrast.go / 2026-10-16
+// @(#)quiet / go / internal/color/contrast.go / 2026-10-24
 
 package color
 
@@ -33,7 +33,7 @@ func Contrast(a, b SRGB) float64 {
 		(lo + 0.05)
 }
 
-// DeltaEOK returns Euclidean distance in OKLab. Quiet uses the metric for
+// DeltaEOK returns Euclidean distance in OKLab. quiet uses the metric for
 // relative/minimum-change comparisons; the project does not assign a universal
 // just-noticeable-difference threshold to this value.
 func DeltaEOK(a, b SRGB) float64 {

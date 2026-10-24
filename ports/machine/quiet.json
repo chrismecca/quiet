@@ -7,7 +7,7 @@
   },
   "modes": {
     "day": {
-      "name": "Quiet Day",
+      "name": "quiet-day",
       "status": "candidate",
       "anchors": {
         "field": "#EEEADF",
@@ -45,7 +45,7 @@
       }
     },
     "night": {
-      "name": "Quiet Night",
+      "name": "quiet-night",
       "status": "candidate",
       "anchors": {
         "field": "#1C1E1C",

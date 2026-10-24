@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/vim/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/vim/README.adoc / 2026-10-24
 
-= Quiet Vim
+= quiet for Vim
 
-The Quiet Vim port maps Quiet Core semantics onto Vim's native highlight
+The quiet Vim port maps quiet-core semantics onto Vim's native highlight
 groups.
 
 It is designed for both GUI-capable Vim and terminal Vim with truecolor
@@ -21,7 +21,7 @@ They MUST NOT be edited independently of the reference implementation.
 
 == Design
 
-Quiet does not treat programming-language token classes as unrelated semantic
+quiet does not treat programming-language token classes as unrelated semantic
 state colors merely to maximize syntax differentiation.
 
 Strings are not success.
@@ -38,7 +38,7 @@ Muted     comments and secondary text
 Mineral   language structure and active syntax
 ----
 
-Quiet's semantic chromatic families are reserved for roles that actually
+quiet's semantic chromatic families are reserved for roles that actually
 carry corresponding meaning.
 
 For example:
@@ -56,7 +56,7 @@ The principal syntax mappings are:
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `Normal`
 | Ink on Field
@@ -119,11 +119,11 @@ The purpose is hierarchy rather than token-by-token color proliferation.
 
 == Editor structure
 
-Quiet maps Vim's structural UI onto the corresponding Quiet roles.
+quiet maps Vim's structural UI onto the corresponding quiet roles.
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `Cursor`
 | Mineral
@@ -160,7 +160,7 @@ Quiet maps Vim's structural UI onto the corresponding Quiet roles.
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `Visual`
 | Ink on Selection
@@ -184,15 +184,15 @@ Quiet maps Vim's structural UI onto the corresponding Quiet roles.
 | Ink on Selection
 |===
 
-Selection uses Quiet's derived Selection role.
+Selection uses quiet's derived Selection role.
 
-The current line uses Quiet's derived Callout role.
+The current line uses quiet's derived Callout role.
 
 == Messages and state
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `Error`
 | Rust
@@ -225,7 +225,7 @@ state presentation.
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `Pmenu`
 | Ink on Surface
@@ -253,7 +253,7 @@ state presentation.
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `StatusLine`
 | Ink on Structure
@@ -273,12 +273,12 @@ state presentation.
 
 == Diff semantics
 
-Diff state is one of the places where Quiet's chromatic semantic families
+Diff state is one of the places where quiet's chromatic semantic families
 apply directly.
 
 [cols="2,1"]
 |===
-| Vim group | Quiet role
+| Vim group | quiet role
 
 | `DiffAdd`
 | Moss
@@ -304,7 +304,7 @@ apply directly.
 
 == Terminal integration
 
-The Vim port embeds the same sixteen-color ANSI palette produced by Quiet's
+The Vim port embeds the same sixteen-color ANSI palette produced by quiet's
 generic terminal reference port.
 
 This is exposed through:
@@ -326,15 +326,15 @@ When Vim runs in a terminal with truecolor support, enable:
 set termguicolors
 ----
 
-Vim will then use the exact `guifg` and `guibg` values emitted by the Quiet
+Vim will then use the exact `guifg` and `guibg` values emitted by the quiet
 port.
 
 Without truecolor, the generated `ctermfg` and `ctermbg` mappings fall back to
-Quiet's generic ANSI slots.
+quiet's generic ANSI slots.
 
 == Typography
 
-Quiet does not define Vim typography policy.
+quiet does not define Vim typography policy.
 
 The generated colorschemes deliberately avoid forcing:
 
@@ -347,7 +347,7 @@ The generated colorschemes deliberately avoid forcing:
 
 Those are separate host and user preferences.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -397,7 +397,7 @@ vim -Nu NONE \
     QuietThemeProbe.swift
 ----
 
-Quiet Night:
+quiet-night:
 
 ----
 vim -Nu NONE \

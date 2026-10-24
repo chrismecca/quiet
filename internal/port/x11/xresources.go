@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/x11/xresources.go / 2026-10-18
+// @(#)quiet / go / internal/port/x11/xresources.go / 2026-10-24
 
-// Package x11 maps Quiet Core semantics onto the X Toolkit resource model.
+// Package x11 maps quiet-core semantics onto the X Toolkit resource model.
 package x11
 
 import (
@@ -11,10 +11,10 @@ import (
 	"github.com/chrismecca/quiet/internal/core"
 )
 
-// Palette is the resolved Quiet mapping used by the generic Xt/Xaw resource
+// Palette is the resolved quiet mapping used by the generic Xt/Xaw resource
 // port.
 //
-// X resources are host roles. They are not additional Quiet Core semantics.
+// X resources are host roles. They are not additional quiet-core semantics.
 type Palette struct {
 	Name string
 
@@ -26,7 +26,7 @@ type Palette struct {
 	Mineral   color.SRGB
 }
 
-// Resolve maps one canonical Quiet palette onto the generic Xt/Xaw resource
+// Resolve maps one canonical quiet palette onto the generic Xt/Xaw resource
 // vocabulary used by the X11 reference port.
 func Resolve(
 	p core.Palette,

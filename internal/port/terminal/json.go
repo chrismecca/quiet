@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/terminal/json.go / 2026-10-16
+// @(#)quiet / go / internal/port/terminal/json.go / 2026-10-24
 
 package terminal
 
@@ -12,7 +12,7 @@ import (
 // as the Terminal.app Swift serializer.
 //
 // It is intentionally generic ANSI-terminal data: the receiving adapter does
-// not need knowledge of Quiet Core roles or derivation rules.
+// not need knowledge of quiet-core roles or derivation rules.
 type document struct {
 	Name       string   `json:"name"`
 	Background string   `json:"background"`

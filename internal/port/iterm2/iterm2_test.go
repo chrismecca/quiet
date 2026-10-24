@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/iterm2/iterm2_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/iterm2/iterm2_test.go / 2026-10-24
 
 package iterm2
 
@@ -34,7 +34,7 @@ func TestCanonicalPresetMatchesCommittedArtifact(t *testing.T) {
 			t,
 			"ports",
 			"iterm2",
-			"Quiet.itermcolors",
+			"quiet.itermcolors",
 		),
 	)
 	if err != nil {

@@ -1582,7 +1582,7 @@
 	AAAAAAIBAAAAAAAAACoAAAAAAAAAAAAAAAAAAA3P
 	</data>
 	<key>name</key>
-	<string>Quiet Day</string>
+	<string>quiet-day</string>
 	<key>type</key>
 	<string>Window Settings</string>
 </dict>

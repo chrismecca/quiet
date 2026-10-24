@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/base24/base24.go / 2026-10-18
+// @(#)quiet / go / internal/port/base24/base24.go / 2026-10-24
 
-// Package base24 projects Quiet Core onto the Base24 compatibility model.
+// Package base24 projects quiet-core onto the Base24 compatibility model.
 package base24
 
 import (
@@ -15,7 +15,7 @@ import (
 const (
 	// Base24 requires two background colors beyond base00.
 	//
-	// Quiet has no canonical roles beyond Field in that direction. These
+	// quiet has no canonical roles beyond Field in that direction. These
 	// values therefore extrapolate from Field away from Ink in OKLab. The
 	// modest distances preserve Field's neutral character while creating the
 	// additional background levels required by Base24.
@@ -26,7 +26,7 @@ const (
 // Scheme is a resolved Base24 compatibility scheme.
 //
 // Base24 extends Base16 with two additional background levels and six bright
-// chromatic colors. It is a compatibility representation, not Quiet Core.
+// chromatic colors. It is a compatibility representation, not quiet-core.
 type Scheme struct {
 	Name        string
 	Slug        string
@@ -36,7 +36,7 @@ type Scheme struct {
 	Palette     [24]color.SRGB
 }
 
-// Resolve projects one Quiet palette onto Base24.
+// Resolve projects one quiet palette onto Base24.
 func Resolve(p core.Palette) (Scheme, error) {
 	base, err := base16.Resolve(p)
 	if err != nil {

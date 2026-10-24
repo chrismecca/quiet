@@ -1,6 +1,6 @@
 # @(#)quiet / yaml / .github/workflows/check.yml / 2026-10-24
 
-# Every change must leave Quiet reproducible: Core conformance passes and
+# Every change must leave quiet reproducible: quiet-core conformance passes and
 # every committed generated artifact equals current generator output.
 
 name: check
@@ -26,7 +26,7 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Headers, format, vet, tests, Core conformance
+      - name: Headers, format, vet, tests, quiet-core conformance
         run: make check
 
       # The Go tests already compare most artifacts byte for byte. This step

@@ -78,7 +78,7 @@ headers:
 	@status=0; \
 	for file in $(HEADER_FILES); do \
 		if ! head -n 3 "$$file" | grep -Fq '@(#)quiet /'; then \
-			echo "missing Quiet identification header: $$file"; \
+			echo "missing quiet identification header: $$file"; \
 			status=1; \
 		fi; \
 	done; \
@@ -143,10 +143,10 @@ base24:
 cde:
 	$(GO) run ./cmd/quiet port cde \
 		spec/quiet-day.json \
-		> ports/cde/QuietDay.dp
+		> ports/cde/quiet-day.dp
 	$(GO) run ./cmd/quiet port cde \
 		spec/quiet-night.json \
-		> ports/cde/QuietNight.dp
+		> ports/cde/quiet-night.dp
 
 .PHONY: dircolors
 dircolors:
@@ -166,26 +166,26 @@ emacs:
 ghostty:
 	$(GO) run ./cmd/quiet port ghostty \
 		spec/quiet-day.json \
-		> 'ports/ghostty/Quiet Day'
+		> ports/ghostty/quiet-day
 	$(GO) run ./cmd/quiet port ghostty \
 		spec/quiet-night.json \
-		> 'ports/ghostty/Quiet Night'
+		> ports/ghostty/quiet-night
 
 .PHONY: iterm2
 iterm2:
 	$(GO) run ./cmd/quiet port iterm2 \
 		spec/quiet-day.json \
 		spec/quiet-night.json \
-		> 'ports/iterm2/Quiet.itermcolors'
+		> ports/iterm2/quiet.itermcolors
 
 .PHONY: kitty
 kitty:
 	$(GO) run ./cmd/quiet port kitty \
 		spec/quiet-day.json \
-		> 'ports/kitty/Quiet Day.conf'
+		> ports/kitty/quiet-day.conf
 	$(GO) run ./cmd/quiet port kitty \
 		spec/quiet-night.json \
-		> 'ports/kitty/Quiet Night.conf'
+		> ports/kitty/quiet-night.conf
 
 .PHONY: machine
 machine:
@@ -276,10 +276,10 @@ web:
 wezterm:
 	$(GO) run ./cmd/quiet port wezterm \
 		spec/quiet-day.json \
-		> 'ports/wezterm/Quiet Day.toml'
+		> ports/wezterm/quiet-day.toml
 	$(GO) run ./cmd/quiet port wezterm \
 		spec/quiet-night.json \
-		> 'ports/wezterm/Quiet Night.toml'
+		> ports/wezterm/quiet-night.toml
 
 .PHONY: x11
 x11:
@@ -294,7 +294,7 @@ x11:
 xcode:
 	$(GO) run ./cmd/quiet port xcode \
 		spec/quiet-day.json \
-		> 'ports/xcode/Quiet Day.xcworkspacecolortheme'
+		> ports/xcode/quiet-day.xcworkspacecolortheme
 	$(GO) run ./cmd/quiet port xcode \
 		spec/quiet-night.json \
-		> 'ports/xcode/Quiet Night.xcworkspacecolortheme'
+		> ports/xcode/quiet-night.xcworkspacecolortheme

@@ -1,8 +1,8 @@
-// @(#)quiet / asciidoc / ports/kitty/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/kitty/README.adoc / 2026-10-24
 
-= Quiet kitty
+= quiet for kitty
 
-The Quiet kitty port serializes Quiet's generic terminal palette into kitty's
+The quiet kitty port serializes quiet's generic terminal palette into kitty's
 native color configuration format.
 
 It introduces no independent color policy.
@@ -10,8 +10,8 @@ It introduces no independent color policy.
 == Artifacts
 
 ----
-ports/kitty/Quiet Day.conf
-ports/kitty/Quiet Night.conf
+ports/kitty/quiet-day.conf
+ports/kitty/quiet-night.conf
 ----
 
 The files are generated artifacts.
@@ -21,7 +21,7 @@ They MUST NOT be edited independently of the reference implementation.
 == Architecture
 
 ----
-Quiet Core
+quiet-core
     |
     v
 generic terminal mapping
@@ -63,8 +63,8 @@ All ANSI derivation occurs in the generic terminal reference port.
 | ANSI 0..15
 |===
 
-The Cursor role is derived from Quiet Mineral by the generic terminal model.
-Using it for `url_color` preserves Quiet's information/focus semantics.
+The Cursor role is derived from quiet Mineral by the generic terminal model.
+Using it for `url_color` preserves quiet's information/focus semantics.
 
 == Scope
 
@@ -82,7 +82,7 @@ It does not define:
 * key bindings;
 * shell behavior.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
@@ -99,10 +99,10 @@ Install both themes:
 ----
 mkdir -p ~/.config/kitty/themes
 
-cp 'ports/kitty/Quiet Day.conf' \
+cp 'ports/kitty/quiet-day.conf' \
    ~/.config/kitty/themes/
 
-cp 'ports/kitty/Quiet Night.conf' \
+cp 'ports/kitty/quiet-night.conf' \
    ~/.config/kitty/themes/
 ----
 
@@ -111,13 +111,13 @@ They can then be selected with kitty's theme kitten.
 For example:
 
 ----
-kitten themes 'Quiet Day'
+kitten themes 'quiet-day'
 ----
 
 or:
 
 ----
-kitten themes 'Quiet Night'
+kitten themes 'quiet-night'
 ----
 
 == Automatic Day / Night
@@ -129,13 +129,13 @@ kitty can follow the operating-system color-scheme preference using:
 ~/.config/kitty/dark-theme.auto.conf
 ----
 
-For Quiet:
+For quiet:
 
 ----
-cp 'ports/kitty/Quiet Day.conf' \
+cp 'ports/kitty/quiet-day.conf' \
    ~/.config/kitty/light-theme.auto.conf
 
-cp 'ports/kitty/Quiet Night.conf' \
+cp 'ports/kitty/quiet-night.conf' \
    ~/.config/kitty/dark-theme.auto.conf
 ----
 

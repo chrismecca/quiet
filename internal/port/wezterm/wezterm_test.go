@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/wezterm/wezterm_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/wezterm/wezterm_test.go / 2026-10-24
 
 package wezterm
 
@@ -21,11 +21,11 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 	}{
 		{
 			palette:  "quiet-day.json",
-			artifact: "Quiet Day.toml",
+			artifact: "quiet-day.toml",
 		},
 		{
 			palette:  "quiet-night.json",
-			artifact: "Quiet Night.toml",
+			artifact: "quiet-night.toml",
 		},
 	}
 

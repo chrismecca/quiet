@@ -154,7 +154,7 @@ func TestNightRustStructureFixture(t *testing.T) {
 func TestDecodeContractRejectsUnknownRole(t *testing.T) {
 	const document = `{
 		"schema": "quiet.core/v1",
-		"name": "Quiet Core",
+		"name": "quiet-core",
 		"status": "candidate",
 		"contrast_constraints": [
 			{
@@ -180,7 +180,7 @@ func TestDecodeContractRejectsUnknownRole(t *testing.T) {
 func TestDecodeContractRejectsDuplicateIDs(t *testing.T) {
 	const document = `{
 		"schema": "quiet.core/v1",
-		"name": "Quiet Core",
+		"name": "quiet-core",
 		"status": "candidate",
 		"contrast_constraints": [
 			{
@@ -212,7 +212,7 @@ func TestDecodeContractRejectsDuplicateIDs(t *testing.T) {
 func TestDecodeContractRejectsImpossibleContrast(t *testing.T) {
 	const document = `{
 		"schema": "quiet.core/v1",
-		"name": "Quiet Core",
+		"name": "quiet-core",
 		"status": "candidate",
 		"contrast_constraints": [
 			{

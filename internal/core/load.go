@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/load.go / 2026-10-16
+// @(#)quiet / go / internal/core/load.go / 2026-10-24
 
 package core
 
@@ -37,7 +37,7 @@ type anchorsDocument struct {
 	Rust      string `json:"rust"`
 }
 
-// LoadPaletteFile reads and validates a canonical Quiet palette document from
+// LoadPaletteFile reads and validates a canonical quiet palette document from
 // path.
 func LoadPaletteFile(path string) (Palette, error) {
 	f, err := os.Open(path)
@@ -62,9 +62,9 @@ func LoadPaletteFile(path string) (Palette, error) {
 	return p, nil
 }
 
-// DecodePalette decodes one canonical Quiet palette document.
+// DecodePalette decodes one canonical quiet palette document.
 //
-// Unknown JSON fields are rejected. Quiet's normative data should fail loudly
+// Unknown JSON fields are rejected. quiet's normative data should fail loudly
 // when a field is misspelled or when a newer schema is passed to an older
 // implementation.
 func DecodePalette(r io.Reader) (Palette, error) {
@@ -211,7 +211,7 @@ func decodeAnchors(doc anchorsDocument) (Anchors, error) {
 }
 
 // decodeAnchor applies the stricter representation rules used by canonical
-// Quiet data. The generic color parser accepts reasonable user input; spec
+// quiet data. The generic color parser accepts reasonable user input; spec
 // files must use one deterministic uppercase #RRGGBB spelling.
 func decodeAnchor(name, value string) (color.SRGB, error) {
 	c, err := color.ParseHex(value)

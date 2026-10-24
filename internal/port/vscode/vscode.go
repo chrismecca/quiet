@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/vscode/vscode.go / 2026-10-19
+// @(#)quiet / go / internal/port/vscode/vscode.go / 2026-10-24
 
-// Package vscode maps Quiet Core semantics onto Visual Studio Code's native
+// Package vscode maps quiet-core semantics onto Visual Studio Code's native
 // workbench, syntax, semantic-token, and integrated-terminal color systems.
 package vscode
 
@@ -53,11 +53,11 @@ type resolved struct {
 	ansi               [16]string
 }
 
-// Encode writes one Quiet palette as a native VS Code color-theme document.
+// Encode writes one quiet palette as a native VS Code color-theme document.
 //
-// Workbench and editor semantics map directly from Quiet Core. The integrated
+// Workbench and editor semantics map directly from quiet-core. The integrated
 // terminal deliberately consumes the generic terminal reference mapping so
-// ANSI behavior remains identical to Quiet's other terminal ports.
+// ANSI behavior remains identical to quiet's other terminal ports.
 //
 // The port controls color only. It does not impose typography, iconography,
 // layout, fonts, font weight, italics, or other application styling.
@@ -441,7 +441,7 @@ func resolve(
 	derived, err := core.Derive(p)
 	if err != nil {
 		return resolved{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -513,9 +513,9 @@ func themeType(
 	name string,
 ) (string, error) {
 	switch name {
-	case "Quiet Day":
+	case "quiet-day":
 		return "light", nil
-	case "Quiet Night":
+	case "quiet-night":
 		return "dark", nil
 	default:
 		return "", fmt.Errorf(

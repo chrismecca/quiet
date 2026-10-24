@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/composite.go / 2026-10-16
+// @(#)quiet / go / internal/color/composite.go / 2026-10-24
 
 package color
 
@@ -7,7 +7,7 @@ import "fmt"
 // CompositeLegacySRGB composites foreground over an opaque background using
 // alpha in gamma-encoded sRGB.
 //
-// Quiet uses this operation for legacy/display semantics such as Subtle, where
+// quiet uses this operation for legacy/display semantics such as Subtle, where
 // the intended result corresponds to conventional sRGB alpha compositing rather
 // than interpolation in a perceptual color space.
 //

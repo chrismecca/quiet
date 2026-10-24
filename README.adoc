@@ -1,10 +1,11 @@
 // @(#)quiet / asciidoc / README.adoc / 2026-10-24
 
 ----
-  ___       _     _
- / _ \ _  _(_)___| |_
-| (_) | || | / -_)  _|
- \__\_\\_,_|_\___|\__|.
+           _     _
+ __ _ _  _(_)___| |_
+/ _` | || | / -_)  _|
+\__, |\_,_|_\___|\__|.
+   |_|
 ----
 
 A restrained color system for long-duration work.
@@ -13,11 +14,11 @@ _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
-image::docs/assets/header/quiet-header.png[Quiet Day and Quiet Night in Terminal.app with Vim and Xcode,align=center]
+image::docs/assets/header/quiet-header.png[quiet-day and quiet-night in Terminal.app with Vim and Xcode,align=center]
 
 == Why
 
-Quiet is a semantic color system for software used for hours at a time.
+quiet is a semantic color system for software used for hours at a time.
 
 Not a theme pack. +
 Not a skin. +
@@ -26,15 +27,15 @@ Not a pile of hex values.
 Ten semantic anchors. +
 Two adaptations. +
 Deterministic derivation. +
-Forty-seven current Core constraints.
+Forty-seven current quiet-core constraints.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not redesign the applications that use them.
 
 == Day / Night
 
-Quiet Day and Quiet Night are adaptations of the same semantic system.
+quiet-day and quiet-night are adaptations of the same semantic system.
 
 They are not mathematical inversions.
 
@@ -67,7 +68,7 @@ spec/quiet-night.json
 
 Base16 and Base24 are compatibility projections.
 
-The native exports preserve Quiet's own semantic vocabulary.
+The native exports preserve quiet's own semantic vocabulary.
 
 == Ports
 
@@ -100,16 +101,16 @@ The native exports preserve Quiet's own semantic vocabulary.
 
 == Underneath
 
-Quiet is specified rather than eyeballed.
+quiet is specified rather than eyeballed.
 
 sRGB · OKLab / OKLCH · deterministic derivation · WCAG contrast ·
 gamut validation · CVD screening · human review
 
-Current Core validation:
+Current quiet-core validation:
 
 ----
-Quiet Day:   PASS (47/47)
-Quiet Night: PASS (47/47)
+quiet-day:   PASS (47/47)
+quiet-night: PASS (47/47)
 ----
 
 == Build
@@ -120,7 +121,7 @@ make build
 make generate
 ----
 
-The reference implementation can inspect, derive, validate, and export Quiet:
+The reference implementation can inspect, derive, validate, and export quiet:
 
 ----
 ./bin/quiet inspect '#4A6E7A'
@@ -148,7 +149,7 @@ The reference interface lives in `examples/reference-interface/`.
 
 == Status
 
-Quiet Core 0.1 is under development.
+quiet 0.1 is under development.
 
 Day and Night remain candidate data while reference-port work and broader
 testing continue.

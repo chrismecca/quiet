@@ -1,5 +1,5 @@
 #!/bin/sh
-# @(#)quiet / sh / ports/terminal/ansi-test.sh / 2026-10-17
+# @(#)quiet / sh / ports/terminal/ansi-test.sh / 2026-10-24
 
 set -eu
 
@@ -18,7 +18,7 @@ name()
 }
 
 printf '\n'
-printf 'Quiet ANSI terminal reference test\n'
+printf 'quiet ANSI terminal reference test\n'
 printf '==================================\n'
 
 printf '\nnormal foregrounds\n\n'

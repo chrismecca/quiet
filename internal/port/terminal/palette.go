@@ -1,11 +1,11 @@
-// @(#)quiet / go / internal/port/terminal/palette.go / 2026-10-17
+// @(#)quiet / go / internal/port/terminal/palette.go / 2026-10-24
 
-// Package terminal maps Quiet Core semantics onto the conventional sixteen
+// Package terminal maps quiet-core semantics onto the conventional sixteen
 // ANSI terminal color slots.
 //
-// The package is a reference-port adapter, not part of Quiet Core. Terminal-
+// The package is a reference-port adapter, not part of quiet-core. Terminal-
 // specific colors derived here must not be interpreted as additional canonical
-// Quiet anchors.
+// quiet anchors.
 package terminal
 
 import (
@@ -19,12 +19,12 @@ import (
 const (
 	// brightDeltaL increases perceptual lightness for ANSI bright chromatic
 	// slots. "Bright" is treated as a terminal-local intensity relationship,
-	// not as increased contrast against Quiet Field.
+	// not as increased contrast against quiet Field.
 	brightDeltaL = 0.010
 
 	// brightChromaScale modestly increases chroma while preserving the base hue
 	// family. The scale is intentionally conservative: ANSI bright colors must
-	// remain recognizably Quiet rather than becoming saturated terminal colors.
+	// remain recognizably quiet rather than becoming saturated terminal colors.
 	brightChromaScale = 1.20
 
 	brightSearchIterations = 48
@@ -40,9 +40,9 @@ const (
 
 // Palette is a fully resolved generic ANSI terminal palette.
 //
-// It contains host-level roles rather than Quiet semantic roles. Platform
+// It contains host-level roles rather than quiet semantic roles. Platform
 // adapters such as Terminal.app consume this representation and should not
-// need to know how Quiet anchors produced it.
+// need to know how quiet anchors produced it.
 type Palette struct {
 	Name       string
 	Background color.SRGB
@@ -53,13 +53,13 @@ type Palette struct {
 	ANSI       [16]color.SRGB
 }
 
-// Resolve maps one canonical Quiet palette onto the generic ANSI terminal
+// Resolve maps one canonical quiet palette onto the generic ANSI terminal
 // model.
 func Resolve(p core.Palette) (Palette, error) {
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Palette{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -337,7 +337,7 @@ func exportedContrastAtLeast(
 	) >= minimum, nil
 }
 
-// neutralRamp maps existing Quiet neutrals onto the four ANSI grayscale slots.
+// neutralRamp maps existing quiet neutrals onto the four ANSI grayscale slots.
 //
 // The mapping is based on perceptual lightness instead of Day/Night names:
 //
@@ -409,9 +409,9 @@ func lightness(c color.SRGB) float64 {
 
 // deriveCyan fills the perceptual interval between Moss and Mineral.
 //
-// ANSI requires a cyan family that Quiet Core does not define. The terminal
+// ANSI requires a cyan family that quiet-core does not define. The terminal
 // reference port therefore creates one by averaging L and C and taking the
-// shortest hue midpoint between those two neighboring Quiet families.
+// shortest hue midpoint between those two neighboring quiet families.
 func deriveCyan(
 	p core.Palette,
 ) (color.SRGB, error) {
@@ -442,7 +442,7 @@ func deriveCyan(
 //
 // The midpoint intentionally follows increasing hue from Mineral through 360°
 // to Rust. The opposite arc passes through Moss and Ochre and would therefore
-// duplicate existing Quiet families instead of filling ANSI's missing magenta
+// duplicate existing quiet families instead of filling ANSI's missing magenta
 // region.
 func deriveMagenta(
 	p core.Palette,

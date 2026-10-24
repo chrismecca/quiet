@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/xcode/theme_test.go / 2026-10-18
+// @(#)quiet / go / internal/port/xcode/theme_test.go / 2026-10-24
 
 package xcode
 
@@ -20,11 +20,11 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 	}{
 		{
 			palette:  "quiet-day.json",
-			artifact: "Quiet Day.xcworkspacecolortheme",
+			artifact: "quiet-day.xcworkspacecolortheme",
 		},
 		{
 			palette:  "quiet-night.json",
-			artifact: "Quiet Night.xcworkspacecolortheme",
+			artifact: "quiet-night.xcworkspacecolortheme",
 		},
 	}
 

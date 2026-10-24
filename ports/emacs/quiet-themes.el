@@ -1,4 +1,4 @@
-;;; quiet-themes.el --- Quiet themes for long-duration work -*- lexical-binding: t; -*-
+;;; quiet-themes.el --- quiet themes for long-duration work -*- lexical-binding: t; -*-
 ;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-24
 
 ;; Copyright (C) 2026 Chris Mecca
@@ -13,14 +13,14 @@
 
 ;;; Commentary:
 
-;; Quiet is a restrained color system for long-duration work.
+;; quiet is a restrained color system for long-duration work.
 ;;
-;; This package provides two adaptations of the Quiet semantic system:
+;; This package provides two adaptations of the quiet semantic system:
 ;;
 ;;   quiet-day
 ;;   quiet-night
 ;;
-;; The theme files are generated from Quiet's canonical palette data.
+;; The theme files are generated from quiet's canonical palette data.
 ;; This library exists as the package entry point and makes the installed
 ;; theme files visible through `custom-theme-load-path'.
 ;;
@@ -32,7 +32,7 @@
 ;;
 ;;   M-x load-theme RET quiet-night RET
 ;;
-;; When one Quiet theme is active, switch between the Day and Night
+;; When one quiet theme is active, switch between the Day and Night
 ;; variants with:
 ;;
 ;;   M-x theme-choose-variant

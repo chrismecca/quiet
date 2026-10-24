@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/tmux/tmux.go / 2026-10-19
+// @(#)quiet / go / internal/port/tmux/tmux.go / 2026-10-24
 
-// Package tmux maps Quiet Core semantics onto tmux interface chrome.
+// Package tmux maps quiet-core semantics onto tmux interface chrome.
 //
 // The port is deliberately a color overlay. It does not configure tmux
 // content, layout, key bindings, formats, plugins, or terminal behavior.
@@ -15,10 +15,10 @@ import (
 	"github.com/chrismecca/quiet/internal/core"
 )
 
-// Theme is the resolved Quiet color vocabulary used by tmux.
+// Theme is the resolved quiet color vocabulary used by tmux.
 //
 // Values are serialized sRGB colors because tmux accepts #RRGGBB directly.
-// This is a host-level representation; it does not introduce new Quiet Core
+// This is a host-level representation; it does not introduce new quiet-core
 // roles.
 type Theme struct {
 	Name         string
@@ -39,12 +39,12 @@ type Theme struct {
 	Callout   string
 }
 
-// Resolve maps one canonical Quiet palette onto tmux interface semantics.
+// Resolve maps one canonical quiet palette onto tmux interface semantics.
 func Resolve(p core.Palette) (Theme, error) {
 	derived, err := core.Derive(p)
 	if err != nil {
 		return Theme{}, fmt.Errorf(
-			"derive Quiet roles: %w",
+			"derive quiet roles: %w",
 			err,
 		)
 	}
@@ -140,7 +140,7 @@ func Resolve(p core.Palette) (Theme, error) {
 // Encode writes a tmux color overlay.
 //
 // Every style assignment uses -a so existing non-color style attributes
-// remain intact. Quiet is intended to be sourced after user configuration
+// remain intact. quiet is intended to be sourced after user configuration
 // and any plugin that establishes tmux colors.
 func Encode(
 	w io.Writer,
@@ -159,7 +159,7 @@ func Encode(
 		`
 # %s
 #
-# Quiet color overlay for tmux.
+# quiet color overlay for tmux.
 #
 # This file changes tmux interface color only.
 # It does not configure content, layout, key bindings, formats,
@@ -319,10 +319,10 @@ set-window-option -ag pane-scrollbars-style 'bg=%s,fg=%s'
 
 func artifactPath(name string) (string, error) {
 	switch name {
-	case "Quiet Day":
+	case "quiet-day":
 		return "ports/tmux/quiet-day.conf", nil
 
-	case "Quiet Night":
+	case "quiet-night":
 		return "ports/tmux/quiet-night.conf", nil
 
 	default:

@@ -1,10 +1,10 @@
-// @(#)quiet / go / internal/core/palette.go / 2026-10-16
+// @(#)quiet / go / internal/core/palette.go / 2026-10-24
 
-// Package core defines Quiet's semantic palette model and the rules that
+// Package core defines quiet's semantic palette model and the rules that
 // operate on it.
 //
-// The color package knows color science but nothing about Quiet. Package core
-// is the boundary at which generic color values acquire Quiet semantics.
+// The color package knows color science but nothing about quiet. Package core
+// is the boundary at which generic color values acquire quiet semantics.
 package core
 
 import "github.com/chrismecca/quiet/internal/color"
@@ -12,10 +12,10 @@ import "github.com/chrismecca/quiet/internal/color"
 const (
 	// PaletteSchema identifies the on-disk representation understood by this
 	// version of the reference implementation. It is a data-format version,
-	// not a Quiet Core release version.
+	// not a quiet-core release version.
 	PaletteSchema = "quiet.palette/v1"
 
-	// AnchorCount is the number of canonical colors in a Quiet palette.
+	// AnchorCount is the number of canonical colors in a quiet palette.
 	// Derived semantic colors are deliberately excluded.
 	AnchorCount = 10
 )
@@ -33,11 +33,11 @@ type Status string
 
 const (
 	// StatusCandidate marks palette data that is frozen for evaluation but has
-	// not yet been published as part of a stable Quiet release.
+	// not yet been published as part of a stable quiet release.
 	StatusCandidate Status = "candidate"
 )
 
-// Palette is one realization of Quiet Core.
+// Palette is one realization of quiet-core.
 //
 // Anchors are the canonical inputs. Selection, Callout, Subtle, and future
 // semantic display colors are derived from these anchors and therefore do not
@@ -50,7 +50,7 @@ type Palette struct {
 	Anchors Anchors
 }
 
-// Anchors contains the ten canonical Quiet colors.
+// Anchors contains the ten canonical quiet colors.
 //
 // The fields are explicit rather than map-based so missing, misspelled, and
 // invented anchor names cannot silently enter the domain model.

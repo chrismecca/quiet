@@ -1,6 +1,6 @@
 {
   "schema": "quiet.palette/v1",
-  "name": "Quiet Night",
+  "name": "quiet-night",
   "mode": "night",
   "status": "candidate",
   "anchors": {

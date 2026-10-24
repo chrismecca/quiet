@@ -1,20 +1,20 @@
-// @(#)quiet / asciidoc / ports/terminal/README.adoc / 2026-10-17
+// @(#)quiet / asciidoc / ports/terminal/README.adoc / 2026-10-24
 
-= Quiet terminal reference port
+= quiet terminal reference port
 
-This directory defines Quiet's reference mapping onto the conventional
+This directory defines quiet's reference mapping onto the conventional
 sixteen-color ANSI terminal model.
 
-The mapping is a port of Quiet Core.
+The mapping is a port of quiet-core.
 
-It does not extend Quiet Core.
+It does not extend quiet-core.
 
 == Architecture
 
 The reference-port pipeline is:
 
 ----
-Quiet canonical palette
+quiet canonical palette
         |
         v
 Go ANSI resolver
@@ -27,13 +27,13 @@ host adapter
 ----
 
 Host adapters consume the resolved terminal palette rather than
-reimplementing Quiet-to-ANSI semantics independently.
+reimplementing quiet-to-ANSI semantics independently.
 
 == Reference mapping
 
 The generic ANSI mapping is documented in:
 
-* link:ansi.adoc[Quiet ANSI mapping]
+* link:ansi.adoc[quiet ANSI mapping]
 
 The executable reference implementation lives in:
 
@@ -50,7 +50,7 @@ The first host adapter is:
 Terminal.app serialization is deliberately separate from the generic ANSI
 mapping.
 
-Quiet Core defines semantic color roles.
+quiet-core defines semantic color roles.
 
 The generic terminal port maps those roles to ANSI.
 
@@ -83,7 +83,7 @@ color-science conformance.
 
 The ANSI mapping is a candidate reference port.
 
-It has been exercised in both Quiet Day and Quiet Night under macOS
+It has been exercised in both quiet-day and quiet-night under macOS
 Terminal.app.
 
 The mapping may still change as additional terminal hosts and applications

@@ -1,6 +1,6 @@
-// @(#)quiet / go / internal/port/wezterm/wezterm.go / 2026-10-19
+// @(#)quiet / go / internal/port/wezterm/wezterm.go / 2026-10-24
 
-// Package wezterm serializes Quiet's generic terminal palette into WezTerm's
+// Package wezterm serializes quiet's generic terminal palette into WezTerm's
 // native TOML color-scheme format.
 package wezterm
 
@@ -18,7 +18,7 @@ const originURL = "https://github.com/chrismecca/quiet"
 // Encode writes one resolved generic terminal palette as a WezTerm TOML
 // color-scheme file.
 //
-// This package contains no Quiet color derivation. Semantic mapping and ANSI
+// This package contains no quiet color derivation. Semantic mapping and ANSI
 // derivation occur in terminal.Resolve before the palette reaches this
 // serializer.
 func Encode(

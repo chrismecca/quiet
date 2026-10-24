@@ -1,6 +1,6 @@
 {
   "name": "quiet-color-system",
-  "displayName": "Quiet",
+  "displayName": "quiet",
   "description": "A restrained color system for long-duration work.",
   "version": "0.0.0",
   "publisher": "chrismecca",
@@ -14,12 +14,12 @@
   "contributes": {
     "themes": [
       {
-        "label": "Quiet Day",
+        "label": "quiet-day",
         "uiTheme": "vs",
         "path": "./themes/quiet-day-color-theme.json"
       },
       {
-        "label": "Quiet Night",
+        "label": "quiet-night",
         "uiTheme": "vs-dark",
         "path": "./themes/quiet-night-color-theme.json"
       }

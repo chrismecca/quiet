@@ -1,17 +1,17 @@
-// @(#)quiet / asciidoc / ports/base16/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/base16/README.adoc / 2026-10-24
 
-= Quiet Base16 compatibility export
+= quiet Base16 compatibility export
 
-Quiet provides Base16 schemes for software that consumes the Base16
+quiet provides Base16 schemes for software that consumes the Base16
 ecosystem.
 
 Base16 is a compatibility format.
 
-It is not Quiet Core.
+It is not quiet-core.
 
-The Base16 roles do not correspond one-for-one with Quiet's semantic roles,
+The Base16 roles do not correspond one-for-one with quiet's semantic roles,
 and the exported sixteen-color palette MUST NOT be interpreted as an
-expanded Quiet palette.
+expanded quiet palette.
 
 == Artifacts
 
@@ -31,7 +31,7 @@ The neutral projection is:
 
 [cols="1,2"]
 |===
-| Base16 | Quiet source
+| Base16 | quiet source
 
 | `base00`
 | Field
@@ -58,16 +58,16 @@ The neutral projection is:
 | Ink
 |===
 
-Base16 defines more neutral foreground levels than Quiet Core.
+Base16 defines more neutral foreground levels than quiet-core.
 
-Rather than invent additional canonical Quiet neutrals, the compatibility
+Rather than invent additional canonical quiet neutrals, the compatibility
 projection collapses `base06` and `base07` onto Ink.
 
 The chromatic projection is:
 
 [cols="1,2"]
 |===
-| Base16 | Quiet source
+| Base16 | quiet source
 
 | `base08`
 | Rust
@@ -97,10 +97,10 @@ The chromatic projection is:
 Base16 distinguishes red, orange, yellow, green, cyan, blue, magenta, and
 brown-like roles.
 
-Quiet Core defines only four chromatic semantic families.
+quiet-core defines only four chromatic semantic families.
 
 The compatibility export therefore intentionally collapses some Base16
-roles rather than inventing new Quiet semantic families.
+roles rather than inventing new quiet semantic families.
 
 In particular:
 
@@ -118,21 +118,21 @@ Cyan and Magenta are port-specific compatibility colors.
 They are derived using the same perceptual hue relationships used by the
 generic ANSI reference port.
 
-They are not Quiet Core anchors.
+They are not quiet-core anchors.
 
 == Semantic limitation
 
 Base16 assigns syntax-oriented meanings to its chromatic slots.
 
-Quiet's canonical chromatic roles describe interface semantics instead.
+quiet's canonical chromatic roles describe interface semantics instead.
 
-A Base16 template may therefore use a Quiet chromatic family in a context
-whose Base16 meaning differs from its Quiet Core meaning.
+A Base16 template may therefore use a quiet chromatic family in a context
+whose Base16 meaning differs from its quiet-core meaning.
 
 This is an unavoidable property of the compatibility projection.
 
-Native Quiet ports SHOULD map application semantics directly instead of
-routing through Base16 when a first-party Quiet port exists.
+Native quiet ports SHOULD map application semantics directly instead of
+routing through Base16 when a first-party quiet port exists.
 
 == Generation
 
@@ -143,5 +143,5 @@ make base16
 ----
 
 The repository test suite verifies that the committed artifacts are exactly
-the output produced from the canonical Quiet palettes.
+the output produced from the canonical quiet palettes.
 

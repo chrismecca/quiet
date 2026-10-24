@@ -4,7 +4,7 @@ package color
 
 import "math"
 
-// OKLab is the rectangular OKLab representation. Quiet uses OKLab for
+// OKLab is the rectangular OKLab representation. quiet uses OKLab for
 // perceptually even interpolation of derived colors such as Selection.
 type OKLab struct {
 	L float64

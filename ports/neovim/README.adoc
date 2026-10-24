@@ -1,10 +1,10 @@
-// @(#)quiet / asciidoc / ports/neovim/README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / ports/neovim/README.adoc / 2026-10-24
 
-= Quiet Neovim
+= quiet for Neovim
 
-Quiet Day and Quiet Night for Neovim.
+quiet-day and quiet-night for Neovim.
 
-The port maps Quiet Core semantics directly onto Neovim UI, syntax,
+The port maps quiet-core semantics directly onto Neovim UI, syntax,
 Tree-sitter, diagnostic, and LSP semantic-token highlight groups.
 
 It introduces no independent color policy.
@@ -12,7 +12,7 @@ It introduces no independent color policy.
 == Architecture
 
 ----
-Quiet Core
+quiet-core
     |
     v
 Neovim semantic mapping
@@ -23,7 +23,7 @@ native Lua colorscheme
 
 == Syntax
 
-Quiet deliberately avoids rainbow syntax.
+quiet deliberately avoids rainbow syntax.
 
 Ordinary source remains Ink.
 
@@ -73,7 +73,7 @@ or:
 
 `--clean` intentionally omits the normal user runtime path.
 
-To validate an installed Quiet scheme with an otherwise clean Neovim:
+To validate an installed quiet scheme with an otherwise clean Neovim:
 
 ----
 nvim --clean \
@@ -112,7 +112,7 @@ It does not impose:
 * layout;
 * plugin configuration.
 
-Quiet ports color systems.
+quiet ports color systems.
 
 It does not skin applications.
 
