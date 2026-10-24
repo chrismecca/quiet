@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / README.adoc / 2026-10-19
+// @(#)quiet / asciidoc / README.adoc / 2026-10-24
 
 ----
   ___       _     _
@@ -26,7 +26,7 @@ Not a pile of hex values.
 Ten semantic anchors. +
 Two adaptations. +
 Deterministic derivation. +
-Nineteen current Core constraints.
+Forty-seven current Core constraints.
 
 Quiet ports color systems.
 
@@ -108,8 +108,8 @@ gamut validation · CVD screening · human review
 Current Core validation:
 
 ----
-Quiet Day:   PASS (19/19)
-Quiet Night: PASS (19/19)
+Quiet Day:   PASS (47/47)
+Quiet Night: PASS (47/47)
 ----
 
 == Build

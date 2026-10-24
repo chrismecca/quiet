@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/web/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/web/README.adoc / 2026-10-24
 
 = Quiet CSS / Web reference port
 
@@ -44,7 +44,19 @@ It also exposes the opaque derived roles:
 ----
 --quiet-selection
 --quiet-callout
+--quiet-mineral-wash
+--quiet-mineral-wash-emphasis
+--quiet-moss-wash
+--quiet-moss-wash-emphasis
+--quiet-ochre-wash
+--quiet-ochre-wash-emphasis
+--quiet-rust-wash
+--quiet-rust-wash-emphasis
 ----
+
+The wash variables are the canonical washes over Field.  A wash placed on
+another background is a different color and should be derived with the
+reference implementation.
 
 These names preserve Quiet Core semantics directly.
 

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/check.go / 2026-10-16
+// @(#)quiet / go / internal/core/check.go / 2026-10-24
 
 package core
 
@@ -165,6 +165,30 @@ func resolveRole(
 
 	case RoleCallout:
 		return derived.Callout, nil
+
+	case RoleMineralWash:
+		return derived.Wash.Mineral.Line, nil
+
+	case RoleMineralWashEmphasis:
+		return derived.Wash.Mineral.Emphasis, nil
+
+	case RoleMossWash:
+		return derived.Wash.Moss.Line, nil
+
+	case RoleMossWashEmphasis:
+		return derived.Wash.Moss.Emphasis, nil
+
+	case RoleOchreWash:
+		return derived.Wash.Ochre.Line, nil
+
+	case RoleOchreWashEmphasis:
+		return derived.Wash.Ochre.Emphasis, nil
+
+	case RoleRustWash:
+		return derived.Wash.Rust.Line, nil
+
+	case RoleRustWashEmphasis:
+		return derived.Wash.Rust.Emphasis, nil
 
 	default:
 		return color.SRGB{}, fmt.Errorf(

@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/machine/README.adoc / 2026-10-18
+// @(#)quiet / asciidoc / ports/machine/README.adoc / 2026-10-24
 
 = Quiet machine-readable export
 
@@ -48,9 +48,13 @@ Each adaptation contains:
 
 * the ten canonical anchors;
 * Selection;
-* Callout.
+* Callout;
+* the line and emphasis wash for each chromatic family.
 
-Selection and Callout are generated from Quiet Core rules.
+Selection, Callout, and the washes are generated from Quiet Core rules.
+
+The washes are the canonical washes over Field.  A wash over another ground
+is a different color and is not exported.
 
 They are included so consumers do not need to reproduce perceptual color
 derivations merely to consume Quiet.

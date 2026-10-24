@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/web/css.go / 2026-10-18
+// @(#)quiet / go / internal/port/web/css.go / 2026-10-24
 
 // Package web exports Quiet Core semantics as CSS custom properties.
 package web
@@ -151,6 +151,14 @@ func resolve(
 		{"rust", p.Anchors.Rust},
 		{"selection", derived.Selection},
 		{"callout", derived.Callout},
+		{"mineral-wash", derived.Wash.Mineral.Line},
+		{"mineral-wash-emphasis", derived.Wash.Mineral.Emphasis},
+		{"moss-wash", derived.Wash.Moss.Line},
+		{"moss-wash-emphasis", derived.Wash.Moss.Emphasis},
+		{"ochre-wash", derived.Wash.Ochre.Line},
+		{"ochre-wash-emphasis", derived.Wash.Ochre.Emphasis},
+		{"rust-wash", derived.Wash.Rust.Line},
+		{"rust-wash-emphasis", derived.Wash.Rust.Emphasis},
 	}
 
 	result := scheme{

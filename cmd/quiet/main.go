@@ -1,4 +1,4 @@
-// @(#)quiet / go / cmd/quiet/main.go / 2026-10-19
+// @(#)quiet / go / cmd/quiet/main.go / 2026-10-24
 
 // Command quiet is the reference command-line implementation for inspecting,
 // deriving, validating, and porting Quiet Core color data.
@@ -814,21 +814,42 @@ func derive(
 
 	fmt.Fprintf(
 		w,
-		"  selection     %s\n",
+		"  selection              %s\n",
 		derived.Selection.MustHex(),
 	)
 
 	fmt.Fprintf(
 		w,
-		"  callout       %s\n",
+		"  callout                %s\n",
 		derived.Callout.MustHex(),
 	)
 
 	fmt.Fprintf(
 		w,
-		"  subtle/field  %s\n",
+		"  subtle/field           %s\n",
 		subtleOnField.MustHex(),
 	)
+
+	for _, family := range core.Families() {
+		wash, err := derived.Wash.For(family)
+		if err != nil {
+			return err
+		}
+
+		fmt.Fprintf(
+			w,
+			"  %-22s %s\n",
+			string(family)+"-wash",
+			wash.Line.MustHex(),
+		)
+
+		fmt.Fprintf(
+			w,
+			"  %-22s %s\n",
+			string(family)+"-wash-emphasis",
+			wash.Emphasis.MustHex(),
+		)
+	}
 
 	return nil
 }

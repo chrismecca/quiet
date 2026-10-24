@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/check_test.go / 2026-10-16
+// @(#)quiet / go / internal/core/check_test.go / 2026-10-24
 
 package core
 
@@ -23,9 +23,9 @@ func TestCanonicalPalettesConformToCore(t *testing.T) {
 		)
 	}
 
-	if got := len(contract.ContrastConstraints); got != 19 {
+	if got := len(contract.ContrastConstraints); got != 47 {
 		t.Fatalf(
-			"contrast constraint count = %d, want 19",
+			"contrast constraint count = %d, want 47",
 			got,
 		)
 	}
@@ -75,9 +75,9 @@ func TestCanonicalPalettesConformToCore(t *testing.T) {
 				t.FailNow()
 			}
 
-			if got := report.PassedCount(); got != 19 {
+			if got := report.PassedCount(); got != 47 {
 				t.Fatalf(
-					"passed constraints = %d, want 19",
+					"passed constraints = %d, want 47",
 					got,
 				)
 			}

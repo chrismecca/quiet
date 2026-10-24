@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/machine/json.go / 2026-10-18
+// @(#)quiet / go / internal/port/machine/json.go / 2026-10-24
 
 // Package machine exports Quiet as a generic machine-readable semantic
 // document.
@@ -52,8 +52,23 @@ type anchorDocument struct {
 }
 
 type derivedDocument struct {
-	Selection string `json:"selection"`
-	Callout   string `json:"callout"`
+	Selection string         `json:"selection"`
+	Callout   string         `json:"callout"`
+	Wash      washesDocument `json:"wash"`
+}
+
+// washesDocument contains the canonical Field-grounded washes. Washes over
+// other grounds are different colors and are not exported.
+type washesDocument struct {
+	Mineral washDocument `json:"mineral"`
+	Moss    washDocument `json:"moss"`
+	Ochre   washDocument `json:"ochre"`
+	Rust    washDocument `json:"rust"`
+}
+
+type washDocument struct {
+	Line     string `json:"line"`
+	Emphasis string `json:"emphasis"`
 }
 
 type contextualDocument struct {
@@ -175,6 +190,11 @@ func resolveMode(
 		)
 	}
 
+	wash, err := resolveWashes(derived.Wash)
+	if err != nil {
+		return modeDocument{}, err
+	}
+
 	return modeDocument{
 		Name:   p.Name,
 		Status: fmt.Sprint(p.Status),
@@ -184,8 +204,52 @@ func resolveMode(
 		Derived: derivedDocument{
 			Selection: selection,
 			Callout:   callout,
+			Wash:      wash,
 		},
 	}, nil
+}
+
+func resolveWashes(
+	w core.Washes,
+) (washesDocument, error) {
+	var doc washesDocument
+
+	targets := map[core.Family]*washDocument{
+		core.FamilyMineral: &doc.Mineral,
+		core.FamilyMoss:    &doc.Moss,
+		core.FamilyOchre:   &doc.Ochre,
+		core.FamilyRust:    &doc.Rust,
+	}
+
+	for _, family := range core.Families() {
+		wash, err := w.For(family)
+		if err != nil {
+			return washesDocument{}, err
+		}
+
+		line, err := hex(
+			string(family)+" wash",
+			wash.Line,
+		)
+		if err != nil {
+			return washesDocument{}, err
+		}
+
+		emphasis, err := hex(
+			string(family)+" wash emphasis",
+			wash.Emphasis,
+		)
+		if err != nil {
+			return washesDocument{}, err
+		}
+
+		*targets[family] = washDocument{
+			Line:     line,
+			Emphasis: emphasis,
+		}
+	}
+
+	return doc, nil
 }
 
 func resolveAnchors(

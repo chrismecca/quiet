@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / PORTING.adoc / 2026-10-18
+// @(#)quiet / asciidoc / PORTING.adoc / 2026-10-24
 
 = Porting Quiet
 :toc:
@@ -107,6 +107,7 @@ Quiet defines deterministic derived roles such as:
 ----
 Selection
 Callout
+Wash
 ----
 
 A port SHOULD use the reference derivation instead of copying a previously
@@ -139,6 +140,14 @@ documented.
 
 For example, a Subtle foreground over Field and a Subtle foreground over
 Surface are different resolved colors.
+
+Wash is also a rule over a local ground.  Quiet publishes its Field-grounded
+results as derived roles because diff and diagnostic regions normally sit on
+Field.  A port that places a wash on another ground MUST derive it over that
+ground rather than reuse the Field value.
+
+Hosts that distinguish a changed line from the changed words within it map
+the line to the line wash and the words to the emphasis wash.
 
 == Host semantics before host names
 

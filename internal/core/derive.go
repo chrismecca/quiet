@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/derive.go / 2026-10-16
+// @(#)quiet / go / internal/core/derive.go / 2026-10-24
 
 package core
 
@@ -32,9 +32,13 @@ const (
 // Subtle is intentionally absent. Unlike Selection and Callout, Subtle is not
 // one opaque derived color: it is a compositing rule whose displayed value
 // depends on the local background.
+//
+// Wash is also a rule over a local ground, but its Field-grounded results are
+// canonical derived roles; see Washes.
 type Derived struct {
 	Selection color.SRGB
 	Callout   color.SRGB
+	Wash      Washes
 }
 
 // Derive applies the opaque candidate Quiet Core derivation rules to palette.
@@ -44,6 +48,7 @@ type Derived struct {
 //
 //   - Selection interpolates Structure toward Mineral in OKLab.
 //   - Callout adjusts Surface lightness and chroma in OKLCH.
+//   - Wash displaces Field toward each chromatic family's hue in OKLab.
 //
 // Subtle is evaluated separately with SubtleOver because its output depends on
 // the local background.
@@ -61,9 +66,15 @@ func Derive(p Palette) (Derived, error) {
 		return Derived{}, err
 	}
 
+	wash, err := deriveWashes(p)
+	if err != nil {
+		return Derived{}, err
+	}
+
 	return Derived{
 		Selection: selection,
 		Callout:   callout,
+		Wash:      wash,
 	}, nil
 }
 

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/machine/json_test.go / 2026-10-18
+// @(#)quiet / go / internal/port/machine/json_test.go / 2026-10-24
 
 package machine
 
@@ -73,11 +73,11 @@ func TestMachineDocumentPreservesContextualSubtle(t *testing.T) {
 	var doc struct {
 		Modes struct {
 			Day struct {
-				Derived map[string]string `json:"derived"`
+				Derived map[string]json.RawMessage `json:"derived"`
 			} `json:"day"`
 
 			Night struct {
-				Derived map[string]string `json:"derived"`
+				Derived map[string]json.RawMessage `json:"derived"`
 			} `json:"night"`
 		} `json:"modes"`
 
@@ -211,4 +211,89 @@ func repoPath(
 	)
 
 	return filepath.Join(parts...)
+}
+
+func TestMachineDocumentExportsFieldWashes(t *testing.T) {
+	day, night := canonicalPalettes(t)
+
+	var output bytes.Buffer
+
+	if err := EncodeJSON(
+		&output,
+		day,
+		night,
+	); err != nil {
+		t.Fatalf(
+			"EncodeJSON: %v",
+			err,
+		)
+	}
+
+	type washes map[string]struct {
+		Line     string `json:"line"`
+		Emphasis string `json:"emphasis"`
+	}
+
+	var doc struct {
+		Modes map[string]struct {
+			Derived struct {
+				Wash washes `json:"wash"`
+			} `json:"derived"`
+		} `json:"modes"`
+	}
+
+	if err := json.Unmarshal(
+		output.Bytes(),
+		&doc,
+	); err != nil {
+		t.Fatalf(
+			"json.Unmarshal: %v",
+			err,
+		)
+	}
+
+	for mode, palette := range map[string]core.Palette{
+		"day":   day,
+		"night": night,
+	} {
+		derived, err := core.Derive(palette)
+		if err != nil {
+			t.Fatalf(
+				"Derive: %v",
+				err,
+			)
+		}
+
+		for _, family := range core.Families() {
+			want, err := derived.Wash.For(family)
+			if err != nil {
+				t.Fatalf(
+					"Wash.For: %v",
+					err,
+				)
+			}
+
+			got, ok := doc.Modes[mode].Derived.Wash[string(family)]
+			if !ok {
+				t.Fatalf(
+					"%s: missing %s wash",
+					mode,
+					family,
+				)
+			}
+
+			if got.Line != want.Line.MustHex() ||
+				got.Emphasis != want.Emphasis.MustHex() {
+				t.Errorf(
+					"%s %s wash = %s/%s, want %s/%s",
+					mode,
+					family,
+					got.Line,
+					got.Emphasis,
+					want.Line.MustHex(),
+					want.Emphasis.MustHex(),
+				)
+			}
+		}
+	}
 }

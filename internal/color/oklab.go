@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/oklab.go / 2026-10-16
+// @(#)quiet / go / internal/color/oklab.go / 2026-10-24
 
 package color
 
@@ -141,5 +141,26 @@ func MixOKLab(a, b SRGB, amount float64) SRGB {
 		L: x.L + (y.L-x.L)*amount,
 		A: x.A + (y.A-x.A)*amount,
 		B: x.B + (y.B-x.B)*amount,
+	}.SRGB()
+}
+
+// DisplaceOKLab moves c by deltaL in OKLab lightness and by distance along the
+// chromatic direction hue, in degrees. Before quantization, the OKLab
+// distance between c and the result is exactly hypot(deltaL, distance).
+//
+// Unlike MixOKLab, the displacement does not move toward the source of the
+// hue: lightness changes only by deltaL. hue must be a defined angle; callers
+// taking it from OKLCH must reject neutral sources, whose hue is NaN.
+//
+// The result is not clipped; callers must use InGamut before treating it as a
+// display/export color.
+func DisplaceOKLab(c SRGB, deltaL, distance, hue float64) SRGB {
+	x := c.OKLab()
+	h := hue * math.Pi / 180
+
+	return OKLab{
+		L: x.L + deltaL,
+		A: x.A + distance*math.Cos(h),
+		B: x.B + distance*math.Sin(h),
 	}.SRGB()
 }
