@@ -1,11 +1,11 @@
 ;;; quiet-themes.el --- Quiet themes for long-duration work -*- lexical-binding: t; -*-
-;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-19
+;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-24
 
-;; Copyright (C) 2026 Christopher Mecca
+;; Copyright (C) 2026 Chris Mecca
 ;; SPDX-License-Identifier: MIT
 
-;; Author: Christopher Mecca
-;; Maintainer: Christopher Mecca
+;; Author: Chris Mecca <cm@chrismecca.com>
+;; Maintainer: Chris Mecca <cm@chrismecca.com>
 ;; URL: https://github.com/chrismecca/quiet
 ;; Version: 0
 ;; Package-Requires: ((emacs "29.1"))

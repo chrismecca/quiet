@@ -1,9 +1,10 @@
-// @(#)quiet / go / internal/port/cde/cde_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/cde/cde_test.go / 2026-10-24
 
 package cde
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -304,6 +305,75 @@ func TestEncodeProducesEightColorSets(
 				line,
 			)
 		}
+	}
+}
+
+// Committed artifacts are generated outputs. Any difference means either the
+// artifact was edited by hand or the generator changed without regeneration.
+func TestCanonicalPalettesMatchCommittedArtifacts(t *testing.T) {
+	tests := []struct {
+		palette  string
+		artifact string
+	}{
+		{
+			palette:  "quiet-day.json",
+			artifact: "QuietDay.dp",
+		},
+		{
+			palette:  "quiet-night.json",
+			artifact: "QuietNight.dp",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.palette, func(t *testing.T) {
+			palette, err := core.LoadPaletteFile(
+				repoPath(
+					t,
+					"spec",
+					tt.palette,
+				),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resolved, err := Resolve(palette)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var got bytes.Buffer
+
+			if err := Encode(
+				&got,
+				resolved,
+			); err != nil {
+				t.Fatal(err)
+			}
+
+			want, err := os.ReadFile(
+				repoPath(
+					t,
+					"ports",
+					"cde",
+					tt.artifact,
+				),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !bytes.Equal(
+				got.Bytes(),
+				want,
+			) {
+				t.Fatalf(
+					"generated CDE palette differs from %q",
+					tt.artifact,
+				)
+			}
+		})
 	}
 }
 

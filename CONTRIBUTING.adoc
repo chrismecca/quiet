@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-16
+// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-24
 
 = Contributing to Quiet
 
@@ -104,7 +104,14 @@ A change should not introduce:
 * missing file-identification headers;
 * `go vet` failures;
 * test failures;
-* Quiet Core validation failures once Core validation is implemented.
+* Quiet Core validation failures;
+* generated artifacts that differ from current generator output.
+
+Continuous integration runs the same checks on every push to `main` and on
+every pull request.  It also regenerates every port and, on macOS, the
+Terminal.app profiles, and fails if any committed artifact differs.
+
+Notable changes are recorded in `CHANGELOG.adoc` under `Unreleased`.
 
 == Canonical colors
 

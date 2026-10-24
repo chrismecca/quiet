@@ -1,9 +1,10 @@
-// @(#)quiet / go / internal/port/tmux/tmux_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/tmux/tmux_test.go / 2026-10-24
 
 package tmux
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -395,6 +396,75 @@ func loadTheme(
 	}
 
 	return theme
+}
+
+// Committed artifacts are generated outputs. Any difference means either the
+// artifact was edited by hand or the generator changed without regeneration.
+func TestCanonicalPalettesMatchCommittedArtifacts(t *testing.T) {
+	tests := []struct {
+		palette  string
+		artifact string
+	}{
+		{
+			palette:  "quiet-day.json",
+			artifact: "quiet-day.conf",
+		},
+		{
+			palette:  "quiet-night.json",
+			artifact: "quiet-night.conf",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.palette, func(t *testing.T) {
+			palette, err := core.LoadPaletteFile(
+				repoPath(
+					t,
+					"spec",
+					tt.palette,
+				),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resolved, err := Resolve(palette)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var got bytes.Buffer
+
+			if err := Encode(
+				&got,
+				resolved,
+			); err != nil {
+				t.Fatal(err)
+			}
+
+			want, err := os.ReadFile(
+				repoPath(
+					t,
+					"ports",
+					"tmux",
+					tt.artifact,
+				),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !bytes.Equal(
+				got.Bytes(),
+				want,
+			) {
+				t.Fatalf(
+					"generated tmux configuration differs from %q",
+					tt.artifact,
+				)
+			}
+		})
+	}
 }
 
 func repoPath(

@@ -1,4 +1,4 @@
-# @(#)quiet / make / Makefile / 2026-10-19
+# @(#)quiet / make / Makefile / 2026-10-24
 
 GO := go
 BIN := bin/quiet
@@ -15,15 +15,20 @@ PORTFILES := $(shell find ports -type f \
 	\( -name '*.adoc' -o -name '*.org' -o -name '*.swift' -o -name '*.sh' \) \
 	-print 2>/dev/null | sort)
 
+WORKFLOWFILES := $(wildcard .github/workflows/*.yml)
+
 HEADER_FILES := \
 	.gitignore \
+	CHANGELOG.adoc \
 	CONTRIBUTING.adoc \
 	Makefile \
+	PORTING.adoc \
 	README.adoc \
 	ports/emacs/quiet-themes.el \
 	$(GOFILES) \
 	$(DOCFILES) \
-	$(PORTFILES)
+	$(PORTFILES) \
+	$(WORKFLOWFILES)
 
 TERMINAL_APP_DIR := ports/terminal/terminal-app
 TERMINAL_APP_DAY := $(TERMINAL_APP_DIR)/quiet-day.terminal
