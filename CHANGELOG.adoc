@@ -29,6 +29,10 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Added the tmTheme port for bat and Sublime Text.  Its syntax rules come
+  from a shared TextMate scope policy that the VS Code port now also uses,
+  so both highlight source identically.  The tmTheme adds diff scopes and
+  forces selected text to Ink.
 * Added the fzf port: `--color` options for `FZF_DEFAULT_OPTS_FILE`.
   Matches on the current line are Ink in bold, because Mineral on
   Selection falls below 4.5:1.
