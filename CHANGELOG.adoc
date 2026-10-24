@@ -47,6 +47,20 @@ ports/xcode/Quiet Day.xcworkspacecolortheme    -> ports/xcode/quiet-day.xcworksp
 Night files follow the same pattern.
 * The naming convention is recorded in `CONTRIBUTING.adoc`.
 
+=== Reports
+
+* Added `reports/`: quiet-core conformance, Wash derivation evidence, and
+  color-vision deficiency screening, as Org sources with generated tables
+  and exported PDFs.
+* Added `quiet report`, which generates the report tables, and the
+  `report-data` and `reports` make targets.
+* Added color-vision deficiency simulation (Machado 2009, full severity) to
+  the reference implementation.
+* Screening finding: under simulated deuteranopia the Moss and Rust line
+  washes nearly coincide, and under protanopia or deuteranopia some
+  quiet-day chromatic anchors fall slightly below 4.5:1 on Field.  Neither
+  is a conformance failure; both are recorded as evidence.
+
 === Exports
 
 * The machine-readable export and the web CSS export carry the

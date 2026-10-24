@@ -13,7 +13,7 @@ import (
 // contract. Distances and lightness offsets are OKLab units.
 //
 // The line distance is bounded above by sRGB gamut: quiet-day Rust over Field
-// leaves the gamut just above 0.025. The emphasis lightness offsets move away
+// leaves the gamut near 0.028 (reports/src/wash.org). The emphasis lightness offsets move away
 // from Field's extreme so emphasis can carry more chroma while remaining in
 // gamut.
 const (

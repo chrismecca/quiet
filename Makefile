@@ -117,7 +117,33 @@ clean:
 	rm -rf bin coverage.out tmp
 
 .PHONY: generate
-generate: $(GENERATED_PORTS)
+generate: $(GENERATED_PORTS) report-data
+
+# Reports ------------------------------------------------------------------
+
+REPORTS := contrast wash cvd
+
+# Report tables are generated Org data included by the authored report
+# sources. They need only Go, so CI verifies them with the ports.
+.PHONY: report-data
+report-data:
+	$(GO) run ./cmd/quiet report reports/data $(CONTRACT) $(PALETTES)
+
+# PDF export needs Emacs and LuaLaTeX. SOURCE_DATE_EPOCH pins embedded dates
+# to the last commit so unchanged sources export unchanged dates.
+.PHONY: reports
+reports: report-data
+	mkdir -p reports/pdf
+	cd reports/src && for report in $(REPORTS); do \
+		SOURCE_DATE_EPOCH="$$(git log -1 --format=%ct)" FORCE_SOURCE_DATE=1 \
+		emacs --batch -Q \
+			--eval "(require 'ox-latex)" \
+			--eval "(setq org-latex-pdf-process '(\"latexmk -lualatex -interaction=nonstopmode -halt-on-error %f\"))" \
+			"$$report.org" \
+			--funcall org-latex-export-to-pdf \
+		|| exit 1; \
+		mv "$$report.pdf" ../pdf/; \
+	done
 
 # Generated ports -----------------------------------------------------------
 

@@ -1,0 +1,98 @@
+# @(#)quiet / org / reports/src/cvd.org / 2026-10-24
+
+#+TITLE: Color-vision deficiency screening
+#+SUBTITLE: Chromatic families under simulated dichromacy
+#+SETUPFILE: setup.org
+
+* Purpose
+
+quiet-core states that its chromatic families have been screened under
+simulated protanopia, deuteranopia, and tritanopia, and that semantic
+redundancy, not hue distance, is the conformance mechanism.
+
+This report reproduces that screening from the canonical palettes, for the
+chromatic anchors and for the line washes.
+
+* Method
+
+Simulation uses the full-severity matrices of Machado, Oliveira, and
+Fernandes (2009), applied in linear sRGB.  Simulated colors are analysis
+values: they are neither clipped nor gamut-checked.
+
+Distances are Euclidean in OKLab, written ΔE.  Both colors of a pair are
+simulated, as a viewer with the deficiency sees both.
+
+quiet-core assigns no threshold of distinguishability to ΔE, and this
+report does not introduce one.  The tables are for comparison: between
+pairs, and between normal and simulated vision.
+
+* Chromatic anchors
+
+#+CAPTION: Distance between chromatic anchors, quiet-day.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-anchors-day.org"
+
+#+CAPTION: Distance between chromatic anchors, quiet-night.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-anchors-night.org"
+
+As expected for red--green deficiencies, the Moss and Rust pair loses the
+most distance under protanopia and deuteranopia.  Under tritanopia, Mineral
+and Moss, and Ochre and Rust, draw closer while the other pairs separate.
+
+In quiet-day, Ochre and Rust are the closest pair even with normal vision.
+quiet-core already forbids distinguishing warning from error by Ochre
+versus Rust alone.
+
+* Line washes
+
+#+CAPTION: Distance between line washes, quiet-day.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-washes-day.org"
+
+#+CAPTION: Distance between line washes, quiet-night.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-washes-night.org"
+
+Washes are faint by design, so their distances are small in every
+condition.  The consequential case is a diff: additions use the Moss wash
+and deletions the Rust wash.
+
+Under deuteranopia those two washes nearly coincide in both adaptations.
+A reader with deuteranopia cannot tell an added line from a deleted line by
+its background.
+
+This confirms the existing quiet-core rule rather than adding one: Wash
+supports meaning but must not be its sole carrier.  Ports must keep the
+host's =+= and =-= markers, gutter signs, or equivalent cues for diff and
+diagnostic state.
+
+* Foreground contrast under simulation
+
+WCAG contrast is defined on the colors actually displayed, not on a
+simulation.  The table is therefore informative: it shows how the luminance
+a viewer perceives shifts under each deficiency.
+
+#+CAPTION: Chromatic anchors on Field, quiet-day.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-contrast-day.org"
+
+#+CAPTION: Chromatic anchors on Field, quiet-night.
+#+ATTR_LATEX: :font \small
+#+INCLUDE: "../data/cvd-contrast-night.org"
+
+Because quiet-day's chromatic foregrounds sit close to 4.5:1, small
+simulated luminance shifts take some of them below it: Mineral and Moss
+under protanopia, and Rust under deuteranopia.  quiet-night keeps every anchor
+above 4.5:1 under all three simulations.
+
+These are not conformance failures.  They are evidence for any future
+change-control proposal to raise quiet-day's chromatic contrast.
+
+* Limitations
+
+Simulation is a screening tool.  It does not replace evaluation with people
+who have color-vision deficiencies.
+
+Only full-severity dichromacy is simulated.  Anomalous trichromacy, which
+is more common, produces smaller shifts than those shown here.
