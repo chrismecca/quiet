@@ -1,0 +1,234 @@
+// @(#)quiet / asciidoc / ports/jetbrains/README.adoc / 2026-10-25
+
+= quiet for JetBrains IDEs
+
+quiet's JetBrains port is a plugin providing two interface themes,
+`quiet-day` and `quiet-night`, with editor color schemes of the same names.
+
+The editor schemes are also provided on their own, for use with any
+interface theme.
+
+== Files
+
+----
+quiet.jar                   plugin: both themes and both schemes
+quiet-day.theme.json        interface theme, as packaged in the plugin
+quiet-night.theme.json
+quiet-day.icls              editor color scheme, for import
+quiet-night.icls
+----
+
+All files are generated from the canonical quiet palettes.
+
+== Requirements
+
+IntelliJ Platform 2026.2 (build 262) or later: IntelliJ IDEA, CLion,
+RustRover, GoLand, PyCharm, and the other IDEs built on it.
+
+== Installation
+
+To install the plugin, open *Settings*, choose *Plugins*, then the gear
+menu, *Install Plugin from Disk*, and select `quiet.jar`.  Then choose
+`quiet-day` or `quiet-night` under *Appearance & Behavior > Appearance >
+Theme*.  Each theme selects its editor scheme.
+
+To use only an editor scheme, open *Settings*, choose *Editor > Color
+Scheme*, then the gear menu, *Import Scheme*, and select the `.icls` file.
+
+Publishing the plugin on the JetBrains Marketplace is planned for quiet 0.5.
+
+== Editor scheme
+
+The editor follows the VS Code port and quiet's shared syntax policy.
+
+[cols="2,2"]
+|===
+| Editor element | quiet role
+
+| Text
+| Ink on Field
+
+| Comments
+| Muted
+
+| Keywords, types, operators, annotations, tags
+| Mineral
+
+| Identifiers, strings, numbers, punctuation
+| Ink
+
+| Caret, current line number
+| Mineral
+
+| Caret row
+| Callout
+
+| Selection
+| Ink on Selection
+
+| Line numbers
+| Muted
+
+| Guides, separators, whitespace
+| Line
+
+| Errors, warnings, weak warnings
+| Rust, Ochre, Mineral wavy underlines
+
+| Unused symbols
+| Muted
+
+| TODO comments
+| Ochre
+
+| Search results, identifier under caret
+| Mineral wash
+
+| Write access
+| Ochre wash
+
+| Matched / unmatched brace
+| Field on Mineral / Field on Rust
+
+| Popups, documentation, folded text
+| Surface
+
+| Changed lines in the gutter
+| Moss, Ochre, Rust
+
+| Console
+| quiet's terminal palette
+|===
+
+Language-specific colors fall back to the platform's default keys, so every
+language shares the hierarchy above.
+
+=== Diff and merge
+
+[cols="2,2"]
+|===
+| Change | quiet role
+
+| Inserted
+| Moss wash
+
+| Modified
+| Ochre wash
+
+| Conflict
+| Rust wash
+
+| Deleted
+| Structure
+|===
+
+JetBrains distinguishes deleted lines from conflicts, and draws deleted
+lines as absent rather than as an error.  quiet keeps Rust for conflicts,
+which need action, and shows deletions in Structure.  This differs from the
+delta port, where removal is the only negative change and uses Rust.
+
+Every background drawn under source, such as a wash or Structure, keeps
+every syntax color at 4.5:1 or better.
+
+=== Typography and effects
+
+quiet controls color.  Where JetBrains' own Default and Darcula schemes
+agree on a non-color cue, the quiet schemes keep it in quiet's colors:
+
+* underlined reassigned variables and parameters;
+* italic static members, constants, and documentation comments;
+* struck-out deprecated names;
+* wavy underlines for problems.
+
+Where the two schemes disagree, such as bold keywords, quiet uses plain
+text.
+
+== Interface theme
+
+The themes inherit from JetBrains' Islands themes: `quiet-day` from Islands
+Light, `quiet-night` from Islands Dark.  Layout, spacing, and icons come
+from Islands; quiet sets only colors.
+
+Each theme defines quiet's roles as named colors, such as `quiet-field` and
+`quiet-mineral-wash`.  Every other color in the theme refers to one of them
+by name.
+
+The Islands themes color their interface through semantic named colors,
+such as `editor-bg`, `text-muted`, and `accent-brand-bg`.  quiet assigns
+each a role, so the parent theme's own keys take quiet's colors.  Interface
+keys the named colors do not reach are set individually.
+
+[cols="2,2"]
+|===
+| Interface element | quiet role
+
+| Editor
+| Field
+
+| Tool windows, popups, dialogs
+| Surface
+
+| Window frame, toolbar, status bar
+| Structure
+
+| Inputs
+| Field, with Line borders
+
+| Selected items / hovered items
+| Selection / Callout
+
+| Focus, links, primary buttons
+| Mineral
+
+| Errors, warnings, success
+| Rust, Ochre, Moss, with their washes for banners
+|===
+
+=== Left to JetBrains
+
+quiet leaves these interface colors as JetBrains defines them:
+
+* colors that identify something the user chose: project colors, file
+  colors, and collaborator colors;
+* charts and profilers;
+* licensing, trial, and onboarding surfaces;
+* translucent overlays and shadows, which tint quiet's colors beneath them.
+
+== Known limits
+
+Callout, used for the caret row, guarantees Muted.  Rust on Callout is
+4.36:1 in `quiet-night`, as in every quiet editor port.
+
+Matched characters in the completion popup are Mineral.  On the selected
+row, Mineral on Selection falls below 4.5:1.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed files match generator output;
+* the schemes are well-formed and set each key once;
+* every source foreground reaches 4.5:1 on Field and on every background
+  the scheme draws under source;
+* every interface text color reaches 4.5:1 on the surfaces it is drawn on;
+* the theme assigns only quiet's roles;
+* the plugin registers each theme and scheme at a path it contains.
+
+Where a JetBrains IDE is installed, the suite also reads the IDE's own
+themes and schemes and verifies that:
+
+* every scheme key is one the IDE defines;
+* every named color and interface key quiet sets exists in the parent
+  themes;
+* every opaque interface color resolves to a quiet role, except those left
+  to JetBrains above.
+
+Set `QUIET_JETBRAINS_IDE` to an IDE's `.app` bundle or installation
+directory to choose one.  The reference port is tested against CLion
+2026.2.4 and RustRover 2026.2.4.
+
+== Generation
+
+----
+make jetbrains
+----

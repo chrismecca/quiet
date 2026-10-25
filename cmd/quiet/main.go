@@ -1,4 +1,4 @@
-// @(#)quiet / go / cmd/quiet/main.go / 2026-10-24
+// @(#)quiet / go / cmd/quiet/main.go / 2026-10-25
 
 // Command quiet is the reference command-line implementation for inspecting,
 // deriving, validating, and porting quiet-core color data.
@@ -23,6 +23,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/fzf"
 	"github.com/chrismecca/quiet/internal/port/ghostty"
 	"github.com/chrismecca/quiet/internal/port/iterm2"
+	"github.com/chrismecca/quiet/internal/port/jetbrains"
 	"github.com/chrismecca/quiet/internal/port/kitty"
 	"github.com/chrismecca/quiet/internal/port/machine"
 	"github.com/chrismecca/quiet/internal/port/neovim"
@@ -140,6 +141,30 @@ var portCommands = []portCommand{
 		argc:  2,
 		run: func(w io.Writer, args []string) error {
 			return portITerm2(w, args[0], args[1])
+		},
+	},
+	{
+		name:  "jetbrains-plugin",
+		usage: "jetbrains-plugin DAY_PALETTE NIGHT_PALETTE",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portJetBrainsPlugin(w, args[0], args[1])
+		},
+	},
+	{
+		name:  "jetbrains-scheme",
+		usage: "jetbrains-scheme PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portJetBrainsScheme(w, args[0])
+		},
+	},
+	{
+		name:  "jetbrains-theme",
+		usage: "jetbrains-theme PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portJetBrainsTheme(w, args[0])
 		},
 	},
 	{
@@ -625,6 +650,64 @@ func portITerm2(
 		w,
 		day,
 		night,
+	)
+}
+
+func portJetBrainsPlugin(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return jetbrains.EncodePlugin(
+		w,
+		day,
+		night,
+	)
+}
+
+func portJetBrainsScheme(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return jetbrains.EncodeScheme(
+		w,
+		palette,
+	)
+}
+
+func portJetBrainsTheme(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return jetbrains.EncodeTheme(
+		w,
+		palette,
 	)
 }
 
