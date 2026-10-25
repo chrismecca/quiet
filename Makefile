@@ -40,6 +40,7 @@ GENERATED_PORTS := \
 	base16 \
 	base24 \
 	cde \
+	delta \
 	dircolors \
 	emacs \
 	fzf \
@@ -175,6 +176,13 @@ cde:
 	$(GO) run ./cmd/quiet port cde \
 		spec/quiet-night.json \
 		> ports/cde/quiet-night.dp
+
+.PHONY: delta
+delta:
+	$(GO) run ./cmd/quiet port delta \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/delta/quiet.gitconfig
 
 .PHONY: dircolors
 dircolors:

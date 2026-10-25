@@ -29,6 +29,11 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Added the delta port: `quiet-day` and `quiet-night` delta features.
+  Changed lines use the Wash roles and keep syntax highlighting; changed
+  words use Ink on the emphasis washes.  The port keeps delta's `+` and `-`
+  markers, because the Moss and Rust washes nearly coincide under simulated
+  deuteranopia.
 * Added the tmTheme port for bat and Sublime Text.  Its syntax rules come
   from a shared TextMate scope policy that the VS Code port now also uses,
   so both highlight source identically.  The tmTheme adds diff scopes and
