@@ -1,0 +1,92 @@
+// @(#)quiet / asciidoc / ports/chrome/README.adoc / 2026-10-24
+
+= quiet for Chrome
+
+quiet's Chrome port is a pair of Chrome themes, `quiet-day` and
+`quiet-night`.
+
+A theme colors Chrome's interface: tabs, toolbar, bookmarks bar, address
+bar suggestions, and the new tab page.  Web pages keep their own colors.
+
+== Files
+
+----
+quiet-day/manifest.json
+quiet-night/manifest.json
+----
+
+Both manifests are generated from the canonical quiet palettes.
+
+== Installation
+
+Open `chrome://extensions`, turn on *Developer mode*, choose *Load
+unpacked*, and select the theme's directory, such as `quiet-night`.
+
+Loading a second theme replaces the first.  To return to Chrome's own
+colors, choose *Reset to default* in Chrome's appearance settings.
+
+Publishing the themes in the Chrome Web Store is planned for quiet 0.5.
+
+== Semantic mapping
+
+The mapping follows the Firefox port wherever Chrome exposes the same
+element.
+
+[cols="2,2"]
+|===
+| Chrome element | quiet role
+
+| Tab strip, background tabs
+| Surface, with Muted tab titles
+
+| Selected tab and toolbar
+| Field, with Ink text
+
+| Toolbar icons, loading indicator
+| Muted
+
+| Bookmarks bar text
+| Ink
+
+| Address bar suggestions
+| Ink on Surface
+
+| New tab page
+| Ink on Field, Mineral links
+
+| New tab page section borders
+| Line
+|===
+
+Chrome draws the selected tab in the toolbar color, so the active tab joins
+the toolbar and the page beneath it.
+
+== Colors Chrome derives
+
+A Chrome theme cannot set every color.  Chrome derives the address bar from
+the toolbar color, and colors hover backgrounds, menus, and dialogs itself.
+
+Chrome's Incognito windows keep Chrome's own colors.  Chrome reads no
+Incognito theme colors, so the port sets none.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed manifests match generator output;
+* every color key is one Chrome reads from a theme, used once, as listed
+  in Chromium's `browser_theme_pack.cc`;
+* every color is an `[r, g, b]` triple in range;
+* every text-bearing element reaches 4.5:1 on its background;
+* where Chrome is installed, Chrome's extension packer accepts each theme.
+  The packer validates the manifest; it runs with a temporary profile and
+  never opens a browser window.
+
+The packer does not check color values, and Chrome drops invalid ones
+silently, so the color checks above are separate.
+
+== Generation
+
+----
+make chrome
+----

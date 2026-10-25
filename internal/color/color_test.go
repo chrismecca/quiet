@@ -65,6 +65,36 @@ func TestHexRejectsOutOfGamut(t *testing.T) {
 	}
 }
 
+func TestRGB8MatchesHex(t *testing.T) {
+	r, g, b, err := MustParseHex(quietDayMineral).RGB8()
+	if err != nil {
+		t.Fatalf("RGB8: %v", err)
+	}
+
+	if r != 0x4A || g != 0x6E || b != 0x7A {
+		t.Fatalf(
+			"RGB8 = %d, %d, %d, want 74, 110, 122",
+			r,
+			g,
+			b,
+		)
+	}
+}
+
+func TestRGB8RejectsOutOfGamut(t *testing.T) {
+	_, _, _, err := (SRGB{
+		R: 0.5,
+		G: -0.01,
+		B: 0.5,
+	}).RGB8()
+
+	if err == nil {
+		t.Fatal(
+			"RGB8 accepted an out-of-gamut color",
+		)
+	}
+}
+
 func TestBlackWhiteContrast(t *testing.T) {
 	got := Contrast(
 		MustParseHex("#000000"),
