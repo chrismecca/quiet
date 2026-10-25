@@ -93,7 +93,7 @@ The native exports preserve quiet's own semantic vocabulary.
 | Chrome
 | link:ports/tmux/[tmux]
 | link:ports/fzf/[fzf]
-| delta
+| link:ports/delta/[delta]
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
 |

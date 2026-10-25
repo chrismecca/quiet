@@ -15,6 +15,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
 	"github.com/chrismecca/quiet/internal/port/cde"
+	"github.com/chrismecca/quiet/internal/port/delta"
 	"github.com/chrismecca/quiet/internal/port/dircolors"
 	"github.com/chrismecca/quiet/internal/port/emacs"
 	"github.com/chrismecca/quiet/internal/port/fzf"
@@ -73,6 +74,14 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portCDE(w, args[0])
+		},
+	},
+	{
+		name:  "delta",
+		usage: "delta DAY_PALETTE NIGHT_PALETTE",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portDelta(w, args[0], args[1])
 		},
 	},
 	{
@@ -452,6 +461,34 @@ func portCDE(
 	return cde.Encode(
 		w,
 		resolved,
+	)
+}
+
+func portDelta(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return delta.Encode(
+		w,
+		day,
+		night,
 	)
 }
 

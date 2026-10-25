@@ -1,0 +1,142 @@
+// @(#)quiet / asciidoc / ports/delta/README.adoc / 2026-10-24
+
+= quiet for delta
+
+quiet's delta port defines delta features named `quiet-day` and
+`quiet-night`.
+
+Changed lines use quiet's Wash roles.  Code inside the diff is highlighted
+by the quiet tmTheme.
+
+== Files
+
+----
+quiet.gitconfig
+----
+
+The file is generated from the canonical quiet palettes and contains both
+features.
+
+== Installation
+
+Install the quiet tmTheme into bat's cache first, as described in
+link:../tmtheme/[the tmTheme port].  delta reads bat's cache for syntax
+themes.
+
+Then include the features from `~/.gitconfig` and select one:
+
+----
+[include]
+    path = ~/src/quiet/ports/delta/quiet.gitconfig
+[delta]
+    features = quiet-night
+----
+
+== Semantic mapping
+
+[cols="2,2"]
+|===
+| delta element | quiet role
+
+| Removed line
+| Syntax colors on Rust wash
+
+| Changed words in a removed line
+| Ink on Rust wash emphasis
+
+| Added line
+| Syntax colors on Moss wash
+
+| Changed words in an added line
+| Ink on Moss wash emphasis
+
+| Unchanged line
+| Syntax colors on the terminal background
+
+| Removed, added, and unchanged line numbers
+| Rust, Moss, Muted
+
+| Line-number separators
+| Line
+
+| Whitespace errors
+| Rust, reversed
+
+| File and hunk file names
+| Mineral
+
+| File and hunk decorations
+| Line
+
+| Hunk line numbers, inline hints
+| Muted
+
+| Search file names, line numbers
+| Mineral, Muted
+
+| Search matches
+| Ink on Callout
+|===
+
+Removed lines keep syntax highlighting.  delta's own default draws them
+without it; quiet-core guarantees every foreground on a line wash, so both
+sides of a diff remain fully highlighted.
+
+Changed words use Ink rather than syntax colors.  quiet-core guarantees
+only Ink on an emphasis wash.
+
+delta's default attributes, such as underlined file headers and boxed hunk
+headers, are kept.  Only colors change.
+
+== Plus and minus markers
+
+The port sets one option that is not a color:
+
+----
+keep-plus-minus-markers = true
+----
+
+By default delta removes the `+` and `-` markers so code can be copied
+cleanly.  Under simulated deuteranopia the Moss and Rust washes nearly
+coincide, as recorded in `reports/src/cvd.org`.  Without the markers,
+added and removed lines would differ only by hue.
+
+quiet-core requires consequential meaning to carry a non-color cue, so the
+port keeps the markers.  To remove them anyway, set
+`keep-plus-minus-markers = false` after the `features` line; enabling
+`line-numbers` then provides a positional cue instead.
+
+== Terminal background
+
+Unchanged lines and line numbers are drawn on the terminal's own background.
+The contrast guarantees assume quiet's Field, so use the port with a quiet
+terminal port.
+
+== Not mapped
+
+delta derives these from its light or dark setting, and quiet leaves them
+unchanged:
+
+* `blame-palette`;
+* `map-styles` for moved lines;
+* merge-conflict header styles;
+* commit styles.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed file matches generator output;
+* every feature keeps the plus and minus markers;
+* where delta and bat are installed, delta renders a sample diff with each
+  feature: markers present, removed and added lines on the Rust and Moss
+  washes, and a Go keyword in Mineral.  The test uses a temporary home
+  directory and bat cache, and never reads the user's configuration.
+
+The reference port is tested against delta 0.20.
+
+== Generation
+
+----
+make delta
+----

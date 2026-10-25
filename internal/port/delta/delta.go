@@ -1,0 +1,287 @@
+// @(#)quiet / go / internal/port/delta/delta.go / 2026-10-24
+
+// Package delta maps quiet-core semantics onto delta's diff styles.
+//
+// The port writes one gitconfig file with a delta feature per adaptation.
+// Diff lines use the Wash roles; syntax highlighting comes from the quiet
+// tmTheme port.
+package delta
+
+import (
+	"fmt"
+	"io"
+	"strings"
+
+	"github.com/chrismecca/quiet/internal/color"
+	"github.com/chrismecca/quiet/internal/core"
+)
+
+// role names a quiet color used by the delta mapping.
+type role int
+
+const (
+	none role = iota
+	field
+	surface
+	ink
+	muted
+	line
+	mineral
+	moss
+	rust
+	callout
+	mossWash
+	mossWashEmphasis
+	rustWash
+	rustWashEmphasis
+)
+
+type palette map[role]color.SRGB
+
+func resolve(p core.Palette) (palette, error) {
+	derived, err := core.Derive(p)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"derive quiet roles: %w",
+			err,
+		)
+	}
+
+	return palette{
+		field:            p.Anchors.Field,
+		surface:          p.Anchors.Surface,
+		ink:              p.Anchors.Ink,
+		muted:            p.Anchors.Muted,
+		line:             p.Anchors.Line,
+		mineral:          p.Anchors.Mineral,
+		moss:             p.Anchors.Moss,
+		rust:             p.Anchors.Rust,
+		callout:          derived.Callout,
+		mossWash:         derived.Wash.Moss.Line,
+		mossWashEmphasis: derived.Wash.Moss.Emphasis,
+		rustWash:         derived.Wash.Rust.Line,
+		rustWashEmphasis: derived.Wash.Rust.Emphasis,
+	}, nil
+}
+
+// style is one delta style: a foreground, an optional background, and
+// attributes. A foreground of "syntax" or "normal" is a delta keyword rather
+// than a quiet role.
+type style struct {
+	keyword    string
+	fg         role
+	bg         role
+	attributes string
+}
+
+func (s style) value(p palette) (string, error) {
+	var parts []string
+
+	if s.attributes != "" {
+		parts = append(parts, s.attributes)
+	}
+
+	switch {
+	case s.keyword != "":
+		parts = append(parts, s.keyword)
+
+	case s.fg != none:
+		hex, err := p[s.fg].Hex()
+		if err != nil {
+			return "", err
+		}
+
+		parts = append(parts, `"`+hex+`"`)
+	}
+
+	if s.bg != none {
+		hex, err := p[s.bg].Hex()
+		if err != nil {
+			return "", err
+		}
+
+		parts = append(parts, `"`+hex+`"`)
+	}
+
+	return strings.Join(parts, " "), nil
+}
+
+type option struct {
+	name  string
+	style style
+}
+
+type section struct {
+	comment string
+	options []option
+}
+
+// mapping is the complete delta style policy.
+//
+// Changed lines keep syntax colors on the line wash, where quiet-core
+// guarantees every foreground. Changed words use Ink on the emphasis wash,
+// where quiet-core guarantees only Ink. delta's default attributes, such as
+// underlined file headers and boxed hunk headers, are kept; only colors
+// change.
+var mapping = []section{
+	{
+		comment: "Removed lines.",
+		options: []option{
+			{"minus-style", style{keyword: "syntax", bg: rustWash}},
+			{"minus-non-emph-style", style{keyword: "syntax", bg: rustWash}},
+			{"minus-emph-style", style{fg: ink, bg: rustWashEmphasis}},
+			{"minus-empty-line-marker-style", style{keyword: "normal", bg: rustWash}},
+			{"line-numbers-minus-style", style{fg: rust}},
+		},
+	},
+	{
+		comment: "Added lines.",
+		options: []option{
+			{"plus-style", style{keyword: "syntax", bg: mossWash}},
+			{"plus-non-emph-style", style{keyword: "syntax", bg: mossWash}},
+			{"plus-emph-style", style{fg: ink, bg: mossWashEmphasis}},
+			{"plus-empty-line-marker-style", style{keyword: "normal", bg: mossWash}},
+			{"line-numbers-plus-style", style{fg: moss}},
+		},
+	},
+	{
+		comment: "Unchanged lines and line numbers.",
+		options: []option{
+			{"zero-style", style{keyword: "syntax"}},
+			{"line-numbers-zero-style", style{fg: muted}},
+			{"line-numbers-left-style", style{fg: line}},
+			{"line-numbers-right-style", style{fg: line}},
+			{"whitespace-error-style", style{fg: rust, attributes: "reverse"}},
+		},
+	},
+	{
+		comment: "Files and hunks.",
+		options: []option{
+			{"file-style", style{fg: mineral}},
+			{"file-decoration-style", style{fg: line, attributes: "ul"}},
+			{"hunk-header-file-style", style{fg: mineral}},
+			{"hunk-header-line-number-style", style{fg: muted}},
+			{"hunk-header-decoration-style", style{fg: line, attributes: "box"}},
+			{"inline-hint-style", style{fg: muted}},
+		},
+	},
+	{
+		comment: "Search results.",
+		options: []option{
+			{"grep-file-style", style{fg: mineral}},
+			{"grep-line-number-style", style{fg: muted}},
+			{"grep-match-word-style", style{fg: ink, bg: callout}},
+		},
+	},
+}
+
+// Encode writes a gitconfig file defining the quiet-day and quiet-night
+// delta features.
+func Encode(
+	w io.Writer,
+	day core.Palette,
+	night core.Palette,
+) error {
+	if day.Mode != core.ModeDay || night.Mode != core.ModeNight {
+		return fmt.Errorf(
+			"delta palettes are %q and %q, want %q and %q",
+			day.Mode,
+			night.Mode,
+			core.ModeDay,
+			core.ModeNight,
+		)
+	}
+
+	var b strings.Builder
+
+	b.WriteString(`# Generated by quiet port delta. Do not edit.
+#
+# quiet features for delta. Include this file from ~/.gitconfig and
+# select a feature:
+#
+#   [include]
+#       path = /path/to/quiet.gitconfig
+#   [delta]
+#       features = quiet-night
+#
+# Syntax highlighting needs the quiet tmTheme installed in bat's cache.
+`)
+
+	for _, p := range []core.Palette{day, night} {
+		if err := writeFeature(&b, p); err != nil {
+			return err
+		}
+	}
+
+	if _, err := io.WriteString(
+		w,
+		b.String(),
+	); err != nil {
+		return fmt.Errorf(
+			"write delta configuration: %w",
+			err,
+		)
+	}
+
+	return nil
+}
+
+func writeFeature(
+	b *strings.Builder,
+	p core.Palette,
+) error {
+	resolved, err := resolve(p)
+	if err != nil {
+		return err
+	}
+
+	appearance := "light"
+	if p.Mode == core.ModeNight {
+		appearance = "dark"
+	}
+
+	// keep-plus-minus-markers is the port's one non-color setting. Under
+	// simulated deuteranopia the Moss and Rust washes nearly coincide, and
+	// quiet-core requires a non-color cue for added and removed lines.
+	fmt.Fprintf(
+		b,
+		`
+[delta "%s"]
+    %s = true
+    syntax-theme = %s
+    keep-plus-minus-markers = true
+`,
+		p.Name,
+		appearance,
+		p.Name,
+	)
+
+	for _, s := range mapping {
+		fmt.Fprintf(
+			b,
+			"\n    # %s\n",
+			s.comment,
+		)
+
+		for _, o := range s.options {
+			value, err := o.style.value(resolved)
+			if err != nil {
+				return fmt.Errorf(
+					"%s %s: %w",
+					p.Name,
+					o.name,
+					err,
+				)
+			}
+
+			fmt.Fprintf(
+				b,
+				"    %s = %s\n",
+				o.name,
+				value,
+			)
+		}
+	}
+
+	return nil
+}
