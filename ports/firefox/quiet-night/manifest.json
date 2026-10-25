@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "quiet-night",
+  "version": "0.0.0",
+  "description": "A restrained color system for long-duration work.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "quiet-night@chrismecca.com",
+      "strict_min_version": "106.0"
+    }
+  },
+  "theme": {
+    "colors": {
+      "frame": "#242925",
+      "frame_inactive": "#242925",
+      "tab_background_text": "#9AA29C",
+      "tab_selected": "#1C1E1C",
+      "tab_text": "#E2E0D7",
+      "tab_line": "#789AA3",
+      "tab_loading": "#789AA3",
+      "toolbar": "#1C1E1C",
+      "toolbar_text": "#E2E0D7",
+      "icons": "#9AA29C",
+      "icons_attention": "#789AA3",
+      "button_background_hover": "#262D28",
+      "button_background_active": "#344246",
+      "toolbar_top_separator": "#343B38",
+      "toolbar_bottom_separator": "#343B38",
+      "toolbar_vertical_separator": "#343B38",
+      "toolbar_field": "#242925",
+      "toolbar_field_text": "#E2E0D7",
+      "toolbar_field_border": "#343B38",
+      "toolbar_field_focus": "#242925",
+      "toolbar_field_text_focus": "#E2E0D7",
+      "toolbar_field_border_focus": "#789AA3",
+      "toolbar_field_highlight": "#344246",
+      "toolbar_field_highlight_text": "#E2E0D7",
+      "popup": "#242925",
+      "popup_text": "#E2E0D7",
+      "popup_border": "#343B38",
+      "popup_highlight": "#344246",
+      "popup_highlight_text": "#E2E0D7",
+      "sidebar": "#242925",
+      "sidebar_text": "#E2E0D7",
+      "sidebar_border": "#343B38",
+      "sidebar_highlight": "#344246",
+      "sidebar_highlight_text": "#E2E0D7",
+      "ntp_background": "#1C1E1C",
+      "ntp_text": "#E2E0D7",
+      "ntp_card_background": "#242925"
+    },
+    "properties": {
+      "color_scheme": "dark",
+      "content_color_scheme": "system"
+    }
+  }
+}

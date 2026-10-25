@@ -29,6 +29,8 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Added the Firefox port: `quiet-day` and `quiet-night` themes for
+  Firefox's interface.  Web pages keep following the system appearance.
 * Added the delta port: `quiet-day` and `quiet-night` delta features.
   Changed lines use the Wash roles and keep syntax highlighting; changed
   words use Ink on the emphasis washes.  The port keeps delta's `+` and `-`

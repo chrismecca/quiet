@@ -1,0 +1,121 @@
+// @(#)quiet / asciidoc / ports/firefox/README.adoc / 2026-10-24
+
+= quiet for Firefox
+
+quiet's Firefox port is a pair of Firefox themes, `quiet-day` and
+`quiet-night`.
+
+A theme colors Firefox's interface: tabs, toolbar, address bar, menus, and
+sidebar.  Web pages keep their own colors.
+
+== Files
+
+----
+quiet-day/manifest.json
+quiet-night/manifest.json
+----
+
+Both manifests are generated from the canonical quiet palettes.
+
+== Installation
+
+To try a theme, open `about:debugging`, choose *This Firefox*, then *Load
+Temporary Add-on*, and select the theme's `manifest.json`.  A temporary
+theme lasts until Firefox restarts.
+
+Permanent installation in release Firefox requires a signed theme.
+Publishing signed themes is planned for quiet 0.5.
+
+== Semantic mapping
+
+The mapping follows the VS Code port.
+
+[cols="2,2"]
+|===
+| Firefox element | quiet role
+
+| Tab strip
+| Surface, with Muted tab titles
+
+| Selected tab and toolbar
+| Field, with Ink text
+
+| Selected tab line, loading indicator
+| Mineral
+
+| Toolbar icons
+| Muted
+
+| Icons calling for attention
+| Mineral
+
+| Toolbar button hover / pressed
+| Callout / Selection
+
+| Address bar
+| Ink on Surface, Line border
+
+| Focused address bar border
+| Mineral
+
+| Selected text in the address bar
+| Ink on Selection
+
+| Menus, panels, sidebar
+| Ink on Surface, Line border
+
+| Highlighted menu and sidebar items
+| Ink on Selection
+
+| Separators
+| Line
+
+| New tab page
+| Ink on Field, Surface cards
+|===
+
+The selected tab and toolbar share Field, so the active tab joins the
+toolbar and the page beneath it.
+
+== Appearance of web content
+
+The theme sets:
+
+----
+color_scheme = light | dark
+content_color_scheme = system
+----
+
+`color_scheme` keeps Firefox's own menus and built-in pages in the
+adaptation's appearance.  On its own it would also change the preferred
+color scheme reported to web pages.  `content_color_scheme = system`
+returns web pages to the operating system's setting: quiet colors Firefox,
+not the web.
+
+== Limitations
+
+Firefox's documentation notes that some theme colors have no visible
+effect in recent Firefox releases, including the sidebar highlight, the
+loading indicator, and the address bar dropdown.  The port still sets them
+for releases that honor them.
+
+The port has no automatic Day and Night switching.  Firefox supports a
+separate `dark_theme` manifest key for that; a combined theme may follow.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed manifests match generator output;
+* every color key is a supported key documented on MDN, used once;
+* web content follows the system appearance;
+* every text-bearing element reaches 4.5:1 on its background.
+
+Firefox is not exercised by the test suite.  Load the theme with
+`about:debugging` to review it in a running browser.
+
+== Generation
+
+----
+make firefox
+----
