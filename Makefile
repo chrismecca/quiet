@@ -43,6 +43,7 @@ GENERATED_PORTS := \
 	delta \
 	dircolors \
 	emacs \
+	firefox \
 	fzf \
 	ghostty \
 	iterm2 \
@@ -197,6 +198,16 @@ emacs:
 	$(GO) run ./cmd/quiet port emacs \
 		spec/quiet-night.json \
 		> ports/emacs/quiet-night-theme.el
+
+.PHONY: firefox
+firefox:
+	mkdir -p ports/firefox/quiet-day ports/firefox/quiet-night
+	$(GO) run ./cmd/quiet port firefox \
+		spec/quiet-day.json \
+		> ports/firefox/quiet-day/manifest.json
+	$(GO) run ./cmd/quiet port firefox \
+		spec/quiet-night.json \
+		> ports/firefox/quiet-night/manifest.json
 
 .PHONY: fzf
 fzf:
