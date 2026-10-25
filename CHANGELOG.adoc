@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-24
+// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-25
 
 = quiet changelog
 
@@ -29,6 +29,13 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Added the JetBrains port: a plugin with `quiet-day` and `quiet-night`
+  interface themes built on JetBrains' Islands themes, and matching editor
+  color schemes, also provided on their own for import.  Diff views use the
+  Wash roles; the console uses quiet's terminal palette.  Where a JetBrains
+  IDE is installed, tests check every key against the IDE's own themes and
+  schemes, and check that every opaque interface color resolves to a quiet
+  role.
 * Added the Chrome port: `quiet-day` and `quiet-night` themes for Chrome's
   interface, following the Firefox mapping.  Tests validate each theme
   with Chrome's extension packer where Chrome is installed.

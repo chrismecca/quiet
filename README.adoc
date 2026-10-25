@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / README.adoc / 2026-10-25
 
 ----
            _     _
@@ -87,7 +87,7 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/vim/[Vim]
 | link:ports/neovim/[Neovim]
 | link:ports/vscode/[VS Code]
-| JetBrains
+| link:ports/jetbrains/[JetBrains]
 | link:ports/xcode/[Xcode]
 | link:ports/firefox/[Firefox]
 | link:ports/chrome/[Chrome]

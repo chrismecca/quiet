@@ -1,4 +1,4 @@
-# @(#)quiet / make / Makefile / 2026-10-24
+# @(#)quiet / make / Makefile / 2026-10-25
 
 GO := go
 BIN := bin/quiet
@@ -48,6 +48,7 @@ GENERATED_PORTS := \
 	fzf \
 	ghostty \
 	iterm2 \
+	jetbrains \
 	kitty \
 	machine \
 	neovim \
@@ -244,6 +245,26 @@ iterm2:
 		spec/quiet-day.json \
 		spec/quiet-night.json \
 		> ports/iterm2/quiet.itermcolors
+
+.PHONY: jetbrains
+jetbrains:
+	mkdir -p ports/jetbrains
+	$(GO) run ./cmd/quiet port jetbrains-scheme \
+		spec/quiet-day.json \
+		> ports/jetbrains/quiet-day.icls
+	$(GO) run ./cmd/quiet port jetbrains-scheme \
+		spec/quiet-night.json \
+		> ports/jetbrains/quiet-night.icls
+	$(GO) run ./cmd/quiet port jetbrains-theme \
+		spec/quiet-day.json \
+		> ports/jetbrains/quiet-day.theme.json
+	$(GO) run ./cmd/quiet port jetbrains-theme \
+		spec/quiet-night.json \
+		> ports/jetbrains/quiet-night.theme.json
+	$(GO) run ./cmd/quiet port jetbrains-plugin \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/jetbrains/quiet.jar
 
 .PHONY: kitty
 kitty:
