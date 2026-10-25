@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "quiet-day",
+  "version": "0.0.0",
+  "description": "A restrained color system for long-duration work.",
+  "theme": {
+    "colors": {
+      "frame": [230, 233, 226],
+      "frame_inactive": [230, 233, 226],
+      "background_tab": [230, 233, 226],
+      "background_tab_inactive": [230, 233, 226],
+      "tab_background_text": [97, 107, 101],
+      "tab_background_text_inactive": [97, 107, 101],
+      "tab_text": [27, 31, 28],
+      "toolbar": [238, 234, 223],
+      "toolbar_text": [27, 31, 28],
+      "toolbar_button_icon": [97, 107, 101],
+      "bookmark_text": [27, 31, 28],
+      "omnibox_background": [230, 233, 226],
+      "omnibox_text": [27, 31, 28],
+      "ntp_background": [238, 234, 223],
+      "ntp_text": [27, 31, 28],
+      "ntp_link": [74, 110, 122],
+      "ntp_header": [205, 209, 202]
+    }
+  }
+}

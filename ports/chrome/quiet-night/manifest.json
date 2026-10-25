@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "quiet-night",
+  "version": "0.0.0",
+  "description": "A restrained color system for long-duration work.",
+  "theme": {
+    "colors": {
+      "frame": [36, 41, 37],
+      "frame_inactive": [36, 41, 37],
+      "background_tab": [36, 41, 37],
+      "background_tab_inactive": [36, 41, 37],
+      "tab_background_text": [154, 162, 156],
+      "tab_background_text_inactive": [154, 162, 156],
+      "tab_text": [226, 224, 215],
+      "toolbar": [28, 30, 28],
+      "toolbar_text": [226, 224, 215],
+      "toolbar_button_icon": [154, 162, 156],
+      "bookmark_text": [226, 224, 215],
+      "omnibox_background": [36, 41, 37],
+      "omnibox_text": [226, 224, 215],
+      "ntp_background": [28, 30, 28],
+      "ntp_text": [226, 224, 215],
+      "ntp_link": [120, 154, 163],
+      "ntp_header": [52, 59, 56]
+    }
+  }
+}

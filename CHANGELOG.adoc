@@ -29,6 +29,9 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Added the Chrome port: `quiet-day` and `quiet-night` themes for Chrome's
+  interface, following the Firefox mapping.  Tests validate each theme
+  with Chrome's extension packer where Chrome is installed.
 * Added the Firefox port: `quiet-day` and `quiet-night` themes for
   Firefox's interface.  Web pages keep following the system appearance.
 * Added the delta port: `quiet-day` and `quiet-night` delta features.

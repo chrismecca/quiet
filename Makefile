@@ -40,6 +40,7 @@ GENERATED_PORTS := \
 	base16 \
 	base24 \
 	cde \
+	chrome \
 	delta \
 	dircolors \
 	emacs \
@@ -177,6 +178,16 @@ cde:
 	$(GO) run ./cmd/quiet port cde \
 		spec/quiet-night.json \
 		> ports/cde/quiet-night.dp
+
+.PHONY: chrome
+chrome:
+	mkdir -p ports/chrome/quiet-day ports/chrome/quiet-night
+	$(GO) run ./cmd/quiet port chrome \
+		spec/quiet-day.json \
+		> ports/chrome/quiet-day/manifest.json
+	$(GO) run ./cmd/quiet port chrome \
+		spec/quiet-night.json \
+		> ports/chrome/quiet-night/manifest.json
 
 .PHONY: delta
 delta:

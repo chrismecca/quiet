@@ -70,12 +70,12 @@ func (c SRGB) InGamut() bool {
 		inUnitInterval(c.B)
 }
 
-// Hex quantizes an in-gamut color to canonical uppercase #RRGGBB. It refuses
-// materially out-of-gamut values instead of silently clipping them: gamut
-// mapping is a separate design decision and must remain explicit.
-func (c SRGB) Hex() (string, error) {
+// RGB8 quantizes an in-gamut color to 8-bit channels. It refuses materially
+// out-of-gamut values instead of silently clipping them: gamut mapping is a
+// separate design decision and must remain explicit.
+func (c SRGB) RGB8() (r, g, b uint8, err error) {
 	if !c.InGamut() {
-		return "", fmt.Errorf(
+		return 0, 0, 0, fmt.Errorf(
 			"sRGB color is out of gamut: r=%.12f g=%.12f b=%.12f",
 			c.R,
 			c.G,
@@ -85,9 +85,20 @@ func (c SRGB) Hex() (string, error) {
 
 	// InGamut permits only epsilon-sized excursions. Clamp those numerical
 	// artifacts before 8-bit quantization; larger excursions have returned.
-	r := uint8(math.Round(clamp01(c.R) * 255))
-	g := uint8(math.Round(clamp01(c.G) * 255))
-	b := uint8(math.Round(clamp01(c.B) * 255))
+	r = uint8(math.Round(clamp01(c.R) * 255))
+	g = uint8(math.Round(clamp01(c.G) * 255))
+	b = uint8(math.Round(clamp01(c.B) * 255))
+
+	return r, g, b, nil
+}
+
+// Hex quantizes an in-gamut color to canonical uppercase #RRGGBB, with the
+// same gamut refusal as RGB8.
+func (c SRGB) Hex() (string, error) {
+	r, g, b, err := c.RGB8()
+	if err != nil {
+		return "", err
+	}
 
 	return fmt.Sprintf("#%02X%02X%02X", r, g, b), nil
 }
