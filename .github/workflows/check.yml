@@ -1,4 +1,4 @@
-# @(#)quiet / yaml / .github/workflows/check.yml / 2026-10-24
+# @(#)quiet / yaml / .github/workflows/check.yml / 2026-10-26
 
 # Every change must leave quiet reproducible: quiet-core conformance passes and
 # every committed generated artifact equals current generator output.
@@ -50,6 +50,13 @@ jobs:
 
       - name: Serializer smoke test
         run: make terminal-app-smoke
+
+      # This runner is arm64 and the check job's is amd64. Generated ports
+      # must not depend on the machine that generated them.
+      - name: Generated ports match committed artifacts on arm64
+        run: |
+          make generate
+          git diff --exit-code
 
       # The profiles are NSKeyedArchiver output. If a macOS release changes
       # the archive bytes, this step fails rather than hiding the change.

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/color/composite.go / 2026-10-24
+// @(#)quiet / go / internal/color/composite.go / 2026-10-26
 
 package color
 
@@ -27,8 +27,19 @@ func CompositeLegacySRGB(
 	}
 
 	return SRGB{
-		R: foreground.R*alpha + background.R*(1-alpha),
-		G: foreground.G*alpha + background.G*(1-alpha),
-		B: foreground.B*alpha + background.B*(1-alpha),
+		R: mix(foreground.R, background.R, alpha),
+		G: mix(foreground.G, background.G, alpha),
+		B: mix(foreground.B, background.B, alpha),
 	}, nil
+}
+
+// mix returns a*alpha + b*(1-alpha), rounding each product.
+//
+// Go may fuse a multiply and an add into one instruction on some
+// architectures, such as arm64, and not on others, such as amd64. Fused and
+// unfused results can differ in the last bit, enough to change a quantized
+// 8-bit channel, so generated artifacts would depend on the machine that
+// generated them. An explicit conversion rounds and prevents fusion.
+func mix(a, b, alpha float64) float64 {
+	return float64(a*alpha) + float64(b*(1-alpha))
 }
