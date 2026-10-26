@@ -24,6 +24,11 @@ local c = {
   rust = "#8F5A42",
   selection = "#D4DDE1",
   callout = "#E8ECE2",
+  mineral_wash = "#E1EEE9",
+  moss_wash = "#E5EED8",
+  ochre_wash = "#F7E8D1",
+  rust_wash = "#FAE6D4",
+  ochre_wash_emphasis = "#F5DCB8",
 }
 
 local set = vim.api.nvim_set_hl
@@ -50,17 +55,21 @@ set(0, "WinSeparator", { fg = c.line })
 set(0, "VertSplit", { fg = c.line })
 set(0, "Visual", { fg = c.ink, bg = c.selection })
 set(0, "VisualNOS", { fg = c.ink, bg = c.selection })
-set(0, "Search", { fg = c.ink, bg = c.callout })
+set(0, "Search", { bg = c.mineral_wash })
 set(0, "CurSearch", { fg = c.ink, bg = c.selection })
 set(0, "IncSearch", { fg = c.ink, bg = c.selection })
 set(0, "Substitute", { fg = c.ink, bg = c.selection })
 set(0, "MatchParen", { fg = c.ink, bg = c.selection })
+set(0, "QuickFixLine", { fg = c.ink, bg = c.selection })
+set(0, "SnippetTabstop", { bg = c.structure })
 set(0, "Pmenu", { fg = c.ink, bg = c.surface })
 set(0, "PmenuSel", { fg = c.ink, bg = c.selection })
 set(0, "PmenuKind", { fg = c.muted, bg = c.surface })
 set(0, "PmenuKindSel", { fg = c.ink, bg = c.selection })
 set(0, "PmenuExtra", { fg = c.muted, bg = c.surface })
 set(0, "PmenuExtraSel", { fg = c.ink, bg = c.selection })
+set(0, "PmenuMatch", { fg = c.mineral })
+set(0, "PmenuMatchSel", { fg = c.mineral, bg = c.selection })
 set(0, "PmenuSbar", { bg = c.structure })
 set(0, "PmenuThumb", { bg = c.line })
 set(0, "StatusLine", { fg = c.ink, bg = c.structure })
@@ -77,6 +86,7 @@ set(0, "MoreMsg", { fg = c.mineral })
 set(0, "ModeMsg", { fg = c.mineral })
 set(0, "ErrorMsg", { fg = c.rust })
 set(0, "WarningMsg", { fg = c.ochre })
+set(0, "OkMsg", { fg = c.moss })
 set(0, "NonText", { fg = c.line })
 set(0, "Whitespace", { fg = c.line })
 set(0, "SpecialKey", { fg = c.muted })
@@ -113,17 +123,27 @@ set(0, "Tag", { fg = c.mineral })
 set(0, "Delimiter", { fg = c.ink })
 set(0, "SpecialComment", { fg = c.muted })
 set(0, "Debug", { fg = c.mineral })
-set(0, "Underlined", { fg = c.mineral })
+set(0, "Underlined", { fg = c.mineral, underline = true })
 set(0, "Ignore", { fg = c.muted })
 set(0, "Error", { fg = c.rust })
 set(0, "Todo", { fg = c.ochre })
-set(0, "DiffAdd", { fg = c.moss })
-set(0, "DiffChange", { fg = c.ochre })
-set(0, "DiffDelete", { fg = c.rust })
-set(0, "DiffText", { fg = c.ochre, bg = c.callout })
-set(0, "LspReferenceText", { fg = c.ink, bg = c.callout })
-set(0, "LspReferenceRead", { fg = c.ink, bg = c.callout })
-set(0, "LspReferenceWrite", { fg = c.ink, bg = c.selection })
+set(0, "DiffAdd", { bg = c.moss_wash })
+set(0, "DiffChange", { bg = c.ochre_wash })
+set(0, "DiffDelete", { fg = c.rust, bg = c.rust_wash })
+set(0, "DiffText", { fg = c.ink, bg = c.ochre_wash_emphasis })
+set(0, "Added", { fg = c.moss })
+set(0, "Changed", { fg = c.ochre })
+set(0, "Removed", { fg = c.rust })
+set(0, "diffAdded", { link = "Added" })
+set(0, "diffChanged", { link = "Changed" })
+set(0, "diffRemoved", { link = "Removed" })
+set(0, "SpellBad", { sp = c.rust, undercurl = true })
+set(0, "SpellCap", { sp = c.ochre, undercurl = true })
+set(0, "SpellLocal", { sp = c.moss, undercurl = true })
+set(0, "SpellRare", { sp = c.mineral, undercurl = true })
+set(0, "LspReferenceText", { bg = c.mineral_wash })
+set(0, "LspReferenceRead", { bg = c.mineral_wash })
+set(0, "LspReferenceWrite", { bg = c.ochre_wash })
 set(0, "LspCodeLens", { fg = c.muted })
 set(0, "LspCodeLensSeparator", { fg = c.line })
 set(0, "LspInlayHint", { fg = c.muted, bg = c.surface })
@@ -207,15 +227,15 @@ set(0, "@markup.link.url", { link = "Underlined" })
 set(0, "@markup.raw", { link = "String" })
 set(0, "@markup.raw.block", { link = "String" })
 set(0, "@markup.list", { link = "Special" })
-set(0, "@markup.list.checked", { link = "DiffAdd" })
+set(0, "@markup.list.checked", { link = "Added" })
 set(0, "@markup.list.unchecked", { link = "Comment" })
 set(0, "@markup.strong", { link = "Normal" })
 set(0, "@markup.italic", { link = "Normal" })
 set(0, "@markup.strikethrough", { link = "Normal" })
 set(0, "@markup.underline", { link = "Normal" })
-set(0, "@diff.plus", { link = "DiffAdd" })
-set(0, "@diff.minus", { link = "DiffDelete" })
-set(0, "@diff.delta", { link = "DiffChange" })
+set(0, "@diff.plus", { link = "Added" })
+set(0, "@diff.minus", { link = "Removed" })
+set(0, "@diff.delta", { link = "Changed" })
 set(0, "@tag", { link = "Tag" })
 set(0, "@tag.builtin", { link = "Tag" })
 set(0, "@tag.attribute", { link = "Identifier" })
@@ -242,11 +262,12 @@ set(0, "DiagnosticSignWarn", { link = "DiagnosticWarn" })
 set(0, "DiagnosticSignInfo", { link = "DiagnosticInfo" })
 set(0, "DiagnosticSignHint", { link = "DiagnosticHint" })
 set(0, "DiagnosticSignOk", { link = "DiagnosticOk" })
-set(0, "DiagnosticUnderlineError", { link = "DiagnosticError" })
-set(0, "DiagnosticUnderlineWarn", { link = "DiagnosticWarn" })
-set(0, "DiagnosticUnderlineInfo", { link = "DiagnosticInfo" })
-set(0, "DiagnosticUnderlineHint", { link = "DiagnosticHint" })
-set(0, "DiagnosticUnderlineOk", { link = "DiagnosticOk" })
+set(0, "DiagnosticUnderlineError", { sp = c.rust, underline = true })
+set(0, "DiagnosticUnderlineWarn", { sp = c.ochre, underline = true })
+set(0, "DiagnosticUnderlineInfo", { sp = c.mineral, underline = true })
+set(0, "DiagnosticUnderlineHint", { sp = c.mineral, underline = true })
+set(0, "DiagnosticUnderlineOk", { sp = c.moss, underline = true })
+set(0, "DiagnosticDeprecated", { sp = c.ochre, strikethrough = true })
 
 -- LSP semantic tokens
 set(0, "@lsp.type.variable", { link = "Identifier" })
@@ -274,3 +295,21 @@ set(0, "@lsp.type.modifier", { link = "Keyword" })
 set(0, "@lsp.type.operator", { link = "Operator" })
 set(0, "@lsp.mod.deprecated", { link = "WarningMsg" })
 set(0, "@lsp.mod.documentation", { link = "Comment" })
+
+-- Terminal, from quiet's generic terminal palette
+vim.g.terminal_color_0 = "#1B1F1C"
+vim.g.terminal_color_1 = "#8F5A42"
+vim.g.terminal_color_2 = "#586E5C"
+vim.g.terminal_color_3 = "#85602E"
+vim.g.terminal_color_4 = "#4A6E7A"
+vim.g.terminal_color_5 = "#755E82"
+vim.g.terminal_color_6 = "#4C706B"
+vim.g.terminal_color_7 = "#CDD1CA"
+vim.g.terminal_color_8 = "#616B65"
+vim.g.terminal_color_9 = "#99593C"
+vim.g.terminal_color_10 = "#56705B"
+vim.g.terminal_color_11 = "#8D611F"
+vim.g.terminal_color_12 = "#44707F"
+vim.g.terminal_color_13 = "#7A5E8A"
+vim.g.terminal_color_14 = "#45726C"
+vim.g.terminal_color_15 = "#EEEADF"

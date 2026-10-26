@@ -29,6 +29,25 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Moved diff, merge, search, and reference highlighting in the VS Code,
+  Neovim, Vim, and Emacs ports onto the Wash roles.  Lines take line
+  washes and keep their syntax colors; changed words are outlined in VS
+  Code, and take Ink on an emphasis wash elsewhere.
+* VS Code: added the diff and merge editors, gutter, overview ruler and
+  minimap, peek views, error navigation, inlay hints, notifications,
+  input validation, testing, and debugging colors.  Where VS Code is
+  installed, tests check every color key against VS Code's own.
+* Neovim: diagnostics and spelling keep Neovim's underlines, undercurls,
+  and strikethroughs in quiet's colors instead of recoloring code; added
+  the terminal palette, `Added`/`Changed`/`Removed`, and newer groups.
+  Where Neovim is installed, tests load both schemes and check each
+  group's cues against Neovim's defaults.
+* Emacs: added diff, ediff, smerge, Flymake, Flyspell, ANSI color, tab
+  bar, and Emacs 29 tree-sitter faces; diagnostics keep Emacs's wavy
+  underlines and links their underline.  Where Emacs is installed, tests
+  load both themes and check every face against Emacs's own.
+* Noted the unrelated built-in `quiet` colorschemes in Vim and Neovim and
+  VS Code's Quiet Light theme in the port READMEs.
 * Removed the CDE port.  quiet no longer provides CDE palettes.
 * Added the JetBrains port: a plugin with `quiet-day` and `quiet-night`
   interface themes built on JetBrains' Islands themes, and matching editor

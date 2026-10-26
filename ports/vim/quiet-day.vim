@@ -60,7 +60,7 @@ highlight WinSeparator       cterm=NONE ctermfg=7    ctermbg=15   gui=NONE guifg
 highlight VertSplit          cterm=NONE ctermfg=7    ctermbg=15   gui=NONE guifg=#CDD1CA guibg=#EEEADF
 highlight Visual             cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#D4DDE1
 highlight VisualNOS          cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#D4DDE1
-highlight Search             cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#D4DDE1
+highlight Search             cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=NONE    guibg=#E1EEE9
 highlight IncSearch          cterm=NONE ctermfg=15   ctermbg=4    gui=NONE guifg=#EEEADF guibg=#4A6E7A
 highlight MatchParen         cterm=NONE ctermfg=15   ctermbg=4    gui=NONE guifg=#EEEADF guibg=#4A6E7A
 highlight QuickFixLine       cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#D4DDE1
@@ -83,10 +83,10 @@ highlight StatusLineNC       cterm=NONE ctermfg=8    ctermbg=15   gui=NONE guifg
 highlight TabLine            cterm=NONE ctermfg=8    ctermbg=15   gui=NONE guifg=#616B65 guibg=#E6E9E2
 highlight TabLineFill        cterm=NONE ctermfg=7    ctermbg=15   gui=NONE guifg=#CDD1CA guibg=#E6E9E2
 highlight TabLineSel         cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#E4EAED
-highlight DiffAdd            cterm=NONE ctermfg=2    ctermbg=15   gui=NONE guifg=#586E5C guibg=#E6E9E2
-highlight DiffChange         cterm=NONE ctermfg=3    ctermbg=15   gui=NONE guifg=#85602E guibg=#E6E9E2
-highlight DiffDelete         cterm=NONE ctermfg=1    ctermbg=15   gui=NONE guifg=#8F5A42 guibg=#E6E9E2
-highlight DiffText           cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#D4DDE1
+highlight DiffAdd            cterm=NONE ctermfg=2    ctermbg=NONE gui=NONE guifg=NONE    guibg=#E5EED8
+highlight DiffChange         cterm=NONE ctermfg=3    ctermbg=NONE gui=NONE guifg=NONE    guibg=#F7E8D1
+highlight DiffDelete         cterm=NONE ctermfg=1    ctermbg=NONE gui=NONE guifg=#8F5A42 guibg=#FAE6D4
+highlight DiffText           cterm=NONE ctermfg=0    ctermbg=7    gui=NONE guifg=#1B1F1C guibg=#F5DCB8
 highlight Added              cterm=NONE ctermfg=2    ctermbg=15   gui=NONE guifg=#586E5C guibg=#EEEADF
 highlight Changed            cterm=NONE ctermfg=3    ctermbg=15   gui=NONE guifg=#85602E guibg=#EEEADF
 highlight Removed            cterm=NONE ctermfg=1    ctermbg=15   gui=NONE guifg=#8F5A42 guibg=#EEEADF

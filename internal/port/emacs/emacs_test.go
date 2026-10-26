@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/emacs/emacs_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/emacs/emacs_test.go / 2026-10-25
 
 package emacs
 
@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
 )
 
@@ -274,7 +275,6 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 		":height",
 		":weight",
 		":slant",
-		":underline",
 		":overline",
 		":strike-through",
 		":box",
@@ -287,6 +287,104 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 				"Emacs port unexpectedly defines typography/decorative policy %q",
 				forbidden,
 			)
+		}
+	}
+}
+
+// TestTextIsReadable checks every face that draws a background: faces
+// without a foreground keep every syntax color at its contract minimum, and
+// explicit pairs reach 4.5:1.
+func TestTextIsReadable(t *testing.T) {
+	exempt := map[string]bool{
+		// Callout guarantees only Muted, as in every quiet editor port.
+		"highlight": true,
+
+		// Emacs draws the character under the cursor in the default
+		// background.
+		"cursor": true,
+	}
+
+	syntax := map[string]float64{
+		"ink":     7,
+		"muted":   4.5,
+		"mineral": 4.5,
+		"moss":    4.5,
+		"ochre":   4.5,
+		"rust":    4.5,
+	}
+
+	for _, name := range []string{"quiet-day.json", "quiet-night.json"} {
+		palette, err := core.LoadPaletteFile(repoPath(t, "spec", name))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		roles, err := resolveRoles(palette)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		byName := map[string]color.SRGB{}
+		for _, r := range roles {
+			byName[r.name] = r.value
+		}
+
+		for _, f := range faces() {
+			if f.background == "" || exempt[f.name] || strings.HasPrefix(f.name, "ansi-color-") {
+				continue
+			}
+
+			bg, ok := byName[f.background]
+			if !ok {
+				t.Fatalf("%s: unknown role %q", f.name, f.background)
+			}
+
+			if f.foreground != "" {
+				if got := color.Contrast(byName[f.foreground], bg); got < 4.5 {
+					t.Errorf("%s: %s %s on %s is %.2f, want 4.5", name, f.name, f.foreground, f.background, got)
+				}
+
+				continue
+			}
+
+			for fg, minimum := range syntax {
+				if got := color.Contrast(byName[fg], bg); got < minimum {
+					t.Errorf("%s: %s on %s (%s) is %.2f, want %.1f", name, fg, f.name, f.background, got, minimum)
+				}
+			}
+		}
+	}
+}
+
+func TestFacesUseKnownRoles(t *testing.T) {
+	palette, err := core.LoadPaletteFile(repoPath(t, "spec", "quiet-day.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	roles, err := resolveRoles(palette)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	known := map[string]bool{}
+	for _, r := range roles {
+		known[r.name] = true
+	}
+
+	seen := map[string]bool{}
+
+	for _, f := range faces() {
+		if seen[f.name] {
+			t.Errorf("%s is set twice", f.name)
+		}
+
+		seen[f.name] = true
+
+		for _, r := range []string{f.foreground, f.background, f.underlineColor} {
+			if r != "" && !known[r] {
+				t.Errorf("%s uses unknown role %q", f.name, r)
+			}
 		}
 	}
 }

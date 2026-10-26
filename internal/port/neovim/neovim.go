@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/neovim/neovim.go / 2026-10-24
+// @(#)quiet / go / internal/port/neovim/neovim.go / 2026-10-25
 
 // Package neovim maps quiet-core semantics onto native Neovim highlight
 // groups, including Tree-sitter, diagnostics, and LSP semantic tokens.
@@ -11,6 +11,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
 type colors struct {
@@ -26,6 +27,14 @@ type colors struct {
 	rust      string
 	selection string
 	callout   string
+
+	mineralWash       string
+	mossWash          string
+	ochreWash         string
+	rustWash          string
+	ochreWashEmphasis string
+
+	ansi [16]string
 }
 
 type highlight struct {
@@ -33,12 +42,22 @@ type highlight struct {
 	fg    string
 	bg    string
 	link  string
+
+	// sp colors an underline or strikethrough.
+	sp string
+
+	// cue is a non-color attribute that marks state, such as "underline".
+	// quiet keeps a cue only where Neovim's own default for the group has
+	// it, and drops typographic emphasis such as bold.
+	cue string
 }
 
 // Encode writes one quiet palette as a native Neovim Lua colorscheme.
 //
-// The port controls color only. It deliberately avoids font, weight, italic,
-// underline, undercurl, cursor shape, window layout, and other styling policy.
+// The port controls color. It keeps the non-color cues that mark state in
+// Neovim's own defaults, such as underlined diagnostics, in quiet's colors.
+// It drops typographic emphasis such as bold keywords and adds no cues of its
+// own.
 func Encode(
 	w io.Writer,
 	p core.Palette,
@@ -93,6 +112,11 @@ func Encode(
 			"  rust = %q,\n"+
 			"  selection = %q,\n"+
 			"  callout = %q,\n"+
+			"  mineral_wash = %q,\n"+
+			"  moss_wash = %q,\n"+
+			"  ochre_wash = %q,\n"+
+			"  rust_wash = %q,\n"+
+			"  ochre_wash_emphasis = %q,\n"+
 			"}\n\n"+
 			"local set = vim.api.nvim_set_hl\n\n",
 		c.field,
@@ -107,6 +131,11 @@ func Encode(
 		c.rust,
 		c.selection,
 		c.callout,
+		c.mineralWash,
+		c.mossWash,
+		c.ochreWash,
+		c.rustWash,
+		c.ochreWashEmphasis,
 	)
 
 	for _, h := range baseHighlights() {
@@ -131,6 +160,12 @@ func Encode(
 		writeHighlight(&b, h)
 	}
 
+	b.WriteString("\n-- Terminal, from quiet's generic terminal palette\n")
+
+	for i, hex := range c.ansi {
+		fmt.Fprintf(&b, "vim.g.terminal_color_%d = %q\n", i, hex)
+	}
+
 	if _, err := io.WriteString(
 		w,
 		b.String(),
@@ -147,324 +182,348 @@ func Encode(
 func baseHighlights() []highlight {
 	return []highlight{
 		// Core editor.
-		{"Normal", "ink", "field", ""},
-		{"NormalNC", "ink", "field", ""},
-		{"NormalFloat", "ink", "surface", ""},
-		{"FloatBorder", "line", "surface", ""},
-		{"FloatTitle", "mineral", "surface", ""},
+		{group: "Normal", fg: "ink", bg: "field"},
+		{group: "NormalNC", fg: "ink", bg: "field"},
+		{group: "NormalFloat", fg: "ink", bg: "surface"},
+		{group: "FloatBorder", fg: "line", bg: "surface"},
+		{group: "FloatTitle", fg: "mineral", bg: "surface"},
 
-		{"Cursor", "field", "mineral", ""},
-		{"lCursor", "field", "mineral", ""},
-		{"CursorIM", "field", "mineral", ""},
+		{group: "Cursor", fg: "field", bg: "mineral"},
+		{group: "lCursor", fg: "field", bg: "mineral"},
+		{group: "CursorIM", fg: "field", bg: "mineral"},
 
-		{"CursorLine", "", "callout", ""},
-		{"CursorColumn", "", "callout", ""},
-		{"ColorColumn", "", "surface", ""},
+		{group: "CursorLine", bg: "callout"},
+		{group: "CursorColumn", bg: "callout"},
+		{group: "ColorColumn", bg: "surface"},
 
-		{"LineNr", "muted", "field", ""},
-		{"LineNrAbove", "muted", "field", ""},
-		{"LineNrBelow", "muted", "field", ""},
-		{"CursorLineNr", "mineral", "callout", ""},
+		{group: "LineNr", fg: "muted", bg: "field"},
+		{group: "LineNrAbove", fg: "muted", bg: "field"},
+		{group: "LineNrBelow", fg: "muted", bg: "field"},
+		{group: "CursorLineNr", fg: "mineral", bg: "callout"},
 
-		{"SignColumn", "muted", "field", ""},
-		{"FoldColumn", "muted", "field", ""},
-		{"Folded", "muted", "surface", ""},
+		{group: "SignColumn", fg: "muted", bg: "field"},
+		{group: "FoldColumn", fg: "muted", bg: "field"},
+		{group: "Folded", fg: "muted", bg: "surface"},
 
-		{"WinSeparator", "line", "", ""},
-		{"VertSplit", "line", "", ""},
+		{group: "WinSeparator", fg: "line"},
+		{group: "VertSplit", fg: "line"},
 
 		// Selection and navigation.
-		{"Visual", "ink", "selection", ""},
-		{"VisualNOS", "ink", "selection", ""},
-		{"Search", "ink", "callout", ""},
-		{"CurSearch", "ink", "selection", ""},
-		{"IncSearch", "ink", "selection", ""},
-		{"Substitute", "ink", "selection", ""},
-		{"MatchParen", "ink", "selection", ""},
+		{group: "Visual", fg: "ink", bg: "selection"},
+		{group: "VisualNOS", fg: "ink", bg: "selection"},
+		{group: "Search", bg: "mineral_wash"},
+		{group: "CurSearch", fg: "ink", bg: "selection"},
+		{group: "IncSearch", fg: "ink", bg: "selection"},
+		{group: "Substitute", fg: "ink", bg: "selection"},
+		{group: "MatchParen", fg: "ink", bg: "selection"},
+		{group: "QuickFixLine", fg: "ink", bg: "selection"},
+		{group: "SnippetTabstop", bg: "structure"},
 
 		// Menus and completion.
-		{"Pmenu", "ink", "surface", ""},
-		{"PmenuSel", "ink", "selection", ""},
-		{"PmenuKind", "muted", "surface", ""},
-		{"PmenuKindSel", "ink", "selection", ""},
-		{"PmenuExtra", "muted", "surface", ""},
-		{"PmenuExtraSel", "ink", "selection", ""},
-		{"PmenuSbar", "", "structure", ""},
-		{"PmenuThumb", "", "line", ""},
+		{group: "Pmenu", fg: "ink", bg: "surface"},
+		{group: "PmenuSel", fg: "ink", bg: "selection"},
+		{group: "PmenuKind", fg: "muted", bg: "surface"},
+		{group: "PmenuKindSel", fg: "ink", bg: "selection"},
+		{group: "PmenuExtra", fg: "muted", bg: "surface"},
+		{group: "PmenuExtraSel", fg: "ink", bg: "selection"},
+		{group: "PmenuMatch", fg: "mineral"},
+		{group: "PmenuMatchSel", fg: "mineral", bg: "selection"},
+		{group: "PmenuSbar", bg: "structure"},
+		{group: "PmenuThumb", bg: "line"},
 
 		// Status and tabs.
-		{"StatusLine", "ink", "structure", ""},
-		{"StatusLineNC", "muted", "surface", ""},
-		{"TabLine", "muted", "surface", ""},
-		{"TabLineSel", "ink", "structure", ""},
-		{"TabLineFill", "", "surface", ""},
-		{"WinBar", "ink", "surface", ""},
-		{"WinBarNC", "muted", "surface", ""},
+		{group: "StatusLine", fg: "ink", bg: "structure"},
+		{group: "StatusLineNC", fg: "muted", bg: "surface"},
+		{group: "TabLine", fg: "muted", bg: "surface"},
+		{group: "TabLineSel", fg: "ink", bg: "structure"},
+		{group: "TabLineFill", bg: "surface"},
+		{group: "WinBar", fg: "ink", bg: "surface"},
+		{group: "WinBarNC", fg: "muted", bg: "surface"},
 
 		// Secondary UI.
-		{"Directory", "mineral", "", ""},
-		{"Title", "mineral", "", ""},
-		{"Question", "mineral", "", ""},
-		{"MoreMsg", "mineral", "", ""},
-		{"ModeMsg", "mineral", "", ""},
-		{"ErrorMsg", "rust", "", ""},
-		{"WarningMsg", "ochre", "", ""},
+		{group: "Directory", fg: "mineral"},
+		{group: "Title", fg: "mineral"},
+		{group: "Question", fg: "mineral"},
+		{group: "MoreMsg", fg: "mineral"},
+		{group: "ModeMsg", fg: "mineral"},
+		{group: "ErrorMsg", fg: "rust"},
+		{group: "WarningMsg", fg: "ochre"},
+		{group: "OkMsg", fg: "moss"},
 
-		{"NonText", "line", "", ""},
-		{"Whitespace", "line", "", ""},
-		{"SpecialKey", "muted", "", ""},
-		{"Conceal", "muted", "", ""},
-		{"EndOfBuffer", "field", "", ""},
+		{group: "NonText", fg: "line"},
+		{group: "Whitespace", fg: "line"},
+		{group: "SpecialKey", fg: "muted"},
+		{group: "Conceal", fg: "muted"},
+		{group: "EndOfBuffer", fg: "field"},
 
 		// Legacy syntax hierarchy.
-		{"Comment", "muted", "", ""},
+		{group: "Comment", fg: "muted"},
 
-		{"Constant", "ink", "", ""},
-		{"String", "ink", "", ""},
-		{"Character", "ink", "", ""},
-		{"Number", "ink", "", ""},
-		{"Boolean", "ink", "", ""},
-		{"Float", "ink", "", ""},
+		{group: "Constant", fg: "ink"},
+		{group: "String", fg: "ink"},
+		{group: "Character", fg: "ink"},
+		{group: "Number", fg: "ink"},
+		{group: "Boolean", fg: "ink"},
+		{group: "Float", fg: "ink"},
 
-		{"Identifier", "ink", "", ""},
-		{"Function", "ink", "", ""},
+		{group: "Identifier", fg: "ink"},
+		{group: "Function", fg: "ink"},
 
-		{"Statement", "mineral", "", ""},
-		{"Conditional", "mineral", "", ""},
-		{"Repeat", "mineral", "", ""},
-		{"Label", "mineral", "", ""},
-		{"Operator", "mineral", "", ""},
-		{"Keyword", "mineral", "", ""},
-		{"Exception", "mineral", "", ""},
+		{group: "Statement", fg: "mineral"},
+		{group: "Conditional", fg: "mineral"},
+		{group: "Repeat", fg: "mineral"},
+		{group: "Label", fg: "mineral"},
+		{group: "Operator", fg: "mineral"},
+		{group: "Keyword", fg: "mineral"},
+		{group: "Exception", fg: "mineral"},
 
-		{"PreProc", "mineral", "", ""},
-		{"Include", "mineral", "", ""},
-		{"Define", "mineral", "", ""},
-		{"Macro", "mineral", "", ""},
-		{"PreCondit", "mineral", "", ""},
+		{group: "PreProc", fg: "mineral"},
+		{group: "Include", fg: "mineral"},
+		{group: "Define", fg: "mineral"},
+		{group: "Macro", fg: "mineral"},
+		{group: "PreCondit", fg: "mineral"},
 
-		{"Type", "mineral", "", ""},
-		{"StorageClass", "mineral", "", ""},
-		{"Structure", "mineral", "", ""},
-		{"Typedef", "mineral", "", ""},
+		{group: "Type", fg: "mineral"},
+		{group: "StorageClass", fg: "mineral"},
+		{group: "Structure", fg: "mineral"},
+		{group: "Typedef", fg: "mineral"},
 
-		{"Special", "mineral", "", ""},
-		{"SpecialChar", "mineral", "", ""},
-		{"Tag", "mineral", "", ""},
-		{"Delimiter", "ink", "", ""},
-		{"SpecialComment", "muted", "", ""},
-		{"Debug", "mineral", "", ""},
+		{group: "Special", fg: "mineral"},
+		{group: "SpecialChar", fg: "mineral"},
+		{group: "Tag", fg: "mineral"},
+		{group: "Delimiter", fg: "ink"},
+		{group: "SpecialComment", fg: "muted"},
+		{group: "Debug", fg: "mineral"},
 
-		{"Underlined", "mineral", "", ""},
-		{"Ignore", "muted", "", ""},
-		{"Error", "rust", "", ""},
-		{"Todo", "ochre", "", ""},
+		{group: "Underlined", fg: "mineral", cue: "underline"},
+		{group: "Ignore", fg: "muted"},
+		{group: "Error", fg: "rust"},
+		{group: "Todo", fg: "ochre"},
 
-		// Semantic state.
-		{"DiffAdd", "moss", "", ""},
-		{"DiffChange", "ochre", "", ""},
-		{"DiffDelete", "rust", "", ""},
-		{"DiffText", "ochre", "callout", ""},
+		// Diff mode. Lines take line washes and keep their syntax colors;
+		// changed text takes Ink on the emphasis wash, which guarantees only
+		// Ink. Deleted-line filler is Rust.
+		{group: "DiffAdd", bg: "moss_wash"},
+		{group: "DiffChange", bg: "ochre_wash"},
+		{group: "DiffDelete", fg: "rust", bg: "rust_wash"},
+		{group: "DiffText", fg: "ink", bg: "ochre_wash_emphasis"},
 
-		// LSP/editor support.
-		{"LspReferenceText", "ink", "callout", ""},
-		{"LspReferenceRead", "ink", "callout", ""},
-		{"LspReferenceWrite", "ink", "selection", ""},
-		{"LspCodeLens", "muted", "", ""},
-		{"LspCodeLensSeparator", "line", "", ""},
-		{"LspInlayHint", "muted", "surface", ""},
-		{"LspSignatureActiveParameter", "ink", "selection", ""},
+		// Changes in diff and patch text.
+		{group: "Added", fg: "moss"},
+		{group: "Changed", fg: "ochre"},
+		{group: "Removed", fg: "rust"},
+		{group: "diffAdded", link: "Added"},
+		{group: "diffChanged", link: "Changed"},
+		{group: "diffRemoved", link: "Removed"},
+
+		// Spelling keeps Neovim's undercurl.
+		{group: "SpellBad", sp: "rust", cue: "undercurl"},
+		{group: "SpellCap", sp: "ochre", cue: "undercurl"},
+		{group: "SpellLocal", sp: "moss", cue: "undercurl"},
+		{group: "SpellRare", sp: "mineral", cue: "undercurl"},
+
+		// LSP/editor support. References take line washes and keep their
+		// syntax colors.
+		{group: "LspReferenceText", bg: "mineral_wash"},
+		{group: "LspReferenceRead", bg: "mineral_wash"},
+		{group: "LspReferenceWrite", bg: "ochre_wash"},
+		{group: "LspCodeLens", fg: "muted"},
+		{group: "LspCodeLensSeparator", fg: "line"},
+		{group: "LspInlayHint", fg: "muted", bg: "surface"},
+		{group: "LspSignatureActiveParameter", fg: "ink", bg: "selection"},
 	}
 }
 
 func treeSitterHighlights() []highlight {
 	return []highlight{
 		// Secondary information.
-		{"@comment", "", "", "Comment"},
-		{"@comment.documentation", "", "", "Comment"},
-		{"@comment.error", "", "", "Error"},
-		{"@comment.warning", "", "", "WarningMsg"},
-		{"@comment.todo", "", "", "Todo"},
-		{"@comment.note", "", "", "Directory"},
+		{group: "@comment", link: "Comment"},
+		{group: "@comment.documentation", link: "Comment"},
+		{group: "@comment.error", link: "Error"},
+		{group: "@comment.warning", link: "WarningMsg"},
+		{group: "@comment.todo", link: "Todo"},
+		{group: "@comment.note", link: "Directory"},
 
 		// Ordinary program data remains Ink.
-		{"@variable", "", "", "Identifier"},
-		{"@variable.builtin", "", "", "Identifier"},
-		{"@variable.parameter", "", "", "Identifier"},
-		{"@variable.parameter.builtin", "", "", "Identifier"},
-		{"@variable.member", "", "", "Identifier"},
+		{group: "@variable", link: "Identifier"},
+		{group: "@variable.builtin", link: "Identifier"},
+		{group: "@variable.parameter", link: "Identifier"},
+		{group: "@variable.parameter.builtin", link: "Identifier"},
+		{group: "@variable.member", link: "Identifier"},
 
-		{"@constant", "", "", "Constant"},
-		{"@constant.builtin", "", "", "Constant"},
-		{"@constant.macro", "", "", "Constant"},
+		{group: "@constant", link: "Constant"},
+		{group: "@constant.builtin", link: "Constant"},
+		{group: "@constant.macro", link: "Constant"},
 
-		{"@string", "", "", "String"},
-		{"@string.documentation", "", "", "String"},
-		{"@string.regexp", "", "", "String"},
-		{"@string.escape", "", "", "String"},
-		{"@string.special", "", "", "String"},
-		{"@string.special.symbol", "", "", "String"},
-		{"@string.special.path", "", "", "String"},
-		{"@string.special.url", "", "", "Underlined"},
+		{group: "@string", link: "String"},
+		{group: "@string.documentation", link: "String"},
+		{group: "@string.regexp", link: "String"},
+		{group: "@string.escape", link: "String"},
+		{group: "@string.special", link: "String"},
+		{group: "@string.special.symbol", link: "String"},
+		{group: "@string.special.path", link: "String"},
+		{group: "@string.special.url", link: "Underlined"},
 
-		{"@character", "", "", "Character"},
-		{"@character.special", "", "", "Character"},
-		{"@boolean", "", "", "Boolean"},
-		{"@number", "", "", "Number"},
-		{"@number.float", "", "", "Float"},
+		{group: "@character", link: "Character"},
+		{group: "@character.special", link: "Character"},
+		{group: "@boolean", link: "Boolean"},
+		{group: "@number", link: "Number"},
+		{group: "@number.float", link: "Float"},
 
-		{"@property", "", "", "Identifier"},
+		{group: "@property", link: "Identifier"},
 
-		{"@function", "", "", "Function"},
-		{"@function.builtin", "", "", "Function"},
-		{"@function.call", "", "", "Function"},
-		{"@function.macro", "", "", "Function"},
-		{"@function.method", "", "", "Function"},
-		{"@function.method.call", "", "", "Function"},
-		{"@constructor", "", "", "Function"},
+		{group: "@function", link: "Function"},
+		{group: "@function.builtin", link: "Function"},
+		{group: "@function.call", link: "Function"},
+		{group: "@function.macro", link: "Function"},
+		{group: "@function.method", link: "Function"},
+		{group: "@function.method.call", link: "Function"},
+		{group: "@constructor", link: "Function"},
 
 		// Language structure uses Mineral.
-		{"@module", "", "", "Include"},
-		{"@module.builtin", "", "", "Include"},
-		{"@label", "", "", "Label"},
+		{group: "@module", link: "Include"},
+		{group: "@module.builtin", link: "Include"},
+		{group: "@label", link: "Label"},
 
-		{"@type", "", "", "Type"},
-		{"@type.builtin", "", "", "Type"},
-		{"@type.definition", "", "", "Type"},
+		{group: "@type", link: "Type"},
+		{group: "@type.builtin", link: "Type"},
+		{group: "@type.definition", link: "Type"},
 
-		{"@attribute", "", "", "PreProc"},
-		{"@attribute.builtin", "", "", "PreProc"},
+		{group: "@attribute", link: "PreProc"},
+		{group: "@attribute.builtin", link: "PreProc"},
 
-		{"@operator", "", "", "Operator"},
+		{group: "@operator", link: "Operator"},
 
-		{"@keyword", "", "", "Keyword"},
-		{"@keyword.coroutine", "", "", "Keyword"},
-		{"@keyword.function", "", "", "Keyword"},
-		{"@keyword.operator", "", "", "Keyword"},
-		{"@keyword.import", "", "", "Include"},
-		{"@keyword.type", "", "", "Keyword"},
-		{"@keyword.modifier", "", "", "Keyword"},
-		{"@keyword.repeat", "", "", "Repeat"},
-		{"@keyword.return", "", "", "Keyword"},
-		{"@keyword.debug", "", "", "Debug"},
-		{"@keyword.exception", "", "", "Exception"},
-		{"@keyword.conditional", "", "", "Conditional"},
-		{"@keyword.conditional.ternary", "", "", "Conditional"},
-		{"@keyword.directive", "", "", "PreProc"},
-		{"@keyword.directive.define", "", "", "Define"},
+		{group: "@keyword", link: "Keyword"},
+		{group: "@keyword.coroutine", link: "Keyword"},
+		{group: "@keyword.function", link: "Keyword"},
+		{group: "@keyword.operator", link: "Keyword"},
+		{group: "@keyword.import", link: "Include"},
+		{group: "@keyword.type", link: "Keyword"},
+		{group: "@keyword.modifier", link: "Keyword"},
+		{group: "@keyword.repeat", link: "Repeat"},
+		{group: "@keyword.return", link: "Keyword"},
+		{group: "@keyword.debug", link: "Debug"},
+		{group: "@keyword.exception", link: "Exception"},
+		{group: "@keyword.conditional", link: "Conditional"},
+		{group: "@keyword.conditional.ternary", link: "Conditional"},
+		{group: "@keyword.directive", link: "PreProc"},
+		{group: "@keyword.directive.define", link: "Define"},
 
 		// Punctuation is structure but should not become visual noise.
-		{"@punctuation.delimiter", "", "", "Delimiter"},
-		{"@punctuation.bracket", "", "", "Delimiter"},
-		{"@punctuation.special", "", "", "Delimiter"},
+		{group: "@punctuation.delimiter", link: "Delimiter"},
+		{group: "@punctuation.bracket", link: "Delimiter"},
+		{group: "@punctuation.special", link: "Delimiter"},
 
 		// Markup.
-		{"@markup.heading", "", "", "Title"},
-		{"@markup.heading.1", "", "", "Title"},
-		{"@markup.heading.2", "", "", "Title"},
-		{"@markup.heading.3", "", "", "Title"},
-		{"@markup.heading.4", "", "", "Title"},
-		{"@markup.heading.5", "", "", "Title"},
-		{"@markup.heading.6", "", "", "Title"},
-		{"@markup.quote", "", "", "Comment"},
-		{"@markup.math", "", "", "Normal"},
-		{"@markup.link", "", "", "Underlined"},
-		{"@markup.link.label", "", "", "Underlined"},
-		{"@markup.link.url", "", "", "Underlined"},
-		{"@markup.raw", "", "", "String"},
-		{"@markup.raw.block", "", "", "String"},
-		{"@markup.list", "", "", "Special"},
-		{"@markup.list.checked", "", "", "DiffAdd"},
-		{"@markup.list.unchecked", "", "", "Comment"},
+		{group: "@markup.heading", link: "Title"},
+		{group: "@markup.heading.1", link: "Title"},
+		{group: "@markup.heading.2", link: "Title"},
+		{group: "@markup.heading.3", link: "Title"},
+		{group: "@markup.heading.4", link: "Title"},
+		{group: "@markup.heading.5", link: "Title"},
+		{group: "@markup.heading.6", link: "Title"},
+		{group: "@markup.quote", link: "Comment"},
+		{group: "@markup.math", link: "Normal"},
+		{group: "@markup.link", link: "Underlined"},
+		{group: "@markup.link.label", link: "Underlined"},
+		{group: "@markup.link.url", link: "Underlined"},
+		{group: "@markup.raw", link: "String"},
+		{group: "@markup.raw.block", link: "String"},
+		{group: "@markup.list", link: "Special"},
+		{group: "@markup.list.checked", link: "Added"},
+		{group: "@markup.list.unchecked", link: "Comment"},
 
 		// Do not impose typography for markup emphasis.
-		{"@markup.strong", "", "", "Normal"},
-		{"@markup.italic", "", "", "Normal"},
-		{"@markup.strikethrough", "", "", "Normal"},
-		{"@markup.underline", "", "", "Normal"},
+		{group: "@markup.strong", link: "Normal"},
+		{group: "@markup.italic", link: "Normal"},
+		{group: "@markup.strikethrough", link: "Normal"},
+		{group: "@markup.underline", link: "Normal"},
 
 		// Diff semantics.
-		{"@diff.plus", "", "", "DiffAdd"},
-		{"@diff.minus", "", "", "DiffDelete"},
-		{"@diff.delta", "", "", "DiffChange"},
+		{group: "@diff.plus", link: "Added"},
+		{group: "@diff.minus", link: "Removed"},
+		{group: "@diff.delta", link: "Changed"},
 
 		// Tags.
-		{"@tag", "", "", "Tag"},
-		{"@tag.builtin", "", "", "Tag"},
-		{"@tag.attribute", "", "", "Identifier"},
-		{"@tag.delimiter", "", "", "Delimiter"},
+		{group: "@tag", link: "Tag"},
+		{group: "@tag.builtin", link: "Tag"},
+		{group: "@tag.attribute", link: "Identifier"},
+		{group: "@tag.delimiter", link: "Delimiter"},
 	}
 }
 
 func diagnosticHighlights() []highlight {
 	return []highlight{
-		{"DiagnosticError", "rust", "", ""},
-		{"DiagnosticWarn", "ochre", "", ""},
-		{"DiagnosticInfo", "mineral", "", ""},
-		{"DiagnosticHint", "mineral", "", ""},
-		{"DiagnosticOk", "moss", "", ""},
+		{group: "DiagnosticError", fg: "rust"},
+		{group: "DiagnosticWarn", fg: "ochre"},
+		{group: "DiagnosticInfo", fg: "mineral"},
+		{group: "DiagnosticHint", fg: "mineral"},
+		{group: "DiagnosticOk", fg: "moss"},
 
-		{"DiagnosticVirtualTextError", "", "", "DiagnosticError"},
-		{"DiagnosticVirtualTextWarn", "", "", "DiagnosticWarn"},
-		{"DiagnosticVirtualTextInfo", "", "", "DiagnosticInfo"},
-		{"DiagnosticVirtualTextHint", "", "", "DiagnosticHint"},
-		{"DiagnosticVirtualTextOk", "", "", "DiagnosticOk"},
+		{group: "DiagnosticVirtualTextError", link: "DiagnosticError"},
+		{group: "DiagnosticVirtualTextWarn", link: "DiagnosticWarn"},
+		{group: "DiagnosticVirtualTextInfo", link: "DiagnosticInfo"},
+		{group: "DiagnosticVirtualTextHint", link: "DiagnosticHint"},
+		{group: "DiagnosticVirtualTextOk", link: "DiagnosticOk"},
 
-		{"DiagnosticFloatingError", "", "", "DiagnosticError"},
-		{"DiagnosticFloatingWarn", "", "", "DiagnosticWarn"},
-		{"DiagnosticFloatingInfo", "", "", "DiagnosticInfo"},
-		{"DiagnosticFloatingHint", "", "", "DiagnosticHint"},
-		{"DiagnosticFloatingOk", "", "", "DiagnosticOk"},
+		{group: "DiagnosticFloatingError", link: "DiagnosticError"},
+		{group: "DiagnosticFloatingWarn", link: "DiagnosticWarn"},
+		{group: "DiagnosticFloatingInfo", link: "DiagnosticInfo"},
+		{group: "DiagnosticFloatingHint", link: "DiagnosticHint"},
+		{group: "DiagnosticFloatingOk", link: "DiagnosticOk"},
 
-		{"DiagnosticSignError", "", "", "DiagnosticError"},
-		{"DiagnosticSignWarn", "", "", "DiagnosticWarn"},
-		{"DiagnosticSignInfo", "", "", "DiagnosticInfo"},
-		{"DiagnosticSignHint", "", "", "DiagnosticHint"},
-		{"DiagnosticSignOk", "", "", "DiagnosticOk"},
+		{group: "DiagnosticSignError", link: "DiagnosticError"},
+		{group: "DiagnosticSignWarn", link: "DiagnosticWarn"},
+		{group: "DiagnosticSignInfo", link: "DiagnosticInfo"},
+		{group: "DiagnosticSignHint", link: "DiagnosticHint"},
+		{group: "DiagnosticSignOk", link: "DiagnosticOk"},
 
-		// Color only: deliberately do not impose undercurl/underline styling.
-		{"DiagnosticUnderlineError", "", "", "DiagnosticError"},
-		{"DiagnosticUnderlineWarn", "", "", "DiagnosticWarn"},
-		{"DiagnosticUnderlineInfo", "", "", "DiagnosticInfo"},
-		{"DiagnosticUnderlineHint", "", "", "DiagnosticHint"},
-		{"DiagnosticUnderlineOk", "", "", "DiagnosticOk"},
+		// Underlines keep Neovim's underline in the diagnostic's color, so
+		// the code beneath keeps its syntax colors.
+		{group: "DiagnosticUnderlineError", sp: "rust", cue: "underline"},
+		{group: "DiagnosticUnderlineWarn", sp: "ochre", cue: "underline"},
+		{group: "DiagnosticUnderlineInfo", sp: "mineral", cue: "underline"},
+		{group: "DiagnosticUnderlineHint", sp: "mineral", cue: "underline"},
+		{group: "DiagnosticUnderlineOk", sp: "moss", cue: "underline"},
+		{group: "DiagnosticDeprecated", sp: "ochre", cue: "strikethrough"},
 	}
 }
 
 func lspHighlights() []highlight {
 	return []highlight{
 		// Ordinary identifiers/data remain Ink.
-		{"@lsp.type.variable", "", "", "Identifier"},
-		{"@lsp.type.parameter", "", "", "Identifier"},
-		{"@lsp.type.property", "", "", "Identifier"},
-		{"@lsp.type.enumMember", "", "", "Constant"},
-		{"@lsp.type.event", "", "", "Identifier"},
+		{group: "@lsp.type.variable", link: "Identifier"},
+		{group: "@lsp.type.parameter", link: "Identifier"},
+		{group: "@lsp.type.property", link: "Identifier"},
+		{group: "@lsp.type.enumMember", link: "Constant"},
+		{group: "@lsp.type.event", link: "Identifier"},
 
-		{"@lsp.type.function", "", "", "Function"},
-		{"@lsp.type.method", "", "", "Function"},
+		{group: "@lsp.type.function", link: "Function"},
+		{group: "@lsp.type.method", link: "Function"},
 
-		{"@lsp.type.string", "", "", "String"},
-		{"@lsp.type.number", "", "", "Number"},
-		{"@lsp.type.regexp", "", "", "String"},
-		{"@lsp.type.comment", "", "", "Comment"},
+		{group: "@lsp.type.string", link: "String"},
+		{group: "@lsp.type.number", link: "Number"},
+		{group: "@lsp.type.regexp", link: "String"},
+		{group: "@lsp.type.comment", link: "Comment"},
 
 		// Structural language roles use Mineral.
-		{"@lsp.type.class", "", "", "Type"},
-		{"@lsp.type.interface", "", "", "Type"},
-		{"@lsp.type.enum", "", "", "Type"},
-		{"@lsp.type.struct", "", "", "Type"},
-		{"@lsp.type.type", "", "", "Type"},
-		{"@lsp.type.typeParameter", "", "", "Type"},
-		{"@lsp.type.namespace", "", "", "Include"},
-		{"@lsp.type.decorator", "", "", "PreProc"},
-		{"@lsp.type.keyword", "", "", "Keyword"},
-		{"@lsp.type.macro", "", "", "Macro"},
-		{"@lsp.type.modifier", "", "", "Keyword"},
-		{"@lsp.type.operator", "", "", "Operator"},
+		{group: "@lsp.type.class", link: "Type"},
+		{group: "@lsp.type.interface", link: "Type"},
+		{group: "@lsp.type.enum", link: "Type"},
+		{group: "@lsp.type.struct", link: "Type"},
+		{group: "@lsp.type.type", link: "Type"},
+		{group: "@lsp.type.typeParameter", link: "Type"},
+		{group: "@lsp.type.namespace", link: "Include"},
+		{group: "@lsp.type.decorator", link: "PreProc"},
+		{group: "@lsp.type.keyword", link: "Keyword"},
+		{group: "@lsp.type.macro", link: "Macro"},
+		{group: "@lsp.type.modifier", link: "Keyword"},
+		{group: "@lsp.type.operator", link: "Operator"},
 
 		// Actual semantic state.
-		{"@lsp.mod.deprecated", "", "", "WarningMsg"},
-		{"@lsp.mod.documentation", "", "", "Comment"},
+		{group: "@lsp.mod.deprecated", link: "WarningMsg"},
+		{group: "@lsp.mod.documentation", link: "Comment"},
 	}
 }
 
@@ -501,6 +560,26 @@ func writeHighlight(
 			fmt.Sprintf(
 				"bg = c.%s",
 				h.bg,
+			),
+		)
+	}
+
+	if h.sp != "" {
+		attrs = append(
+			attrs,
+			fmt.Sprintf(
+				"sp = c.%s",
+				h.sp,
+			),
+		)
+	}
+
+	if h.cue != "" {
+		attrs = append(
+			attrs,
+			fmt.Sprintf(
+				"%s = true",
+				h.cue,
 			),
 		)
 	}
@@ -562,6 +641,11 @@ func resolveColors(
 		{"Rust", p.Anchors.Rust, &c.rust},
 		{"Selection", derived.Selection, &c.selection},
 		{"Callout", derived.Callout, &c.callout},
+		{"Mineral Wash", derived.Wash.Mineral.Line, &c.mineralWash},
+		{"Moss Wash", derived.Wash.Moss.Line, &c.mossWash},
+		{"Ochre Wash", derived.Wash.Ochre.Line, &c.ochreWash},
+		{"Rust Wash", derived.Wash.Rust.Line, &c.rustWash},
+		{"Ochre Wash Emphasis", derived.Wash.Ochre.Emphasis, &c.ochreWashEmphasis},
 	}
 
 	for _, item := range values {
@@ -574,6 +658,26 @@ func resolveColors(
 		}
 
 		*item.dst = hex
+	}
+
+	term, err := terminal.Resolve(p)
+	if err != nil {
+		return colors{}, fmt.Errorf(
+			"resolve terminal palette: %w",
+			err,
+		)
+	}
+
+	for i, value := range term.ANSI {
+		hex, err := toHex(
+			fmt.Sprintf("ANSI %d", i),
+			value,
+		)
+		if err != nil {
+			return colors{}, err
+		}
+
+		c.ansi[i] = hex
 	}
 
 	return c, nil
