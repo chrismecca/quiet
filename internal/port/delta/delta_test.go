@@ -124,6 +124,7 @@ func TestDeltaRendersWithFeatures(t *testing.T) {
 			"XDG_CONFIG_HOME="+filepath.Join(home, ".config"),
 			"GIT_CONFIG_NOSYSTEM=1",
 			"XDG_CACHE_HOME="+cache,
+			"COLORTERM=truecolor",
 		)
 		cmd.Stdin = strings.NewReader(diff)
 		cmd.Dir = root

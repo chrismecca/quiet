@@ -160,7 +160,11 @@ func TestBatRendersWithTheme(t *testing.T) {
 			"--style", "plain",
 			"--language", "go",
 		)
-		render.Env = append(os.Environ(), "BAT_CACHE_PATH="+cache)
+		render.Env = append(
+			os.Environ(),
+			"BAT_CACHE_PATH="+cache,
+			"COLORTERM=truecolor",
+		)
 		render.Stdin = strings.NewReader("package main // quiet\n")
 
 		output, err := render.CombinedOutput()
