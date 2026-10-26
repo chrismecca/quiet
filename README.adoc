@@ -1,5 +1,7 @@
 // @(#)quiet / asciidoc / README.adoc / 2026-10-26
 
+image::docs/assets/icon/quiet-icon-256.png[quiet,128,align=center]
+
 ----
            _     _
  __ _ _  _(_)___| |_

@@ -51,6 +51,17 @@ jobs:
           git diff --exit-code
           test -z "$(git status --porcelain)"
 
+      # The release workflow packages the extension the same way. Release
+      # tags cannot be moved, so packaging must already work when one is
+      # pushed.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Package the VS Code extension
+        working-directory: ports/vscode
+        run: npx --yes @vscode/vsce@4.0.0 package --readme-path marketplace.md --out quiet.vsix
+
   terminal-app:
     name: Terminal.app profiles
     runs-on: macos-latest

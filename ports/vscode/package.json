@@ -2,7 +2,7 @@
   "name": "quiet-color-system",
   "displayName": "quiet",
   "description": "A restrained color system for long-duration work.",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "publisher": "chrismecca",
   "license": "MIT",
   "homepage": "https://github.com/chrismecca/quiet",

@@ -1,5 +1,5 @@
 ;;; quiet-themes.el --- Restrained color themes for long-duration work -*- lexical-binding: t; -*-
-;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-25
+;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-26
 
 ;; Copyright (C) 2026 Chris Mecca
 ;; SPDX-License-Identifier: MIT
@@ -7,7 +7,7 @@
 ;; Author: Chris Mecca <cm@chrismecca.com>
 ;; Maintainer: Chris Mecca <cm@chrismecca.com>
 ;; URL: https://github.com/chrismecca/quiet
-;; Version: 0.1.0
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "29.1"))
 ;; Keywords: faces, theme, accessibility
 
