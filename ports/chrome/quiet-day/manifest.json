@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "quiet-day",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A restrained color system for long-duration work.",
   "theme": {
     "colors": {

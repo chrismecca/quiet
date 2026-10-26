@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/chrome/chrome.go / 2026-10-24
+// @(#)quiet / go / internal/port/chrome/chrome.go / 2026-10-25
 
 // Package chrome maps quiet-core semantics onto a Chrome theme.
 //
@@ -14,6 +14,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/release"
 )
 
 // role names a quiet color used by the Chrome mapping.
@@ -111,12 +112,13 @@ func Encode(
 		`{
   "manifest_version": 3,
   "name": %s,
-  "version": "0.0.0",
+  "version": %q,
   "description": "A restrained color system for long-duration work.",
   "theme": {
     "colors": {
 `,
 		name,
+		release.Version,
 	)
 
 	for i, e := range mapping {
