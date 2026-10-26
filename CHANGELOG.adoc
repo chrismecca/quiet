@@ -16,7 +16,18 @@ breaking.  A release lists its breaking changes first, under `Breaking`.
 
 The candidate quiet-core and its initial ports predate this changelog.
 
-== Unreleased
+== 0.5.0 (2026-10-26)
+
+quiet-core and the canonical palettes are stable, and a versioning policy
+now defines what each release may change.
+
+=== Breaking
+
+* Vim and Neovim schemes moved into `colors/` directories:
+  `ports/vim/colors/` and `ports/neovim/colors/`.  Update copies or
+  symlinks of the old files.  `ports/vim` and `ports/neovim` now install
+  from this repository with vim-plug, lazy.nvim, or `vim.pack`, and tests
+  load each scheme through the runtimepath in an installed Vim and Neovim.
 
 === quiet-core
 
@@ -33,10 +44,6 @@ The candidate quiet-core and its initial ports predate this changelog.
 * Added the Zed port: a `quiet` theme family with `quiet-day` and
   `quiet-night`, setting every style key Zed 1.25.3 defines.  Dim
   terminal colors use quiet's Subtle opacity.
-* Vim and Neovim schemes now live in `colors/` directories, so
-  `ports/vim` and `ports/neovim` install from this repository with
-  vim-plug, lazy.nvim, or `vim.pack`.  Tests load each scheme through the
-  runtimepath in an installed Vim and Neovim.
 * VS Code: added Marketplace metadata, a Marketplace README, and the
   license, so `vsce package` builds a complete extension.
 * Emacs: theme files now pass `checkdoc` and provide features; the MELPA
@@ -72,6 +79,7 @@ The candidate quiet-core and its initial ports predate this changelog.
   straight underline on a face whose Emacs default is wavy.
 * Added `.gitattributes`: LF line endings everywhere, and generated files
   marked as generated.
+* Added the quiet icon, shown at the top of the README.
 
 == 0.1.0 (2026-10-25)
 

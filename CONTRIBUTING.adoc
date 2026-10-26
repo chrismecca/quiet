@@ -147,9 +147,9 @@ Add that section above the newest release when it is missing.
 
 | `check`
 | On every push to `main` and every pull request: `make check`,
-  `make lint`, and regeneration of every port on amd64 and arm64, and of
-  the Terminal.app profiles on macOS.  Fails if any committed artifact
-  differs.
+  `make lint`, regeneration of every port on amd64 and arm64 and of the
+  Terminal.app profiles on macOS, and packaging of the VS Code extension.
+  Fails if any committed artifact differs.
 
 | `hosts`
 | Weekly, and on pull requests that change ports: the port tests against

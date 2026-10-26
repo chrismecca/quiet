@@ -1,43 +1,41 @@
 // @(#)quiet / asciidoc / README.adoc / 2026-10-26
 
-----
-           _     _
- __ _ _  _(_)___| |_
-/ _` | || | / -_)  _|
-\__, |\_,_|_\___|\__|.
-   |_|
-----
+image::docs/assets/icon/quiet-icon-256.png[quiet,128,align=center]
 
-A restrained color system for long-duration work.
+[discrete]
+= Quiet.
+
+A restrained semantic color system for long-duration work.
 
 _The interface should become scenery._
 
 Color is allowed to organize.  It is not allowed to shout.
 
+quiet derives application palettes from semantic roles and explicit
+constraints rather than hand-picked theme values.
+
 image::docs/assets/header/quiet-header.png[quiet-day and quiet-night in Terminal.app with Vim and Xcode,align=center]
 
-== Why
+== What it is
 
 quiet is a semantic color system for software used for hours at a time.
-
-Not a theme pack. +
-Not a skin. +
-Not a pile of hex values.
 
 Ten semantic anchors. +
 Two adaptations. +
 Deterministic derivation. +
 Forty-seven current quiet-core constraints.
 
+Not a theme pack. +
+Not a skin. +
+Not a pile of hex values.
+
 quiet ports color systems.
 
 It does not redesign the applications that use them.
 
-== Day / Night
+== The system
 
-quiet-day and quiet-night are adaptations of the same semantic system.
-
-They are not mathematical inversions.
+The ten semantic anchors are:
 
 ----
 Field      Surface      Structure
@@ -46,12 +44,25 @@ Ink        Muted        Line
 Mineral    Moss         Ochre        Rust
 ----
 
+They describe roles rather than application-specific colors.
+
+Applications map their own interface elements onto those roles.
+
 The canonical palettes live in:
 
 ----
 spec/quiet-day.json
 spec/quiet-night.json
 ----
+
+== Day / Night
+
+quiet-day and quiet-night are adaptations of the same semantic system.
+
+They preserve the same roles and relationships under different viewing
+conditions.
+
+They are not mathematical inversions.
 
 == Use it
 
@@ -78,22 +89,27 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/x11/[X11]
 | link:ports/dircolors/[GNU dircolors]
 | link:ports/ghostty/[Ghostty]
+
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
 | link:ports/wezterm/[WezTerm]
 | link:ports/emacs/[Emacs]
+
 | link:ports/vim/[Vim]
 | link:ports/neovim/[Neovim]
 | link:ports/helix/[Helix]
 | link:ports/vscode/[VS Code]
+
 | link:ports/zed/[Zed]
 | link:ports/jetbrains/[JetBrains]
 | link:ports/xcode/[Xcode]
 | link:ports/firefox/[Firefox]
+
 | link:ports/chrome/[Chrome]
 | link:ports/tmux/[tmux]
 | link:ports/fzf/[fzf]
 | link:ports/delta/[delta]
+
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
 |
@@ -113,6 +129,12 @@ Current quiet-core validation:
 quiet-day:   PASS (47/47)
 quiet-night: PASS (47/47)
 ----
+
+The specification defines the relationships.
+
+The palettes are outputs of those relationships.
+
+The ports adapt those outputs to applications.
 
 == Build
 
@@ -152,12 +174,12 @@ The reference interface lives in `examples/reference-interface/`.
 
 == Status
 
-quiet-core and the canonical palettes are stable.  Changes follow quiet's
-link:docs/versioning.adoc[versioning policy].
+quiet-core and the canonical palettes are stable.
+
+Changes follow quiet's link:docs/versioning.adoc[versioning policy].
 
 MIT.  See `LICENSE`.
 
 '''
 
 _The interface should become scenery._
-
