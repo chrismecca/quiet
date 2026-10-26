@@ -62,8 +62,7 @@ The candidate quiet-core and its initial ports predate this changelog.
 * Added `quiet version` and `quiet release-notes`.
 * Added the `release` workflow.  A version tag checks that the tag,
   `Version`, and the changelog agree, runs every check, publishes the
-  GitHub release with the VS Code and JetBrains packages, and publishes
-  them to each marketplace whose token is configured.
+  GitHub release with the VS Code and JetBrains packages.
 * Added the `hosts` workflow, which runs the port tests weekly against
   current releases of VS Code, Neovim, Vim, Emacs, Helix, Chrome, bat,
   delta, and fzf.

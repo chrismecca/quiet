@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/delta/delta_test.go / 2026-10-24
+// @(#)quiet / go / internal/port/delta/delta_test.go / 2026-10-26
 
 package delta
 

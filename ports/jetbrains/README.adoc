@@ -41,11 +41,9 @@ Scheme*, then the gear menu, *Import Scheme*, and select the `.icls` file.
 `com.chrismecca.quiet`, becomes permanent once published, and its version
 comes from quiet's release version.
 
-To publish the first release, sign in to the JetBrains Marketplace as the
+To publish a release, sign in to the JetBrains Marketplace as the
 vendor, choose *Upload plugin*, and upload `ports/jetbrains/quiet.jar`.
-Later releases upload a new `quiet.jar` to the same plugin page.  The
-`release` workflow does this when a version tag is pushed and a Marketplace
-token is configured; see `docs/distribution.adoc`.
+Later releases upload a new `quiet.jar` to the same plugin page.
 
 The Marketplace runs JetBrains' Plugin Verifier on each upload.  The plugin
 declares `since-build="262"`, so it is verified against IntelliJ Platform

@@ -49,37 +49,7 @@ These ports need no separate channel.  Their READMEs describe installation.
 |===
 
 Versions come from `internal/release.Version`.  Publish only from a release
-tag.
-
-=== Automated publishing
-
-The `release` workflow publishes to the first three channels when a version
-tag is pushed.  Its `publish` job runs in the `marketplaces` environment and
-skips each channel whose token is not configured:
-
-[cols="1,2"]
-|===
-| Secret | Channel
-
-| `VSCE_PAT`
-| Visual Studio Marketplace: an Azure DevOps personal access token with
-  the *Marketplace (Manage)* scope for the `chrismecca` publisher
-
-| `OVSX_PAT`
-| Open VSX: an access token for the `chrismecca` namespace
-
-| `JETBRAINS_TOKEN`
-| JetBrains Marketplace: a permanent token from the vendor's
-  *My Tokens* page
-|===
-
-Add the secrets to the `marketplaces` environment under the repository's
-*Settings > Environments*.  Requiring a reviewer there makes each release
-wait for approval before it reaches a marketplace.
-
-The JetBrains Marketplace API uploads new versions only.  Upload the first
-version through the Marketplace website, as the JetBrains README describes.
-MELPA builds from the repository and needs no publishing.
+tag: its GitHub release carries the `.vsix` and `quiet.jar` to upload.
 
 == Theme collections
 

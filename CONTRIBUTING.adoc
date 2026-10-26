@@ -180,9 +180,7 @@ decides whether a release is major, minor, or patch.  To release:
 The tag starts the `release` workflow.  It checks that the tag names
 `Version`, runs every check, and publishes a GitHub release with the
 changelog section as its notes and the VS Code and JetBrains packages
-attached.  It then publishes those packages to each marketplace whose token
-is configured.  `docs/distribution.adoc` lists the tokens and the channels
-that remain manual.
+attached.  Then publish to each channel in `docs/distribution.adoc`.
 
 == Canonical colors
 

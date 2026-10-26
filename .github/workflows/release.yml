@@ -5,9 +5,8 @@
 # passes every check.
 #
 # The GitHub release carries the release notes, the VS Code extension, and
-# the JetBrains plugin. The publish job then sends those same files to each
-# marketplace whose token is configured, and skips the others. Its
-# marketplaces environment can require approval before it runs.
+# the JetBrains plugin. Marketplaces are published by hand from those files;
+# see docs/distribution.adoc.
 
 name: release
 
@@ -78,48 +77,3 @@ jobs:
             --notes-file notes.md \
             ports/vscode/quiet.vsix \
             ports/jetbrains/quiet.jar
-
-  publish:
-    name: marketplaces
-    needs: release
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    environment: marketplaces
-
-    env:
-      VSCE_PAT: ${{ secrets.VSCE_PAT }}
-      OVSX_PAT: ${{ secrets.OVSX_PAT }}
-      JETBRAINS_TOKEN: ${{ secrets.JETBRAINS_TOKEN }}
-
-    steps:
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-
-      - name: Download release files
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download "$GITHUB_REF_NAME" \
-            --repo "$GITHUB_REPOSITORY" \
-            --pattern quiet.vsix \
-            --pattern quiet.jar
-
-      - name: Visual Studio Marketplace
-        if: env.VSCE_PAT != ''
-        run: npx --yes @vscode/vsce@4.0.0 publish --packagePath quiet.vsix
-
-      - name: Open VSX
-        if: env.OVSX_PAT != ''
-        run: npx --yes ovsx@1.3.0 publish quiet.vsix
-
-      # The Marketplace API uploads new versions of an existing plugin. The
-      # first version is uploaded through the Marketplace website.
-      - name: JetBrains Marketplace
-        if: env.JETBRAINS_TOKEN != ''
-        run: |
-          curl --fail-with-body --silent --show-error \
-            --header "Authorization: Bearer $JETBRAINS_TOKEN" \
-            --form xmlId=com.chrismecca.quiet \
-            --form file=@quiet.jar \
-            https://plugins.jetbrains.com/api/updates/upload
