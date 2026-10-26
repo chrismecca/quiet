@@ -61,6 +61,7 @@ func TestCanonicalSchemesMatchCommittedArtifacts(t *testing.T) {
 					t,
 					"ports",
 					"vim",
+					"colors",
 					tt.artifact,
 				),
 			)

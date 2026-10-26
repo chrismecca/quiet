@@ -26,13 +26,16 @@ var stateCues = []string{
 	"strikethrough",
 }
 
+// TestSchemesLoadInNeovim loads each scheme the way a plugin manager does:
+// with ports/neovim on the runtimepath and :colorscheme.
 func TestSchemesLoadInNeovim(t *testing.T) {
 	nvim := nvimPath(t)
 
 	for _, name := range []string{"quiet-day", "quiet-night"} {
 		out, err := exec.Command(
 			nvim, "--clean", "--headless",
-			"+luafile "+repoPath(t, "ports", "neovim", name+".lua"),
+			"+set runtimepath^="+repoPath(t, "ports", "neovim"),
+			"+colorscheme "+name,
 			"+lua assert(vim.g.colors_name == '"+name+"')",
 			"+lua assert(vim.g.terminal_color_15 ~= nil)",
 			"+qa!",

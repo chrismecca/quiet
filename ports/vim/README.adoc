@@ -11,8 +11,8 @@ support.
 == Artifacts
 
 ----
-ports/vim/quiet-day.vim
-ports/vim/quiet-night.vim
+ports/vim/colors/quiet-day.vim
+ports/vim/colors/quiet-night.vim
 ----
 
 The files are generated artifacts.
@@ -361,16 +361,31 @@ It does not skin applications.
 
 == Installation
 
-Copy the generated files into Vim's colors directory:
+The schemes install from the quiet repository.  `ports/vim` is a runtime
+directory: add it to `runtimepath`, then choose a scheme.
+
+With vim-plug:
+
+----
+Plug 'chrismecca/quiet', { 'rtp': 'ports/vim' }
+----
+
+With Vim's own packages, clone the repository and add the runtime
+directory in your vimrc:
+
+----
+git clone https://github.com/chrismecca/quiet ~/.vim/pack/quiet/opt/quiet
+----
+
+----
+set runtimepath+=~/.vim/pack/quiet/opt/quiet/ports/vim
+----
+
+Or copy the files into Vim's colors directory:
 
 ----
 mkdir -p ~/.vim/colors
-
-cp ports/vim/quiet-day.vim \
-   ~/.vim/colors/
-
-cp ports/vim/quiet-night.vim \
-   ~/.vim/colors/
+cp ports/vim/colors/*.vim ~/.vim/colors/
 ----
 
 Then select one from Vim:

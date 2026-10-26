@@ -297,10 +297,10 @@ machine:
 neovim:
 	$(GO) run ./cmd/quiet port neovim \
 		spec/quiet-day.json \
-		> ports/neovim/quiet-day.lua
+		> ports/neovim/colors/quiet-day.lua
 	$(GO) run ./cmd/quiet port neovim \
 		spec/quiet-night.json \
-		> ports/neovim/quiet-night.lua
+		> ports/neovim/colors/quiet-night.lua
 
 .PHONY: tmtheme
 tmtheme:
@@ -359,10 +359,10 @@ terminal-app-profiles: build
 vim:
 	$(GO) run ./cmd/quiet port vim \
 		spec/quiet-day.json \
-		> ports/vim/quiet-day.vim
+		> ports/vim/colors/quiet-day.vim
 	$(GO) run ./cmd/quiet port vim \
 		spec/quiet-night.json \
-		> ports/vim/quiet-night.vim
+		> ports/vim/colors/quiet-night.vim
 
 .PHONY: vscode
 vscode:
@@ -372,6 +372,7 @@ vscode:
 	$(GO) run ./cmd/quiet port vscode \
 		spec/quiet-night.json \
 		> ports/vscode/themes/quiet-night-color-theme.json
+	cp LICENSE ports/vscode/LICENSE
 
 .PHONY: web
 web:

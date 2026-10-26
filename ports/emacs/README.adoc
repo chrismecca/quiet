@@ -128,6 +128,28 @@ once quiet is accepted into an Emacs package archive.
 No `quiet-themes-pkg.el` is stored in this repository. Package archives
 generate package metadata from `quiet-themes.el`.
 
+The MELPA recipe is:
+
+[source,elisp]
+----
+(quiet-themes :fetcher github
+              :repo "chrismecca/quiet"
+              :files ("ports/emacs/*.el"))
+----
+
+MELPA's existing `quiet` package is unrelated.
+
+The package byte-compiles without warnings and passes `checkdoc`.
+`package-lint` reports one error per theme file: the theme names,
+`quiet-day` and `quiet-night`, do not start with the package prefix
+`quiet-themes`.  Theme names are what users load, so they keep quiet's
+names.
+
+Some multi-theme packages, such as modus-themes, avoid the error by
+defining themes through their own macro.  quiet keeps a plain `deftheme`
+with an autoload cookie, so Emacs knows each theme's family before it is
+loaded, as `theme-choose-variant` expects.
+
 == Manual installation
 
 For installations that do not use package management, add this directory to

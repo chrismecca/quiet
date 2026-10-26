@@ -5,11 +5,31 @@
   "version": "0.1.0",
   "publisher": "chrismecca",
   "license": "MIT",
+  "homepage": "https://github.com/chrismecca/quiet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrismecca/quiet",
+    "directory": "ports/vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/chrismecca/quiet/issues"
+  },
+  "keywords": [
+    "theme",
+    "color theme",
+    "light theme",
+    "dark theme",
+    "accessibility"
+  ],
   "engines": {
     "vscode": "^1.142.0"
   },
   "categories": [
     "Themes"
+  ],
+  "files": [
+    "themes/*.json",
+    "LICENSE"
   ],
   "contributes": {
     "themes": [
@@ -26,4 +46,3 @@
     ]
   }
 }
-
