@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/base16/base16.go / 2026-10-24
+// @(#)quiet / go / internal/port/base16/base16.go / 2026-10-26
 
 // Package base16 projects quiet-core onto the Base16 compatibility model.
 package base16
@@ -87,7 +87,7 @@ func Resolve(p core.Palette) (Scheme, error) {
 	result := Scheme{
 		Name:        p.Name,
 		Slug:        slug,
-		Author:      "quiet",
+		Author:      "Chris Mecca (https://github.com/chrismecca/quiet)",
 		Description: "A Base16 compatibility projection of " + p.Name + ".",
 		Variant:     variant,
 

@@ -1,10 +1,13 @@
-# @(#)quiet / git / .gitignore / 2026-10-16
+# @(#)quiet / git / .gitignore / 2026-10-26
 
 # go artifacts
 /bin/
 *.test
 *.out
 coverage.out
+
+# packaged editor extensions
+/ports/vscode/*.vsix
 
 # macos
 .DS_Store

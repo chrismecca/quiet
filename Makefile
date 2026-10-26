@@ -256,6 +256,12 @@ iterm2:
 		spec/quiet-day.json \
 		spec/quiet-night.json \
 		> ports/iterm2/quiet.itermcolors
+	$(GO) run ./cmd/quiet port iterm2-variant \
+		spec/quiet-day.json \
+		> ports/iterm2/quiet-day.itermcolors
+	$(GO) run ./cmd/quiet port iterm2-variant \
+		spec/quiet-night.json \
+		> ports/iterm2/quiet-night.itermcolors
 
 .PHONY: jetbrains
 jetbrains:

@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-25
+// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-26
 
 = quiet for Visual Studio Code
 
@@ -35,6 +35,29 @@ themes/quiet-night-color-theme.json
 The theme files are generated artifacts.
 
 `package.json` is the authored VS Code extension manifest.
+`marketplace.md` is the extension's Marketplace page.  `LICENSE` is
+copied from the repository root by `make vscode`.
+
+== Publishing
+
+The extension is published as `chrismecca.quiet-color-system`.  From this
+directory, package it once:
+
+----
+npx @vscode/vsce package --readme-path marketplace.md --out quiet.vsix
+----
+
+then publish that package to the Visual Studio Marketplace and to Open
+VSX, which VSCodium and other VS Code derivatives use:
+
+----
+npx @vscode/vsce publish --packagePath quiet.vsix
+npx ovsx publish quiet.vsix
+----
+
+Both commands need a personal access token for the `chrismecca`
+publisher.  The extension version comes from `package.json`, which the
+release tests keep equal to quiet's release version.
 
 == Syntax
 

@@ -1,0 +1,73 @@
+// @(#)quiet / asciidoc / ports/iterm2/README.adoc / 2026-10-26
+
+= quiet for iTerm2
+
+quiet's iTerm2 port serializes quiet's generic terminal palette into iTerm2
+color presets.
+
+It introduces no independent color policy.
+
+== Files
+
+----
+quiet.itermcolors          adaptive: quiet-day in light mode, quiet-night in dark mode
+quiet-day.itermcolors      quiet-day only
+quiet-night.itermcolors    quiet-night only
+----
+
+The files are generated from the canonical quiet palettes.
+
+`quiet.itermcolors` gives each color a `(Light)` and a `(Dark)` value, and
+iTerm2 follows the system appearance.  Its unsuffixed values are
+quiet-night, for older iTerm2 releases.
+
+`quiet-day.itermcolors` and `quiet-night.itermcolors` hold one palette
+each, as theme collections that keep one file per variant expect.
+
+== Installation
+
+Open *Settings > Profiles > Colors*, choose *Color Presets > Import*, and
+select a file.  Then choose the preset from *Color Presets*.
+
+For the adaptive preset, also enable *Use different colors for light mode
+and dark mode*.
+
+== Mapping
+
+[cols="2,2"]
+|===
+| iTerm2 color | Generic terminal role
+
+| Ansi 0 through Ansi 15
+| ANSI 0 through 15
+
+| Background, Cursor Text
+| Background
+
+| Foreground, Bold, Selected Text
+| Text
+
+| Cursor, Link, Active Pane Border, IME Cursor
+| Cursor
+
+| Cursor Guide, Badge
+| Cursor at 25% and 50% opacity
+
+| Selection, Match Background
+| Selection
+|===
+
+== Testing
+
+The test suite verifies that:
+
+* the committed presets match generator output;
+* each preset is well-formed XML using only sRGB;
+* each single-palette preset holds exactly the values the adaptive preset
+  gives that palette.
+
+== Generation
+
+----
+make iterm2
+----

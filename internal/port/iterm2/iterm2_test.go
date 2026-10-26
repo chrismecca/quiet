@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/iterm2/iterm2_test.go / 2026-10-24
+// @(#)quiet / go / internal/port/iterm2/iterm2_test.go / 2026-10-26
 
 package iterm2
 
@@ -49,6 +49,84 @@ func TestCanonicalPresetMatchesCommittedArtifact(t *testing.T) {
 			"generated iTerm2 preset differs from committed artifact",
 		)
 	}
+}
+
+func TestVariantPresetsMatchCommittedArtifacts(t *testing.T) {
+	day, night := canonicalPalettes(t)
+
+	for name, p := range map[string]terminal.Palette{
+		"quiet-day":   day,
+		"quiet-night": night,
+	} {
+		var got bytes.Buffer
+		if err := EncodeVariant(&got, p); err != nil {
+			t.Fatal(err)
+		}
+
+		want, err := os.ReadFile(repoPath(t, "ports", "iterm2", name+".itermcolors"))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !bytes.Equal(got.Bytes(), want) {
+			t.Errorf("ports/iterm2/%s.itermcolors is stale; run make iterm2", name)
+		}
+	}
+}
+
+// A variant preset holds each key once, without (Light) or (Dark), with
+// the values the adaptive preset gives that variant.
+func TestVariantPresetsMatchAdaptivePreset(t *testing.T) {
+	day, night := canonicalPalettes(t)
+
+	var adaptive bytes.Buffer
+	if err := Encode(&adaptive, day, night); err != nil {
+		t.Fatal(err)
+	}
+
+	for suffix, p := range map[string]terminal.Palette{
+		" (Light)": day,
+		" (Dark)":  night,
+	} {
+		var variant bytes.Buffer
+		if err := EncodeVariant(&variant, p); err != nil {
+			t.Fatal(err)
+		}
+
+		if strings.Contains(variant.String(), "(Light)") || strings.Contains(variant.String(), "(Dark)") {
+			t.Errorf("%s variant preset has suffixed keys", strings.TrimSpace(suffix))
+		}
+
+		want := strings.ReplaceAll(
+			keyedSection(adaptive.String(), suffix),
+			suffix+"</key>",
+			"</key>",
+		)
+
+		if got := keyedSection(variant.String(), ""); got != want {
+			t.Errorf("%s variant preset differs from the adaptive preset", strings.TrimSpace(suffix))
+		}
+	}
+}
+
+// keyedSection returns the key/value blocks whose keys end in suffix.
+func keyedSection(preset, suffix string) string {
+	var b strings.Builder
+
+	// Top-level keys sit at one tab; the components inside each color sit
+	// at two.
+	blocks := strings.Split(preset, "\n\t<key>")
+	for _, block := range blocks[1:] {
+		key, _, _ := strings.Cut(block, "</key>")
+		hasSuffix := strings.HasSuffix(key, " (Light)") || strings.HasSuffix(key, " (Dark)")
+
+		if (suffix == "" && !hasSuffix) || (suffix != "" && strings.HasSuffix(key, suffix)) {
+			entry, _, _ := strings.Cut(block, "\n\t</dict>")
+			b.WriteString("\t<key>" + entry + "\n\t</dict>\n")
+		}
+	}
+
+	return b.String()
 }
 
 func TestPresetIsWellFormedXML(t *testing.T) {
