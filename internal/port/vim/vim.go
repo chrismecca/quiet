@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/vim/vim.go / 2026-10-24
+// @(#)quiet / go / internal/port/vim/vim.go / 2026-10-25
 
 // Package vim maps quiet-core semantics onto Vim highlight groups.
 package vim
@@ -365,10 +365,14 @@ func Resolve(
 			selection,
 		),
 
-		highlight(
+		// Search takes the Mineral line wash and keeps syntax colors in
+		// truecolor; 16-color terminals keep Ink on Selection.
+		washed(
 			"Search",
-			ink,
-			selection,
+			nil,
+			derived.Wash.Mineral.Line,
+			inkCTerm,
+			lineCTerm,
 		),
 
 		highlight(
@@ -506,29 +510,40 @@ func Resolve(
 			structure,
 		),
 
-		// Diff semantics.
-		highlight(
+		// Diff semantics. In truecolor, lines take line washes and keep
+		// their syntax colors, and changed text takes Ink on the emphasis
+		// wash, which guarantees only Ink. 16-color terminals, which have
+		// no washes, color the text instead.
+		washed(
 			"DiffAdd",
-			moss,
-			surface,
+			nil,
+			derived.Wash.Moss.Line,
+			"2",
+			"NONE",
 		),
 
-		highlight(
+		washed(
 			"DiffChange",
-			ochre,
-			surface,
+			nil,
+			derived.Wash.Ochre.Line,
+			"3",
+			"NONE",
 		),
 
-		highlight(
+		washed(
 			"DiffDelete",
-			rust,
-			surface,
+			&a.Rust,
+			derived.Wash.Rust.Line,
+			"1",
+			"NONE",
 		),
 
-		highlight(
+		washed(
 			"DiffText",
-			ink,
-			selection,
+			&a.Ink,
+			derived.Wash.Ochre.Emphasis,
+			inkCTerm,
+			lineCTerm,
 		),
 
 		highlight(
@@ -604,6 +619,24 @@ func role(
 		color: c,
 		cterm: cterm,
 		set:   true,
+	}
+}
+
+// washed returns a highlight whose truecolor background is a wash. The
+// 16-color form has no wash, so its colors are given separately.
+func washed(
+	name string,
+	fg *color.SRGB,
+	bg color.SRGB,
+	ctermFg string,
+	ctermBg string,
+) Highlight {
+	return Highlight{
+		Name:            name,
+		Foreground:      fg,
+		Background:      &bg,
+		CTermForeground: ctermFg,
+		CTermBackground: ctermBg,
 	}
 }
 

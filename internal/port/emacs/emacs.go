@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/emacs/emacs.go / 2026-10-24
+// @(#)quiet / go / internal/port/emacs/emacs.go / 2026-10-25
 
 // Package emacs maps quiet-core semantics onto GNU Emacs faces.
 package emacs
@@ -10,34 +10,40 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
-type colors struct {
-	field     string
-	surface   string
-	structure string
-	ink       string
-	muted     string
-	line      string
-	mineral   string
-	moss      string
-	ochre     string
-	rust      string
-	selection string
-	callout   string
+// role is one named color the theme binds in its let form.
+type role struct {
+	name  string
+	value color.SRGB
 }
 
+// face sets one Emacs face. Colors are role names.
 type face struct {
 	name       string
 	foreground string
 	background string
+
+	// underline keeps an underline Emacs's own default gives the face:
+	// "line", or "wave" in the color underlineColor.
+	underline      string
+	underlineColor string
+
+	// extend carries a region's background to the window edge, as Emacs's
+	// default diff faces do.
+	extend bool
+
+	// inherit names a face this one inherits from, as in Emacs's default.
+	inherit string
 }
 
 // Encode writes one quiet palette as a native Emacs theme.
 //
-// The port defines color only. It deliberately does not set font family,
-// height, weight, slant, underline, boxes, or other typography/decorative
-// policy.
+// The port controls color. It keeps the underlines Emacs's own defaults give
+// links and diagnostics, in quiet's colors, and the :extend of diff regions.
+// It drops typographic emphasis such as bold, and sets no font family,
+// height, slant, or boxes.
 func Encode(
 	w io.Writer,
 	p core.Palette,
@@ -52,69 +58,9 @@ func Encode(
 		return err
 	}
 
-	c, err := resolveColors(p)
+	roles, err := resolveRoles(p)
 	if err != nil {
 		return err
-	}
-
-	faces := []face{
-		{"default", c.ink, c.field},
-		{"cursor", "", c.mineral},
-		{"region", c.ink, c.selection},
-		{"highlight", c.ink, c.callout},
-		{"secondary-selection", c.ink, c.callout},
-
-		{"shadow", c.muted, ""},
-		{"fringe", c.muted, c.field},
-		{"vertical-border", c.line, ""},
-		{"window-divider", c.line, ""},
-		{"window-divider-first-pixel", c.line, ""},
-		{"window-divider-last-pixel", c.line, ""},
-
-		{"header-line", c.ink, c.surface},
-		{"mode-line", c.ink, c.structure},
-		{"mode-line-inactive", c.muted, c.surface},
-		{"mode-line-emphasis", c.mineral, ""},
-		{"mode-line-highlight", c.ink, c.callout},
-
-		{"line-number", c.muted, c.field},
-		{"line-number-current-line", c.mineral, c.field},
-
-		{"minibuffer-prompt", c.mineral, ""},
-		{"link", c.mineral, ""},
-		{"link-visited", c.mineral, ""},
-		{"button", c.mineral, ""},
-
-		{"success", c.moss, ""},
-		{"warning", c.ochre, ""},
-		{"error", c.rust, ""},
-
-		{"isearch", c.ink, c.selection},
-		{"lazy-highlight", c.ink, c.callout},
-		{"match", c.ink, c.selection},
-		{"isearch-fail", c.rust, c.callout},
-
-		{"show-paren-match", c.ink, c.selection},
-		{"show-paren-mismatch", c.rust, c.callout},
-
-		{"font-lock-builtin-face", c.mineral, ""},
-		{"font-lock-comment-face", c.muted, ""},
-		{"font-lock-comment-delimiter-face", c.muted, ""},
-		{"font-lock-constant-face", c.ink, ""},
-		{"font-lock-doc-face", c.muted, ""},
-		{"font-lock-function-name-face", c.ink, ""},
-		{"font-lock-keyword-face", c.mineral, ""},
-		{"font-lock-negation-char-face", c.mineral, ""},
-		{"font-lock-preprocessor-face", c.mineral, ""},
-		{"font-lock-regexp-grouping-backslash", c.mineral, ""},
-		{"font-lock-regexp-grouping-construct", c.mineral, ""},
-		{"font-lock-string-face", c.ink, ""},
-		{"font-lock-type-face", c.mineral, ""},
-		{"font-lock-variable-name-face", c.ink, ""},
-		{"font-lock-warning-face", c.ochre, ""},
-
-		{"completions-common-part", c.mineral, ""},
-		{"completions-first-difference", c.ink, ""},
 	}
 
 	var b strings.Builder
@@ -137,42 +83,38 @@ func Encode(
 		backgroundMode,
 	)
 
+	for i, r := range roles {
+		prefix := "      "
+		if i == 0 {
+			prefix = "(let ("
+		}
+
+		suffix := ""
+		if i == len(roles)-1 {
+			suffix = ")"
+		}
+
+		fmt.Fprintf(
+			&b,
+			"%s(%s %q)%s\n",
+			prefix,
+			r.name,
+			r.value.MustHex(),
+			suffix,
+		)
+	}
+
 	fmt.Fprintf(
 		&b,
-		"(let ((field %q)\n"+
-			"      (surface %q)\n"+
-			"      (structure %q)\n"+
-			"      (ink %q)\n"+
-			"      (muted %q)\n"+
-			"      (line %q)\n"+
-			"      (mineral %q)\n"+
-			"      (moss %q)\n"+
-			"      (ochre %q)\n"+
-			"      (rust %q)\n"+
-			"      (selection %q)\n"+
-			"      (callout %q))\n"+
-			"  (custom-theme-set-faces\n"+
+		"  (custom-theme-set-faces\n"+
 			"   '%s\n",
-		c.field,
-		c.surface,
-		c.structure,
-		c.ink,
-		c.muted,
-		c.line,
-		c.mineral,
-		c.moss,
-		c.ochre,
-		c.rust,
-		c.selection,
-		c.callout,
 		theme,
 	)
 
-	for _, f := range faces {
+	for _, f := range faces() {
 		writeFace(
 			&b,
 			f,
-			c,
 		)
 	}
 
@@ -199,36 +141,214 @@ func Encode(
 	return nil
 }
 
+// faces returns every face the theme sets.
+//
+// Backgrounds drawn under source set no foreground when they keep every
+// syntax color readable: Wash line tiers and Structure. Emphasis washes,
+// which guarantee only Ink, set Ink.
+func faces() []face {
+	return []face{
+		// Frame and windows.
+		{name: "default", foreground: "ink", background: "field"},
+		{name: "cursor", background: "mineral"},
+		{name: "region", foreground: "ink", background: "selection"},
+		{name: "highlight", background: "callout"},
+		{name: "secondary-selection", background: "structure"},
+
+		{name: "shadow", foreground: "muted"},
+		{name: "fringe", foreground: "muted", background: "field"},
+		{name: "vertical-border", foreground: "line"},
+		{name: "window-divider", foreground: "line"},
+		{name: "window-divider-first-pixel", foreground: "line"},
+		{name: "window-divider-last-pixel", foreground: "line"},
+		{name: "trailing-whitespace", background: "rust-wash"},
+
+		{name: "header-line", foreground: "ink", background: "surface"},
+		{name: "mode-line", foreground: "ink", background: "structure"},
+		{name: "mode-line-inactive", foreground: "muted", background: "surface"},
+		{name: "mode-line-emphasis", foreground: "mineral"},
+		{name: "mode-line-highlight", foreground: "ink", background: "callout"},
+
+		{name: "tab-bar", foreground: "ink", background: "structure"},
+		{name: "tab-bar-tab", foreground: "ink", background: "field"},
+		{name: "tab-bar-tab-inactive", foreground: "muted", background: "structure"},
+		{name: "tab-line", foreground: "ink", background: "structure"},
+		{name: "tab-line-tab", foreground: "ink", background: "surface"},
+		{name: "tab-line-tab-current", foreground: "ink", background: "field"},
+		{name: "tab-line-tab-inactive", foreground: "muted", background: "structure"},
+
+		{name: "line-number", foreground: "muted", background: "field"},
+		{name: "line-number-current-line", foreground: "mineral", background: "field"},
+
+		{name: "minibuffer-prompt", foreground: "mineral"},
+		{name: "link", foreground: "mineral", underline: "line"},
+		{name: "link-visited", inherit: "link"},
+		{name: "button", inherit: "link"},
+
+		{name: "success", foreground: "moss"},
+		{name: "warning", foreground: "ochre"},
+		{name: "error", foreground: "rust"},
+
+		// Search and matching.
+		{name: "isearch", foreground: "ink", background: "selection"},
+		{name: "isearch-fail", foreground: "rust", background: "rust-wash"},
+		{name: "lazy-highlight", background: "mineral-wash"},
+		{name: "match", background: "mineral-wash"},
+
+		{name: "show-paren-match", foreground: "ink", background: "selection"},
+		{name: "show-paren-mismatch", foreground: "field", background: "rust"},
+
+		// Syntax.
+		{name: "font-lock-builtin-face", foreground: "mineral"},
+		{name: "font-lock-comment-face", foreground: "muted"},
+		{name: "font-lock-comment-delimiter-face", foreground: "muted"},
+		{name: "font-lock-constant-face", foreground: "ink"},
+		{name: "font-lock-doc-face", foreground: "muted"},
+		{name: "font-lock-function-name-face", foreground: "ink"},
+		{name: "font-lock-keyword-face", foreground: "mineral"},
+		{name: "font-lock-negation-char-face", foreground: "mineral"},
+		{name: "font-lock-preprocessor-face", foreground: "mineral"},
+		{name: "font-lock-regexp-grouping-backslash", foreground: "mineral"},
+		{name: "font-lock-regexp-grouping-construct", foreground: "mineral"},
+		{name: "font-lock-string-face", foreground: "ink"},
+		{name: "font-lock-type-face", foreground: "mineral"},
+		{name: "font-lock-variable-name-face", foreground: "ink"},
+		{name: "font-lock-warning-face", foreground: "ochre"},
+
+		// Syntax faces added for tree-sitter modes in Emacs 29.
+		{name: "font-lock-bracket-face", foreground: "ink"},
+		{name: "font-lock-delimiter-face", foreground: "ink"},
+		{name: "font-lock-escape-face", foreground: "ink"},
+		{name: "font-lock-function-call-face", foreground: "ink"},
+		{name: "font-lock-misc-punctuation-face", foreground: "ink"},
+		{name: "font-lock-number-face", foreground: "ink"},
+		{name: "font-lock-operator-face", foreground: "mineral"},
+		{name: "font-lock-property-name-face", foreground: "ink"},
+		{name: "font-lock-property-use-face", foreground: "ink"},
+		{name: "font-lock-punctuation-face", foreground: "ink"},
+		{name: "font-lock-variable-use-face", foreground: "ink"},
+
+		{name: "completions-common-part", foreground: "mineral"},
+		{name: "completions-first-difference", foreground: "ink"},
+
+		// Diagnostics keep Emacs's wavy underlines, in quiet's colors.
+		{name: "flymake-error", underline: "wave", underlineColor: "rust"},
+		{name: "flymake-warning", underline: "wave", underlineColor: "ochre"},
+		{name: "flymake-note", underline: "wave", underlineColor: "mineral"},
+		{name: "flyspell-incorrect", underline: "wave", underlineColor: "rust"},
+		{name: "flyspell-duplicate", underline: "wave", underlineColor: "ochre"},
+		{name: "eglot-highlight-symbol-face", background: "mineral-wash"},
+
+		// Diffs.
+		{name: "diff-header", background: "structure", extend: true},
+		{name: "diff-file-header", foreground: "mineral", background: "structure", extend: true},
+		{name: "diff-hunk-header", foreground: "muted", background: "structure", extend: true},
+		{name: "diff-added", background: "moss-wash", extend: true},
+		{name: "diff-removed", background: "rust-wash", extend: true},
+		{name: "diff-changed", background: "ochre-wash", extend: true},
+		{name: "diff-indicator-added", foreground: "moss", background: "moss-wash", extend: true},
+		{name: "diff-indicator-removed", foreground: "rust", background: "rust-wash", extend: true},
+		{name: "diff-indicator-changed", foreground: "ochre", background: "ochre-wash", extend: true},
+		{name: "diff-refine-added", foreground: "ink", background: "moss-wash-emphasis"},
+		{name: "diff-refine-removed", foreground: "ink", background: "rust-wash-emphasis"},
+		{name: "diff-refine-changed", foreground: "ink", background: "ochre-wash-emphasis"},
+		{name: "diff-error", foreground: "rust"},
+
+		// Ediff: A is the old version, B the new, C the merge, and Ancestor
+		// the common base.
+		{name: "ediff-current-diff-A", background: "rust-wash", extend: true},
+		{name: "ediff-current-diff-B", background: "moss-wash", extend: true},
+		{name: "ediff-current-diff-C", background: "ochre-wash", extend: true},
+		{name: "ediff-current-diff-Ancestor", background: "mineral-wash", extend: true},
+		{name: "ediff-fine-diff-A", foreground: "ink", background: "rust-wash-emphasis"},
+		{name: "ediff-fine-diff-B", foreground: "ink", background: "moss-wash-emphasis"},
+		{name: "ediff-fine-diff-C", foreground: "ink", background: "ochre-wash-emphasis"},
+		{name: "ediff-fine-diff-Ancestor", foreground: "ink", background: "mineral-wash-emphasis"},
+		{name: "ediff-even-diff-A", background: "structure", extend: true},
+		{name: "ediff-even-diff-B", background: "structure", extend: true},
+		{name: "ediff-even-diff-C", background: "structure", extend: true},
+		{name: "ediff-even-diff-Ancestor", background: "structure", extend: true},
+		{name: "ediff-odd-diff-A", background: "surface", extend: true},
+		{name: "ediff-odd-diff-B", background: "surface", extend: true},
+		{name: "ediff-odd-diff-C", background: "surface", extend: true},
+		{name: "ediff-odd-diff-Ancestor", background: "surface", extend: true},
+
+		// Merge conflicts: upper is the current version and lower the
+		// incoming one, as in the VS Code port.
+		{name: "smerge-upper", background: "mineral-wash", extend: true},
+		{name: "smerge-lower", background: "moss-wash", extend: true},
+		{name: "smerge-base", background: "structure", extend: true},
+		{name: "smerge-markers", foreground: "muted", background: "structure", extend: true},
+		{name: "smerge-refined-added", foreground: "ink", background: "moss-wash-emphasis"},
+		{name: "smerge-refined-removed", foreground: "ink", background: "rust-wash-emphasis"},
+		{name: "smerge-refined-change", foreground: "ink", background: "ochre-wash-emphasis"},
+
+		// ANSI colors, from quiet's generic terminal palette. term and other
+		// terminal faces inherit these.
+		{name: "ansi-color-black", foreground: "ansi-0", background: "ansi-0"},
+		{name: "ansi-color-red", foreground: "ansi-1", background: "ansi-1"},
+		{name: "ansi-color-green", foreground: "ansi-2", background: "ansi-2"},
+		{name: "ansi-color-yellow", foreground: "ansi-3", background: "ansi-3"},
+		{name: "ansi-color-blue", foreground: "ansi-4", background: "ansi-4"},
+		{name: "ansi-color-magenta", foreground: "ansi-5", background: "ansi-5"},
+		{name: "ansi-color-cyan", foreground: "ansi-6", background: "ansi-6"},
+		{name: "ansi-color-white", foreground: "ansi-7", background: "ansi-7"},
+		{name: "ansi-color-bright-black", foreground: "ansi-8", background: "ansi-8"},
+		{name: "ansi-color-bright-red", foreground: "ansi-9", background: "ansi-9"},
+		{name: "ansi-color-bright-green", foreground: "ansi-10", background: "ansi-10"},
+		{name: "ansi-color-bright-yellow", foreground: "ansi-11", background: "ansi-11"},
+		{name: "ansi-color-bright-blue", foreground: "ansi-12", background: "ansi-12"},
+		{name: "ansi-color-bright-magenta", foreground: "ansi-13", background: "ansi-13"},
+		{name: "ansi-color-bright-cyan", foreground: "ansi-14", background: "ansi-14"},
+		{name: "ansi-color-bright-white", foreground: "ansi-15", background: "ansi-15"},
+	}
+}
+
 func writeFace(
 	b *strings.Builder,
 	f face,
-	c colors,
 ) {
 	var attrs []string
+
+	if f.inherit != "" {
+		attrs = append(
+			attrs,
+			":inherit "+f.inherit,
+		)
+	}
 
 	if f.foreground != "" {
 		attrs = append(
 			attrs,
-			fmt.Sprintf(
-				":foreground ,%s",
-				colorVariable(
-					f.foreground,
-					c,
-				),
-			),
+			":foreground ,"+f.foreground,
 		)
 	}
 
 	if f.background != "" {
 		attrs = append(
 			attrs,
-			fmt.Sprintf(
-				":background ,%s",
-				colorVariable(
-					f.background,
-					c,
-				),
-			),
+			":background ,"+f.background,
+		)
+	}
+
+	switch f.underline {
+	case "line":
+		attrs = append(
+			attrs,
+			":underline t",
+		)
+
+	case "wave":
+		attrs = append(
+			attrs,
+			":underline (:style wave :color ,"+f.underlineColor+")",
+		)
+	}
+
+	if f.extend {
+		attrs = append(
+			attrs,
+			":extend t",
 		)
 	}
 
@@ -243,100 +363,70 @@ func writeFace(
 	)
 }
 
-func colorVariable(
-	value string,
-	c colors,
-) string {
-	switch value {
-	case c.field:
-		return "field"
-
-	case c.surface:
-		return "surface"
-
-	case c.structure:
-		return "structure"
-
-	case c.ink:
-		return "ink"
-
-	case c.muted:
-		return "muted"
-
-	case c.line:
-		return "line"
-
-	case c.mineral:
-		return "mineral"
-
-	case c.moss:
-		return "moss"
-
-	case c.ochre:
-		return "ochre"
-
-	case c.rust:
-		return "rust"
-
-	case c.selection:
-		return "selection"
-
-	case c.callout:
-		return "callout"
-
-	default:
-		panic(
-			"Emacs face references unknown quiet color",
-		)
-	}
-}
-
-func resolveColors(
+// resolveRoles returns every color the theme binds, in binding order.
+func resolveRoles(
 	p core.Palette,
-) (colors, error) {
+) ([]role, error) {
 	derived, err := core.Derive(p)
 	if err != nil {
-		return colors{}, fmt.Errorf(
+		return nil, fmt.Errorf(
 			"derive quiet roles: %w",
 			err,
 		)
 	}
 
-	c := colors{}
-
-	values := []struct {
-		name  string
-		value color.SRGB
-		dst   *string
-	}{
-		{"Field", p.Anchors.Field, &c.field},
-		{"Surface", p.Anchors.Surface, &c.surface},
-		{"Structure", p.Anchors.Structure, &c.structure},
-		{"Ink", p.Anchors.Ink, &c.ink},
-		{"Muted", p.Anchors.Muted, &c.muted},
-		{"Line", p.Anchors.Line, &c.line},
-		{"Mineral", p.Anchors.Mineral, &c.mineral},
-		{"Moss", p.Anchors.Moss, &c.moss},
-		{"Ochre", p.Anchors.Ochre, &c.ochre},
-		{"Rust", p.Anchors.Rust, &c.rust},
-		{"Selection", derived.Selection, &c.selection},
-		{"Callout", derived.Callout, &c.callout},
+	term, err := terminal.Resolve(p)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"resolve terminal palette: %w",
+			err,
+		)
 	}
 
-	for _, item := range values {
-		hex, err := item.value.Hex()
-		if err != nil {
-			return colors{}, fmt.Errorf(
+	a := p.Anchors
+	wash := derived.Wash
+
+	roles := []role{
+		{"field", a.Field},
+		{"surface", a.Surface},
+		{"structure", a.Structure},
+		{"ink", a.Ink},
+		{"muted", a.Muted},
+		{"line", a.Line},
+		{"mineral", a.Mineral},
+		{"moss", a.Moss},
+		{"ochre", a.Ochre},
+		{"rust", a.Rust},
+		{"selection", derived.Selection},
+		{"callout", derived.Callout},
+		{"mineral-wash", wash.Mineral.Line},
+		{"moss-wash", wash.Moss.Line},
+		{"ochre-wash", wash.Ochre.Line},
+		{"rust-wash", wash.Rust.Line},
+		{"mineral-wash-emphasis", wash.Mineral.Emphasis},
+		{"moss-wash-emphasis", wash.Moss.Emphasis},
+		{"ochre-wash-emphasis", wash.Ochre.Emphasis},
+		{"rust-wash-emphasis", wash.Rust.Emphasis},
+	}
+
+	for i, c := range term.ANSI {
+		roles = append(
+			roles,
+			role{fmt.Sprintf("ansi-%d", i), c},
+		)
+	}
+
+	for _, r := range roles {
+		if _, err := r.value.Hex(); err != nil {
+			return nil, fmt.Errorf(
 				"%s: %w",
-				item.name,
+				r.name,
 				err,
 			)
 		}
-
-		*item.dst = hex
 	}
 
-	return c, nil
+	return roles, nil
 }
 
 func themeSymbol(

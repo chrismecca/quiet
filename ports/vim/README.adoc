@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/vim/README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / ports/vim/README.adoc / 2026-10-25
 
 = quiet for Vim
 
@@ -169,7 +169,7 @@ quiet maps Vim's structural UI onto the corresponding quiet roles.
 | Ink on Selection
 
 | `Search`
-| Ink on Selection
+| Mineral wash, keeping syntax colors
 
 | `IncSearch`
 | Field on Mineral
@@ -281,16 +281,16 @@ apply directly.
 | Vim group | quiet role
 
 | `DiffAdd`
-| Moss
+| Moss wash, keeping syntax colors
 
 | `DiffChange`
-| Ochre
+| Ochre wash, keeping syntax colors
 
 | `DiffDelete`
-| Rust
+| Rust on Rust wash
 
 | `DiffText`
-| Ink on Selection
+| Ink on Ochre wash emphasis
 
 | `Added`
 | Moss
@@ -301,6 +301,14 @@ apply directly.
 | `Removed`
 | Rust
 |===
+
+Line washes keep every syntax color at its contract minimum, so `DiffAdd`,
+`DiffChange`, and `Search` set no foreground.  The emphasis tier guarantees
+only Ink, so `DiffText` sets Ink, as the delta port does.
+
+Washes need truecolor.  In a 16-color terminal, `DiffAdd`, `DiffChange`,
+and `DiffDelete` color their text Moss, Ochre, and Rust instead, and
+`Search` keeps Ink on Selection.
 
 == Terminal integration
 
@@ -382,6 +390,15 @@ For truecolor terminal Vim:
 ----
 :set termguicolors
 ----
+
+== Name
+
+Vim 9 ships an unrelated colorscheme named `quiet`, a mostly monochrome
+scheme from the Vim colorschemes project.  `:colorscheme quiet` selects
+that scheme, not this port.
+
+quiet's schemes are always named `quiet-day` and `quiet-night`, so they
+never replace Vim's `quiet` and Vim's never replaces them.
 
 == Reference capture
 

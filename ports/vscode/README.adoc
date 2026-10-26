@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / ports/vscode/README.adoc / 2026-10-25
 
 = quiet for Visual Studio Code
 
@@ -52,6 +52,73 @@ status, warnings, failures, and destructive state.
 
 Semantic highlighting is enabled by the theme.
 
+== Search, diff, and merge
+
+Every background VS Code draws beneath syntax-colored source keeps every
+syntax color at its contract minimum.  Such backgrounds are Wash line tiers
+or Structure.
+
+[cols="2,2"]
+|===
+| Editor element | quiet role
+
+| Current find match
+| Selection, outlined in Mineral
+
+| Other find matches, symbol and selection occurrences
+| Mineral wash
+
+| Write access to a symbol
+| Ochre wash
+
+| Find and range scopes, snippet placeholders
+| Structure
+
+| Paused debugger line / focused stack frame
+| Ochre wash / Mineral wash
+
+| Inserted / removed lines
+| Moss wash / Rust wash
+
+| Inserted / removed words
+| The line wash, outlined in Moss / Rust
+
+| Inline conflict: current / incoming / common
+| Mineral wash / Moss wash / Surface
+
+| Gutter, overview ruler, and minimap changes
+| Moss, Ochre, Rust
+|===
+
+VS Code keeps syntax colors on changed words, and quiet's emphasis tier
+guarantees only Ink.  Changed words in the diff editor are therefore
+outlined rather than filled.
+
+The merge editor has no outline setting for changed words, so they take the
+emphasis tier.  Conflict marker lines also take the emphasis tier, with Ink
+text.
+
+Panels follow the same roles: peek views and inlay hints on Surface,
+error navigation and input validation in the matching wash, and test
+results in Moss, Rust, and Ochre.
+
+== Known limits
+
+The current line uses Callout, which guarantees only Muted.  Rust on Callout
+is 4.36:1 in `quiet-night`, as in every quiet editor port.
+
+VS Code asks for translucent search and occurrence highlights so that
+overlapping highlights stay visible.  quiet's are opaque: where two
+highlights overlap, the later one hides the earlier.
+
+== Name
+
+VS Code includes an unrelated built-in theme named Quiet Light.  It appears
+next to quiet's themes in the Color Theme picker.
+
+quiet's themes are named `quiet-day` and `quiet-night`, and the extension
+is named `quiet-color-system`, so neither replaces Quiet Light.
+
 == Integrated terminal
 
 The VS Code terminal consumes quiet's generic terminal model.
@@ -80,6 +147,18 @@ quiet ports color systems.
 It does not skin applications.
 
 == Testing
+
+The test suite verifies that:
+
+* the committed themes match generator output;
+* the integrated terminal matches quiet's generic terminal palette;
+* every syntax color reaches its contract minimum on every background drawn
+  beneath source, and Ink on Selection and the emphasis washes;
+* the theme defines no typography.
+
+Where VS Code is installed, the suite also checks every color key against
+the color IDs VS Code and its built-in extensions register.  Set
+`QUIET_VSCODE_APP` to a VS Code `.app` bundle to choose one.
 
 The current reference implementation has been validated against Visual Studio
 Code 1.142.0.

@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/neovim/README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / ports/neovim/README.adoc / 2026-10-25
 
 = quiet for Neovim
 
@@ -35,6 +35,53 @@ Mineral.
 Moss, Ochre, and Rust are reserved for semantic state such as success,
 warnings, errors, and diff state.
 
+== Diff, search, and references
+
+[cols="2,2"]
+|===
+| Neovim group | quiet role
+
+| `DiffAdd` / `DiffChange`
+| Moss wash / Ochre wash, keeping syntax colors
+
+| `DiffDelete`
+| Rust on Rust wash
+
+| `DiffText`
+| Ink on Ochre wash emphasis
+
+| `Added` / `Changed` / `Removed`
+| Moss / Ochre / Rust text, for diff and patch files
+
+| `Search`
+| Mineral wash, keeping syntax colors
+
+| `CurSearch`, `IncSearch`
+| Ink on Selection
+
+| `LspReferenceText`, `LspReferenceRead` / `LspReferenceWrite`
+| Mineral wash / Ochre wash
+|===
+
+Line washes keep every syntax color at its contract minimum, so these
+groups set no foreground.  The emphasis tier guarantees only Ink, so
+`DiffText` sets Ink, as the delta port does.
+
+== Diagnostics and spelling
+
+Diagnostics use Rust, Ochre, and Mineral, with Moss for `DiagnosticOk`.
+
+Neovim underlines diagnostics, strikes through deprecated names, and
+undercurls misspellings.  quiet keeps those cues and colors them: the code
+beneath keeps its syntax colors.  `SpellBad`, `SpellCap`, `SpellLocal`, and
+`SpellRare` take Rust, Ochre, Moss, and Mineral.
+
+== Terminal
+
+The port sets `g:terminal_color_0` through `g:terminal_color_15` from
+quiet's generic terminal palette, so `:terminal` matches quiet's other
+terminal ports.
+
 == Artifacts
 
 ----
@@ -69,6 +116,15 @@ or:
 :colorscheme quiet-night
 ----
 
+== Name
+
+Neovim ships an unrelated colorscheme named `quiet`, a mostly monochrome
+scheme from the Vim colorschemes project.  `:colorscheme quiet` selects
+that scheme, not this port.
+
+quiet's schemes are always named `quiet-day` and `quiet-night`, so they
+never replace Neovim's `quiet` and Neovim's never replaces them.
+
 == Clean validation
 
 `--clean` intentionally omits the normal user runtime path.
@@ -102,12 +158,14 @@ nvim --clean --headless \
 
 The first-party port controls color only.
 
-It does not impose:
+It keeps the cues that mark state in Neovim's own defaults: underlines,
+undercurls, and strikethroughs on diagnostics, spelling, and links.  It
+drops Neovim's typographic emphasis, such as bold keywords, and does not
+impose:
 
 * font family;
 * font weight;
 * italics;
-* underlines or undercurls;
 * cursor shape;
 * layout;
 * plugin configuration.
@@ -123,5 +181,10 @@ make neovim
 ----
 
 The repository tests verify that the committed artifacts match the reference
-implementation.
+implementation, and that every group with a background keeps its text at
+its contract minimum.
+
+Where Neovim is installed, the tests also load both schemes in a clean
+Neovim and check that each group keeps exactly the state cues Neovim's own
+default gives it.  Set `QUIET_NVIM` to choose a binary.
 

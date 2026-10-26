@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/vim/vim_test.go / 2026-10-18
+// @(#)quiet / go / internal/port/vim/vim_test.go / 2026-10-25
 
 package vim
 
@@ -199,8 +199,9 @@ func TestSemanticStateMappings(t *testing.T) {
 		"CursorLine": derived.Callout.MustHex(),
 		"WarningMsg": palette.Anchors.Ochre.MustHex(),
 		"ErrorMsg":   palette.Anchors.Rust.MustHex(),
-		"DiffAdd":    palette.Anchors.Moss.MustHex(),
-		"DiffDelete": palette.Anchors.Rust.MustHex(),
+		"DiffAdd":    derived.Wash.Moss.Line.MustHex(),
+		"DiffDelete": derived.Wash.Rust.Line.MustHex(),
+		"Search":     derived.Wash.Mineral.Line.MustHex(),
 	}
 
 	for _, h := range theme.Highlights {
@@ -212,7 +213,7 @@ func TestSemanticStateMappings(t *testing.T) {
 		var got string
 
 		switch h.Name {
-		case "Visual", "CursorLine":
+		case "Visual", "CursorLine", "DiffAdd", "DiffDelete", "Search":
 			if h.Background == nil {
 				t.Errorf(
 					"%s has no background",

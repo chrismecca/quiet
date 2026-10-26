@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-25
 
 = quiet for GNU Emacs
 
@@ -10,7 +10,7 @@ quiet-night
 ----
 
 The themes map quiet semantic roles onto Emacs faces without imposing font,
-weight, slant, underline, box, or other typography policy.
+weight, slant, box, or other typography policy.
 
 The generated theme files are:
 
@@ -165,22 +165,83 @@ Rust     error
 The port does not assign unrelated chromatic colors to strings, variables,
 constants, functions, or other token classes merely to increase color variety.
 
+== Search, diff, and merge
+
+[cols="2,2"]
+|===
+| Emacs faces | quiet role
+
+| `isearch`, `show-paren-match`
+| Ink on Selection
+
+| `lazy-highlight`, `match`, `eglot-highlight-symbol-face`
+| Mineral wash
+
+| `diff-added` / `diff-removed` / `diff-changed`
+| Moss / Rust / Ochre wash
+
+| `diff-refine-*`
+| Ink on the matching emphasis wash
+
+| `ediff-current-diff-A` / `B` / `C` / `Ancestor`
+| Rust / Moss / Ochre / Mineral wash
+
+| `ediff-fine-diff-*`
+| Ink on the matching emphasis wash
+
+| `smerge-upper` / `smerge-lower` / `smerge-base`
+| Mineral wash / Moss wash / Structure
+
+| `trailing-whitespace`
+| Rust wash
+|===
+
+Line washes and Structure keep every syntax color at its contract minimum,
+so those faces set no foreground and source keeps its syntax colors.  The
+emphasis tier guarantees only Ink, so refined changes set Ink.
+
+Diff and merge regions keep Emacs's `:extend`, so their backgrounds reach
+the window edge.
+
+== Diagnostics
+
+Flymake and Flyspell keep Emacs's wavy underlines, colored Rust for errors
+and misspellings, Ochre for warnings and duplicates, and Mineral for notes.
+The code beneath keeps its syntax colors.
+
+== ANSI colors
+
+The `ansi-color` faces, which Emacs uses for ANSI-colored output and which
+the `term` faces inherit, take quiet's generic terminal palette, so ANSI
+output matches quiet's terminal ports.
+
 == Scope
 
 quiet controls color.
 
-It does not set:
+It keeps the underlines Emacs's own defaults give links and diagnostics.
+It drops Emacs's typographic emphasis, such as bold `error` and `warning`
+faces, and does not set:
 
 ----
 font family
 font size
 font weight
 font slant
-underline
 overline
-strike-through
 box decoration
 ----
 
 Those remain under the control of Emacs and the user.
+
+== Testing
+
+The test suite verifies that the committed themes match generator output,
+that every face uses a known quiet role, and that every face with a
+background keeps its text at its contract minimum.
+
+Where Emacs is installed, the suite also loads both themes in a clean
+Emacs and checks that every face exists, that every underline quiet sets
+is one Emacs's own default draws, and that no wavy underline is dropped.
+Set `QUIET_EMACS` to choose a binary.
 

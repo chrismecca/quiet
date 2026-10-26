@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/vscode/vscode_test.go / 2026-10-19
+// @(#)quiet / go / internal/port/vscode/vscode_test.go / 2026-10-25
 
 package vscode
 
@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
 	"github.com/chrismecca/quiet/internal/port/terminal"
 )
@@ -249,6 +250,118 @@ func TestThemeContainsNoTypographyPolicy(t *testing.T) {
 			)
 		}
 	}
+}
+
+// underSource lists the backgrounds VS Code draws beneath syntax-colored
+// source. Each must keep every syntax color at its contract minimum.
+var underSource = []string{
+	"editor.background",
+	"editor.findMatchHighlightBackground",
+	"editor.findRangeHighlightBackground",
+	"editor.rangeHighlightBackground",
+	"editor.selectionHighlightBackground",
+	"editor.wordHighlightBackground",
+	"editor.wordHighlightTextBackground",
+	"editor.wordHighlightStrongBackground",
+	"editor.hoverHighlightBackground",
+	"editor.linkedEditingBackground",
+	"editor.snippetTabstopHighlightBackground",
+	"editor.stackFrameHighlightBackground",
+	"editor.focusedStackFrameHighlightBackground",
+	"diffEditor.insertedLineBackground",
+	"diffEditor.insertedTextBackground",
+	"diffEditor.removedLineBackground",
+	"diffEditor.removedTextBackground",
+	"diffEditor.unchangedCodeBackground",
+	"merge.currentContentBackground",
+	"merge.incomingContentBackground",
+	"merge.commonContentBackground",
+	"mergeEditor.change.background",
+	"mergeEditor.changeBase.background",
+	"mergeEditor.conflict.input1.background",
+	"mergeEditor.conflict.input2.background",
+	"mergeEditor.conflictingLines.background",
+	"peekViewEditor.background",
+	"peekViewEditor.matchHighlightBackground",
+	"editorStickyScroll.background",
+	"editorStickyScrollHover.background",
+}
+
+// underInk lists backgrounds that guarantee only Ink: Selection and the
+// emphasis washes, used where a span needs more weight than a line wash.
+var underInk = []string{
+	"editor.selectionBackground",
+	"editor.findMatchBackground",
+	"editorBracketMatch.background",
+	"merge.currentHeaderBackground",
+	"merge.incomingHeaderBackground",
+	"mergeEditor.change.word.background",
+	"mergeEditor.changeBase.word.background",
+}
+
+func TestSourceIsReadableOnEditorBackgrounds(t *testing.T) {
+	for _, name := range []string{"quiet-day.json", "quiet-night.json"} {
+		palette, err := core.LoadPaletteFile(repoPath(t, "spec", name))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		doc := generatedDocument(t, palette)
+		ink := palette.Anchors.Ink.MustHex()
+
+		foregrounds := map[string]bool{}
+		for _, rule := range doc.TokenColors {
+			foregrounds[rule.Settings.Foreground] = true
+		}
+		for _, fg := range doc.SemanticTokenColors {
+			foregrounds[fg] = true
+		}
+
+		for _, key := range underSource {
+			bg, ok := doc.Colors[key]
+			if !ok {
+				t.Fatalf("%s: %s is not set", name, key)
+			}
+
+			for fg := range foregrounds {
+				minimum := 4.5
+				if fg == ink {
+					minimum = 7
+				}
+
+				if got := contrast(t, fg, bg); got < minimum {
+					t.Errorf("%s: %s on %s (%s) is %.2f, want %.1f", name, fg, key, bg, got, minimum)
+				}
+			}
+		}
+
+		for _, key := range underInk {
+			bg, ok := doc.Colors[key]
+			if !ok {
+				t.Fatalf("%s: %s is not set", name, key)
+			}
+
+			if got := contrast(t, ink, bg); got < 4.5 {
+				t.Errorf("%s: Ink on %s (%s) is %.2f, want 4.5", name, key, bg, got)
+			}
+		}
+	}
+}
+
+func contrast(t *testing.T, a, b string) float64 {
+	t.Helper()
+
+	ca, err := color.ParseHex(a)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cb, err := color.ParseHex(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return color.Contrast(ca, cb)
 }
 
 func generatedDocument(

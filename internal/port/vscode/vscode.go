@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/vscode/vscode.go / 2026-10-24
+// @(#)quiet / go / internal/port/vscode/vscode.go / 2026-10-25
 
 // Package vscode maps quiet-core semantics onto Visual Studio Code's native
 // workbench, syntax, semantic-token, and integrated-terminal color systems.
@@ -46,6 +46,16 @@ type resolved struct {
 	rust      string
 	selection string
 	callout   string
+
+	mineralWash string
+	mossWash    string
+	ochreWash   string
+	rustWash    string
+
+	mineralWashEmphasis string
+	mossWashEmphasis    string
+	ochreWashEmphasis   string
+	rustWashEmphasis    string
 
 	terminalBackground string
 	terminalForeground string
@@ -154,10 +164,24 @@ func workbenchColors(
 		"editorBracketPairGuide.activeBackground5": c.mineral,
 		"editorBracketPairGuide.activeBackground6": c.mineral,
 
-		"editor.findMatchBackground":           c.selection,
-		"editor.findMatchHighlightBackground":  c.callout,
-		"editor.wordHighlightBackground":       c.callout,
-		"editor.wordHighlightStrongBackground": c.selection,
+		// Search and occurrences. Backgrounds drawn under source are line
+		// washes or Structure, which keep every syntax color readable; the
+		// current match is Selection, outlined in Mineral.
+		"editor.findMatchBackground":                  c.selection,
+		"editor.findMatchBorder":                      c.mineral,
+		"editor.findMatchHighlightBackground":         c.mineralWash,
+		"editor.findRangeHighlightBackground":         c.structure,
+		"editor.rangeHighlightBackground":             c.structure,
+		"editor.selectionHighlightBackground":         c.mineralWash,
+		"editor.wordHighlightBackground":              c.mineralWash,
+		"editor.wordHighlightTextBackground":          c.mineralWash,
+		"editor.wordHighlightStrongBackground":        c.ochreWash,
+		"editor.hoverHighlightBackground":             c.mineralWash,
+		"editor.linkedEditingBackground":              c.mineralWash,
+		"editor.snippetTabstopHighlightBackground":    c.structure,
+		"editor.snippetFinalTabstopHighlightBorder":   c.mineral,
+		"editor.stackFrameHighlightBackground":        c.ochreWash,
+		"editor.focusedStackFrameHighlightBackground": c.mineralWash,
 
 		// Diagnostics.
 		"editorError.foreground":   c.rust,
@@ -168,6 +192,141 @@ func workbenchColors(
 		"problemsErrorIcon.foreground":   c.rust,
 		"problemsWarningIcon.foreground": c.ochre,
 		"problemsInfoIcon.foreground":    c.mineral,
+
+		"editorMarkerNavigation.background":              c.surface,
+		"editorMarkerNavigationError.background":         c.rust,
+		"editorMarkerNavigationError.headerBackground":   c.rustWash,
+		"editorMarkerNavigationWarning.background":       c.ochre,
+		"editorMarkerNavigationWarning.headerBackground": c.ochreWash,
+		"editorMarkerNavigationInfo.background":          c.mineral,
+		"editorMarkerNavigationInfo.headerBackground":    c.mineralWash,
+
+		// Diff. Lines take the Moss and Rust line washes. Changed words are
+		// outlined rather than filled: the emphasis tier guarantees only Ink,
+		// and VS Code keeps syntax colors on changed words.
+		"diffEditor.insertedLineBackground":       c.mossWash,
+		"diffEditor.insertedTextBackground":       c.mossWash,
+		"diffEditor.insertedTextBorder":           c.moss,
+		"diffEditor.removedLineBackground":        c.rustWash,
+		"diffEditor.removedTextBackground":        c.rustWash,
+		"diffEditor.removedTextBorder":            c.rust,
+		"diffEditor.border":                       c.line,
+		"diffEditor.diagonalFill":                 c.line,
+		"diffEditor.unchangedCodeBackground":      c.structure,
+		"diffEditor.unchangedRegionBackground":    c.surface,
+		"diffEditor.unchangedRegionForeground":    c.muted,
+		"diffEditor.move.border":                  c.muted,
+		"diffEditor.moveActive.border":            c.mineral,
+		"diffEditorGutter.insertedLineBackground": c.mossWash,
+		"diffEditorGutter.removedLineBackground":  c.rustWash,
+		"diffEditorOverview.insertedForeground":   c.moss,
+		"diffEditorOverview.removedForeground":    c.rust,
+		"multiDiffEditor.background":              c.field,
+		"multiDiffEditor.headerBackground":        c.surface,
+		"multiDiffEditor.border":                  c.line,
+
+		// Inline merge conflicts. Current changes take Mineral, incoming
+		// changes Moss, and the common ancestor stays neutral. Marker lines
+		// take the emphasis tier and carry Ink.
+		"merge.currentHeaderBackground":   c.mineralWashEmphasis,
+		"merge.currentContentBackground":  c.mineralWash,
+		"merge.incomingHeaderBackground":  c.mossWashEmphasis,
+		"merge.incomingContentBackground": c.mossWash,
+		"merge.commonHeaderBackground":    c.structure,
+		"merge.commonContentBackground":   c.surface,
+		"merge.border":                    c.line,
+
+		// Merge editor. It has no word outline, so changed words take the
+		// emphasis tier.
+		"mergeEditor.change.background":                       c.ochreWash,
+		"mergeEditor.change.word.background":                  c.ochreWashEmphasis,
+		"mergeEditor.changeBase.background":                   c.rustWash,
+		"mergeEditor.changeBase.word.background":              c.rustWashEmphasis,
+		"mergeEditor.conflict.input1.background":              c.mineralWash,
+		"mergeEditor.conflict.input2.background":              c.mossWash,
+		"mergeEditor.conflictingLines.background":             c.rustWash,
+		"mergeEditor.conflict.unhandledFocused.border":        c.rust,
+		"mergeEditor.conflict.unhandledUnfocused.border":      c.rust,
+		"mergeEditor.conflict.handledFocused.border":          c.moss,
+		"mergeEditor.conflict.handledUnfocused.border":        c.moss,
+		"mergeEditor.conflict.unhandled.minimapOverViewRuler": c.rust,
+		"mergeEditor.conflict.handled.minimapOverViewRuler":   c.moss,
+
+		// Gutter, overview ruler, and minimap.
+		"editorGutter.background":                  c.field,
+		"editorGutter.addedBackground":             c.moss,
+		"editorGutter.modifiedBackground":          c.ochre,
+		"editorGutter.deletedBackground":           c.rust,
+		"editorGutter.addedSecondaryBackground":    c.mossWashEmphasis,
+		"editorGutter.modifiedSecondaryBackground": c.ochreWashEmphasis,
+		"editorGutter.deletedSecondaryBackground":  c.rustWashEmphasis,
+		"editorGutter.foldingControlForeground":    c.muted,
+
+		"editorOverviewRuler.border":                        c.line,
+		"editorOverviewRuler.addedForeground":               c.moss,
+		"editorOverviewRuler.modifiedForeground":            c.ochre,
+		"editorOverviewRuler.deletedForeground":             c.rust,
+		"editorOverviewRuler.errorForeground":               c.rust,
+		"editorOverviewRuler.warningForeground":             c.ochre,
+		"editorOverviewRuler.infoForeground":                c.mineral,
+		"editorOverviewRuler.findMatchForeground":           c.mineral,
+		"editorOverviewRuler.selectionHighlightForeground":  c.mineral,
+		"editorOverviewRuler.wordHighlightForeground":       c.mineral,
+		"editorOverviewRuler.wordHighlightTextForeground":   c.mineral,
+		"editorOverviewRuler.wordHighlightStrongForeground": c.ochre,
+		"editorOverviewRuler.rangeHighlightForeground":      c.muted,
+		"editorOverviewRuler.bracketMatchForeground":        c.muted,
+		"editorOverviewRuler.currentContentForeground":      c.mineral,
+		"editorOverviewRuler.incomingContentForeground":     c.moss,
+		"editorOverviewRuler.commonContentForeground":       c.muted,
+
+		"minimap.background":                   c.field,
+		"minimap.findMatchHighlight":           c.mineral,
+		"minimap.selectionHighlight":           c.selection,
+		"minimap.selectionOccurrenceHighlight": c.mineralWashEmphasis,
+		"minimap.errorHighlight":               c.rust,
+		"minimap.warningHighlight":             c.ochre,
+		"minimap.infoHighlight":                c.mineral,
+		"minimapGutter.addedBackground":        c.moss,
+		"minimapGutter.modifiedBackground":     c.ochre,
+		"minimapGutter.deletedBackground":      c.rust,
+
+		// Peek views.
+		"peekView.border":                             c.mineral,
+		"peekViewTitle.background":                    c.structure,
+		"peekViewTitleLabel.foreground":               c.ink,
+		"peekViewTitleDescription.foreground":         c.muted,
+		"peekViewEditor.background":                   c.surface,
+		"peekViewEditorGutter.background":             c.surface,
+		"peekViewEditorStickyScroll.background":       c.surface,
+		"peekViewEditorStickyScrollGutter.background": c.surface,
+		"peekViewEditor.matchHighlightBackground":     c.mineralWash,
+		"peekViewResult.background":                   c.surface,
+		"peekViewResult.fileForeground":               c.ink,
+		"peekViewResult.lineForeground":               c.muted,
+		"peekViewResult.matchHighlightBackground":     c.mineralWash,
+		"peekViewResult.selectionBackground":          c.selection,
+		"peekViewResult.selectionForeground":          c.ink,
+
+		// Inline annotations and sticky scroll.
+		"editorInlayHint.foreground":          c.muted,
+		"editorInlayHint.background":          c.surface,
+		"editorInlayHint.typeForeground":      c.muted,
+		"editorInlayHint.typeBackground":      c.surface,
+		"editorInlayHint.parameterForeground": c.muted,
+		"editorInlayHint.parameterBackground": c.surface,
+		"editorCodeLens.foreground":           c.muted,
+		"editorGhostText.foreground":          c.muted,
+
+		"editorStickyScroll.background":       c.surface,
+		"editorStickyScrollGutter.background": c.surface,
+		"editorStickyScrollHover.background":  c.structure,
+		"editorStickyScroll.border":           c.line,
+
+		// Links.
+		"editorLink.activeForeground": c.mineral,
+		"textLink.foreground":         c.mineral,
+		"textLink.activeForeground":   c.mineral,
 
 		// Editor widgets and completion.
 		"editorWidget.background": c.surface,
@@ -268,13 +427,75 @@ func workbenchColors(
 
 		"progressBar.background": c.mineral,
 
+		"statusBarItem.errorBackground":   c.rust,
+		"statusBarItem.errorForeground":   c.field,
+		"statusBarItem.warningBackground": c.ochre,
+		"statusBarItem.warningForeground": c.field,
+		"statusBarItem.remoteBackground":  c.mineral,
+		"statusBarItem.remoteForeground":  c.field,
+
+		"inputValidation.errorBackground":   c.rustWash,
+		"inputValidation.errorForeground":   c.ink,
+		"inputValidation.errorBorder":       c.rust,
+		"inputValidation.warningBackground": c.ochreWash,
+		"inputValidation.warningForeground": c.ink,
+		"inputValidation.warningBorder":     c.ochre,
+		"inputValidation.infoBackground":    c.mineralWash,
+		"inputValidation.infoForeground":    c.ink,
+		"inputValidation.infoBorder":        c.mineral,
+
+		// Notifications.
+		"notifications.background":            c.surface,
+		"notifications.foreground":            c.ink,
+		"notifications.border":                c.line,
+		"notificationCenter.border":           c.line,
+		"notificationCenterHeader.background": c.structure,
+		"notificationToast.border":            c.line,
+		"notificationsErrorIcon.foreground":   c.rust,
+		"notificationsWarningIcon.foreground": c.ochre,
+		"notificationsInfoIcon.foreground":    c.mineral,
+
+		// Testing.
+		"testing.iconPassed":  c.moss,
+		"testing.iconFailed":  c.rust,
+		"testing.iconErrored": c.rust,
+		"testing.iconQueued":  c.ochre,
+		"testing.iconSkipped": c.muted,
+		"testing.iconUnset":   c.muted,
+
+		// Debugging. Only state carries a chromatic family: breakpoints and
+		// destructive actions are Rust, starting is Moss, and the paused frame
+		// is Ochre.
+		"debugToolBar.background":                         c.surface,
+		"debugToolBar.border":                             c.line,
+		"debugIcon.breakpointForeground":                  c.rust,
+		"debugIcon.breakpointDisabledForeground":          c.muted,
+		"debugIcon.breakpointUnverifiedForeground":        c.muted,
+		"debugIcon.breakpointCurrentStackframeForeground": c.ochre,
+		"debugIcon.breakpointStackframeForeground":        c.mineral,
+		"debugIcon.startForeground":                       c.moss,
+		"debugIcon.continueForeground":                    c.moss,
+		"debugIcon.pauseForeground":                       c.mineral,
+		"debugIcon.restartForeground":                     c.mineral,
+		"debugIcon.stepOverForeground":                    c.mineral,
+		"debugIcon.stepIntoForeground":                    c.mineral,
+		"debugIcon.stepOutForeground":                     c.mineral,
+		"debugIcon.stepBackForeground":                    c.mineral,
+		"debugIcon.stopForeground":                        c.rust,
+		"debugIcon.disconnectForeground":                  c.rust,
+
 		// Source-control state.
-		"gitDecoration.addedResourceForeground":       c.moss,
-		"gitDecoration.untrackedResourceForeground":   c.moss,
-		"gitDecoration.modifiedResourceForeground":    c.ochre,
-		"gitDecoration.deletedResourceForeground":     c.rust,
-		"gitDecoration.conflictingResourceForeground": c.rust,
-		"gitDecoration.ignoredResourceForeground":     c.muted,
+		"gitDecoration.addedResourceForeground":         c.moss,
+		"gitDecoration.untrackedResourceForeground":     c.moss,
+		"gitDecoration.modifiedResourceForeground":      c.ochre,
+		"gitDecoration.deletedResourceForeground":       c.rust,
+		"gitDecoration.conflictingResourceForeground":   c.rust,
+		"gitDecoration.ignoredResourceForeground":       c.muted,
+		"gitDecoration.renamedResourceForeground":       c.moss,
+		"gitDecoration.stageModifiedResourceForeground": c.ochre,
+		"gitDecoration.stageDeletedResourceForeground":  c.rust,
+		"gitDecoration.submoduleResourceForeground":     c.mineral,
+		"git.blame.editorDecorationForeground":          c.muted,
 
 		// Integrated terminal.
 		"terminal.background":          c.terminalBackground,
@@ -416,6 +637,16 @@ func resolve(
 		{"Rust", p.Anchors.Rust, &c.rust},
 		{"Selection", derived.Selection, &c.selection},
 		{"Callout", derived.Callout, &c.callout},
+
+		{"Mineral Wash", derived.Wash.Mineral.Line, &c.mineralWash},
+		{"Moss Wash", derived.Wash.Moss.Line, &c.mossWash},
+		{"Ochre Wash", derived.Wash.Ochre.Line, &c.ochreWash},
+		{"Rust Wash", derived.Wash.Rust.Line, &c.rustWash},
+
+		{"Mineral Wash Emphasis", derived.Wash.Mineral.Emphasis, &c.mineralWashEmphasis},
+		{"Moss Wash Emphasis", derived.Wash.Moss.Emphasis, &c.mossWashEmphasis},
+		{"Ochre Wash Emphasis", derived.Wash.Ochre.Emphasis, &c.ochreWashEmphasis},
+		{"Rust Wash Emphasis", derived.Wash.Rust.Emphasis, &c.rustWashEmphasis},
 
 		{"Terminal Background", term.Background, &c.terminalBackground},
 		{"Terminal Foreground", term.Text, &c.terminalForeground},
