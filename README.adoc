@@ -78,13 +78,16 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/x11/[X11]
 | link:ports/dircolors/[GNU dircolors]
 | link:ports/ghostty/[Ghostty]
+| link:ports/alacritty/[Alacritty]
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
 | link:ports/wezterm/[WezTerm]
 | link:ports/emacs/[Emacs]
 | link:ports/vim/[Vim]
 | link:ports/neovim/[Neovim]
+| link:ports/helix/[Helix]
 | link:ports/vscode/[VS Code]
+| link:ports/zed/[Zed]
 | link:ports/jetbrains/[JetBrains]
 | link:ports/xcode/[Xcode]
 | link:ports/firefox/[Firefox]
@@ -94,6 +97,7 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/delta/[delta]
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
+|
 |===
 
 == Underneath

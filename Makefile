@@ -37,6 +37,7 @@ TERMINAL_APP_NIGHT := $(TERMINAL_APP_DIR)/quiet-night.terminal
 # Portable generated ports, kept in the same canonical order as quiet's port
 # registry. Terminal.app remains separate because its serializer requires macOS.
 GENERATED_PORTS := \
+	alacritty \
 	base16 \
 	base24 \
 	chrome \
@@ -46,6 +47,7 @@ GENERATED_PORTS := \
 	firefox \
 	fzf \
 	ghostty \
+	helix \
 	iterm2 \
 	jetbrains \
 	kitty \
@@ -58,7 +60,8 @@ GENERATED_PORTS := \
 	web \
 	wezterm \
 	x11 \
-	xcode
+	xcode \
+	zed
 
 .DEFAULT_GOAL := check
 
@@ -152,6 +155,15 @@ reports: report-data
 
 # Generated ports -----------------------------------------------------------
 
+.PHONY: alacritty
+alacritty:
+	$(GO) run ./cmd/quiet port alacritty \
+		spec/quiet-day.json \
+		> ports/alacritty/quiet-day.toml
+	$(GO) run ./cmd/quiet port alacritty \
+		spec/quiet-night.json \
+		> ports/alacritty/quiet-night.toml
+
 .PHONY: base16
 base16:
 	$(GO) run ./cmd/quiet port base16 \
@@ -228,6 +240,15 @@ ghostty:
 	$(GO) run ./cmd/quiet port ghostty \
 		spec/quiet-night.json \
 		> ports/ghostty/quiet-night
+
+.PHONY: helix
+helix:
+	$(GO) run ./cmd/quiet port helix \
+		spec/quiet-day.json \
+		> ports/helix/quiet-day.toml
+	$(GO) run ./cmd/quiet port helix \
+		spec/quiet-night.json \
+		> ports/helix/quiet-night.toml
 
 .PHONY: iterm2
 iterm2:
@@ -385,3 +406,10 @@ xcode:
 	$(GO) run ./cmd/quiet port xcode \
 		spec/quiet-night.json \
 		> ports/xcode/quiet-night.xcworkspacecolortheme
+
+.PHONY: zed
+zed:
+	$(GO) run ./cmd/quiet port zed \
+		spec/quiet-day.json \
+		spec/quiet-night.json \
+		> ports/zed/quiet.json
