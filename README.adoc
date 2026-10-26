@@ -1,4 +1,3 @@
-```asciidoc
 // @(#)quiet / asciidoc / README.adoc / 2026-10-26
 
 image::docs/assets/icon/quiet-icon-256.png[quiet,128,align=center]
@@ -183,4 +182,3 @@ MIT.  See `LICENSE`.
 '''
 
 _The interface should become scenery._
-```
