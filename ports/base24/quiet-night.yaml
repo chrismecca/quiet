@@ -1,7 +1,7 @@
 system: "base24"
 name: "quiet-night"
 slug: "quiet-night"
-author: "quiet"
+author: "Chris Mecca (https://github.com/chrismecca/quiet)"
 description: "A Base24 compatibility projection of quiet-night."
 variant: "dark"
 palette:

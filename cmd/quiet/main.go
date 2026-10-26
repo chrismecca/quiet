@@ -1,4 +1,4 @@
-// @(#)quiet / go / cmd/quiet/main.go / 2026-10-25
+// @(#)quiet / go / cmd/quiet/main.go / 2026-10-26
 
 // Command quiet is the reference command-line implementation for inspecting,
 // deriving, validating, and porting quiet-core color data.
@@ -152,7 +152,15 @@ var portCommands = []portCommand{
 		run: func(w io.Writer, args []string) error {
 			return portITerm2(w, args[0], args[1])
 		},
+	}, {
+		name:  "iterm2-variant",
+		usage: "iterm2-variant PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portITerm2Variant(w, args[0])
+		},
 	},
+
 	{
 		name:  "jetbrains-plugin",
 		usage: "jetbrains-plugin DAY_PALETTE NIGHT_PALETTE",
@@ -678,6 +686,26 @@ func portITerm2(
 		w,
 		day,
 		night,
+	)
+}
+
+func portITerm2Variant(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	resolved, err := terminal.Resolve(palette)
+	if err != nil {
+		return err
+	}
+
+	return iterm2.EncodeVariant(
+		w,
+		resolved,
 	)
 }
 

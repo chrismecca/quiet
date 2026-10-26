@@ -37,6 +37,14 @@ The candidate quiet-core and its initial ports predate this changelog.
   license, so `vsce package` builds a complete extension.
 * Emacs: theme files now pass `checkdoc` and provide features; the MELPA
   recipe is documented.
+* iTerm2: added `quiet-day.itermcolors` and `quiet-night.itermcolors`,
+  single-palette presets for collections that keep one file per variant,
+  beside the adaptive `quiet.itermcolors`.
+* kitty: theme files begin with the metadata block kitty-themes reads.
+* Base16 and Base24: the author is now Chris Mecca, with the repository URL.
+* Documented every publishing channel and theme-collection submission in
+  `docs/distribution.adoc`, and added publishing steps to the VS Code and
+  JetBrains READMEs.
 
 === Project
 

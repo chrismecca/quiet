@@ -1,0 +1,110 @@
+// @(#)quiet / asciidoc / docs/distribution.adoc / 2026-10-26
+
+= quiet distribution
+
+Where each quiet port is published, and how to publish a release.  Every
+channel publishes files generated in this repository; none is edited by
+hand.
+
+== Install from this repository
+
+These ports need no separate channel.  Their READMEs describe installation.
+
+[cols="1,2"]
+|===
+| Port | Installed with
+
+| Vim
+| vim-plug with `'rtp': 'ports/vim'`, or Vim packages
+
+| Neovim
+| lazy.nvim or `vim.pack`, adding `ports/neovim` to `runtimepath`
+
+| Emacs
+| `package-vc-install` or `use-package :vc`, with `:lisp-dir "ports/emacs"`
+|===
+
+== Marketplaces and package archives
+
+[cols="1,2,2"]
+|===
+| Channel | Publishes | How
+
+| Visual Studio Marketplace
+| `ports/vscode`, as `chrismecca.quiet-color-system`
+| `ports/vscode/README.adoc`, *Publishing*
+
+| Open VSX
+| the same `.vsix`
+| `ports/vscode/README.adoc`, *Publishing*
+
+| JetBrains Marketplace
+| `ports/jetbrains/quiet.jar`, as `com.chrismecca.quiet`
+| `ports/jetbrains/README.adoc`, *Publishing*
+
+| MELPA
+| `ports/emacs`, as `quiet-themes`
+| a pull request to melpa/melpa adding the recipe in
+  `ports/emacs/README.adoc`
+|===
+
+Versions come from `internal/release.Version`.  Publish only from a release
+tag.
+
+== Theme collections
+
+Each collection receives a pull request adding quiet's generated files.
+The files carry their own metadata, so later quiet releases update them by
+the same kind of pull request.
+
+=== kitty-themes
+
+Repository: `kovidgoyal/kitty-themes`.
+
+Add `ports/kitty/quiet-day.conf` and `ports/kitty/quiet-night.conf` to
+`themes/`.  Each begins with the `##` metadata block kitty-themes reads:
+name, author, license, an `upstream` URL to the file in this repository,
+and a blurb.  The maintainers regenerate `themes.json`.
+
+=== iTerm2-Color-Schemes
+
+Repository: `mbadolato/iTerm2-Color-Schemes`.
+
+. Add `ports/iterm2/quiet-day.itermcolors` and
+  `ports/iterm2/quiet-night.itermcolors` to `schemes/`.  The collection
+  names files exactly as the theme is displayed.
+. Add both themes to `licenses.yml`:
++
+----
+quiet-day:
+  license: MIT
+  source: https://github.com/chrismecca/quiet
+quiet-night:
+  license: MIT
+  source: https://github.com/chrismecca/quiet
+----
+. Run the collection's generator for each theme, as its README describes:
++
+----
+python3 tools/gen.py -s "quiet-day"
+python3 tools/gen.py -s "quiet-night"
+python3 tools/check_licenses.py
+----
+
+The collection's generator may adjust colors below its own 1.75:1
+minimum.  quiet's chromatic terminal colors exceed 4.5:1 on their
+background, but its neutral slots do not: each palette's background is
+also one of its ANSI neutrals, such as bright white in quiet-day.  Check
+the generated files for adjusted neutrals before opening the pull request.
+
+=== tinted-theming
+
+Repository: `tinted-theming/schemes`.
+
+Add `ports/base16/quiet-day.yaml` and `ports/base16/quiet-night.yaml` to
+`base16/`, and the `ports/base24` files to `base24/`.  The collection lints
+for `system`, `name`, `author`, `variant`, and `palette`, and for palette
+values beginning with `#`; quiet's files carry all of them.
+
+The Base16 and Base24 files are compatibility projections.  Their READMEs
+describe what each slot holds.

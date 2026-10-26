@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/jetbrains/README.adoc / 2026-10-25
+// @(#)quiet / asciidoc / ports/jetbrains/README.adoc / 2026-10-26
 
 = quiet for JetBrains IDEs
 
@@ -35,7 +35,19 @@ Theme*.  Each theme selects its editor scheme.
 To use only an editor scheme, open *Settings*, choose *Editor > Color
 Scheme*, then the gear menu, *Import Scheme*, and select the `.icls` file.
 
-Publishing the plugin on the JetBrains Marketplace is planned for quiet 0.5.
+== Publishing
+
+`quiet.jar` is the Marketplace upload.  Its plugin ID,
+`com.chrismecca.quiet`, becomes permanent once published, and its version
+comes from quiet's release version.
+
+To publish a release, sign in to the JetBrains Marketplace as the vendor,
+choose *Upload plugin*, and upload `ports/jetbrains/quiet.jar`.  Later
+releases upload a new `quiet.jar` to the same plugin page.
+
+The Marketplace runs JetBrains' Plugin Verifier on each upload.  The plugin
+declares `since-build="262"`, so it is verified against IntelliJ Platform
+2026.2 and later.
 
 == Editor scheme
 

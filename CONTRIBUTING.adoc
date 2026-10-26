@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-25
+// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-26
 
 = Contributing to quiet
 
@@ -151,6 +151,7 @@ A quiet version covers the whole repository.  To release:
 . Run `make generate` and `make check`.
 . Merge, then tag the merge commit `vVERSION` and publish a GitHub release
   from its changelog section.
+. Publish the release to each channel in `docs/distribution.adoc`.
 
 == Canonical colors
 

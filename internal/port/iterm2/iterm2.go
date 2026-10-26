@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/iterm2/iterm2.go / 2026-10-24
+// @(#)quiet / go / internal/port/iterm2/iterm2.go / 2026-10-26
 
 // Package iterm2 serializes quiet's generic terminal palettes into iTerm2's
 // native .itermcolors property-list format.
@@ -13,6 +13,47 @@ import (
 	"github.com/chrismecca/quiet/internal/port/terminal"
 )
 
+// entry is one iTerm2 color key with its quiet-night and quiet-day values.
+type entry struct {
+	name  string
+	night color.SRGB
+	day   color.SRGB
+	alpha float64
+}
+
+func entries(
+	day terminal.Palette,
+	night terminal.Palette,
+) []entry {
+	var result []entry
+
+	for i := range night.ANSI {
+		result = append(result, entry{
+			name:  fmt.Sprintf("Ansi %d Color", i),
+			night: night.ANSI[i],
+			day:   day.ANSI[i],
+			alpha: 1.0,
+		})
+	}
+
+	return append(
+		result,
+		entry{"Background Color", night.Background, day.Background, 1.0},
+		entry{"Foreground Color", night.Text, day.Text, 1.0},
+		entry{"Bold Color", night.Bold, day.Bold, 1.0},
+		entry{"Cursor Color", night.Cursor, day.Cursor, 1.0},
+		entry{"Cursor Text Color", night.Background, day.Background, 1.0},
+		entry{"Selection Color", night.Selection, day.Selection, 1.0},
+		entry{"Selected Text Color", night.Text, day.Text, 1.0},
+		entry{"Link Color", night.Cursor, day.Cursor, 1.0},
+		entry{"Active Pane Border Color", night.Cursor, day.Cursor, 1.0},
+		entry{"IME Cursor Color", night.Cursor, day.Cursor, 1.0},
+		entry{"Cursor Guide Color", night.Cursor, day.Cursor, 0.25},
+		entry{"Badge Color", night.Cursor, day.Cursor, 0.50},
+		entry{"Match Background Color", night.Selection, day.Selection, 1.0},
+	)
+}
+
 // Encode writes one adaptive iTerm2 color preset.
 //
 // Unsuffixed values use quiet-night as the compatibility fallback.
@@ -26,6 +67,38 @@ func Encode(
 	day terminal.Palette,
 	night terminal.Palette,
 ) error {
+	return writePreset(w, func(b *strings.Builder) error {
+		for _, e := range entries(day, night) {
+			if err := writeAdaptiveColor(b, e.name, e.night, e.day, e.alpha); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+// EncodeVariant writes a preset for one palette, without (Light) and (Dark)
+// variants, as theme collections that hold one file per variant expect.
+func EncodeVariant(
+	w io.Writer,
+	p terminal.Palette,
+) error {
+	return writePreset(w, func(b *strings.Builder) error {
+		for _, e := range entries(p, p) {
+			if err := writeColor(b, e.name, e.night, e.alpha); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+func writePreset(
+	w io.Writer,
+	body func(*strings.Builder) error,
+) error {
 	var b strings.Builder
 
 	b.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
@@ -36,116 +109,8 @@ func Encode(
 	b.WriteString(`<plist version="1.0">` + "\n")
 	b.WriteString("<dict>\n")
 
-	for i := 0; i < len(night.ANSI); i++ {
-		if err := writeAdaptiveColor(
-			&b,
-			fmt.Sprintf("Ansi %d Color", i),
-			night.ANSI[i],
-			day.ANSI[i],
-			1.0,
-		); err != nil {
-			return err
-		}
-	}
-
-	type role struct {
-		name  string
-		night color.SRGB
-		day   color.SRGB
-		alpha float64
-	}
-
-	roles := []role{
-		{
-			name:  "Background Color",
-			night: night.Background,
-			day:   day.Background,
-			alpha: 1.0,
-		},
-		{
-			name:  "Foreground Color",
-			night: night.Text,
-			day:   day.Text,
-			alpha: 1.0,
-		},
-		{
-			name:  "Bold Color",
-			night: night.Bold,
-			day:   day.Bold,
-			alpha: 1.0,
-		},
-		{
-			name:  "Cursor Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 1.0,
-		},
-		{
-			name:  "Cursor Text Color",
-			night: night.Background,
-			day:   day.Background,
-			alpha: 1.0,
-		},
-		{
-			name:  "Selection Color",
-			night: night.Selection,
-			day:   day.Selection,
-			alpha: 1.0,
-		},
-		{
-			name:  "Selected Text Color",
-			night: night.Text,
-			day:   day.Text,
-			alpha: 1.0,
-		},
-		{
-			name:  "Link Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 1.0,
-		},
-		{
-			name:  "Active Pane Border Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 1.0,
-		},
-		{
-			name:  "IME Cursor Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 1.0,
-		},
-		{
-			name:  "Cursor Guide Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 0.25,
-		},
-		{
-			name:  "Badge Color",
-			night: night.Cursor,
-			day:   day.Cursor,
-			alpha: 0.50,
-		},
-		{
-			name:  "Match Background Color",
-			night: night.Selection,
-			day:   day.Selection,
-			alpha: 1.0,
-		},
-	}
-
-	for _, r := range roles {
-		if err := writeAdaptiveColor(
-			&b,
-			r.name,
-			r.night,
-			r.day,
-			r.alpha,
-		); err != nil {
-			return err
-		}
+	if err := body(&b); err != nil {
+		return err
 	}
 
 	b.WriteString("</dict>\n")
