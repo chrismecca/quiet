@@ -12,7 +12,6 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
-	"github.com/chrismecca/quiet/internal/port/alacritty"
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
 	"github.com/chrismecca/quiet/internal/port/chrome"
@@ -38,6 +37,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/x11"
 	"github.com/chrismecca/quiet/internal/port/xcode"
 	"github.com/chrismecca/quiet/internal/port/zed"
+	"github.com/chrismecca/quiet/internal/release"
 	"github.com/chrismecca/quiet/internal/report"
 )
 
@@ -57,14 +57,6 @@ type portCommand struct {
 // portCommands is the single canonical ordering for port dispatch and usage.
 // Keep this list alphabetic. Imports and helper functions mirror the same order.
 var portCommands = []portCommand{
-	{
-		name:  "alacritty",
-		usage: "alacritty PALETTE",
-		argc:  1,
-		run: func(w io.Writer, args []string) error {
-			return portAlacritty(w, args[0])
-		},
-	},
 	{
 		name:  "base16",
 		usage: "base16 PALETTE",
@@ -402,6 +394,31 @@ func run(
 
 		return exitOK
 
+	case "version":
+		if len(args) != 1 {
+			usage(stderr)
+			return exitUsage
+		}
+
+		fmt.Fprintln(stdout, release.Version)
+		return exitOK
+
+	case "release-notes":
+		if len(args) != 3 {
+			usage(stderr)
+			return exitUsage
+		}
+
+		if err := releaseNotes(
+			stdout,
+			args[1],
+			args[2],
+		); err != nil {
+			return commandError(stderr, err)
+		}
+
+		return exitOK
+
 	case "port":
 		return runPort(
 			args[1:],
@@ -471,21 +488,6 @@ func commandError(
 	)
 
 	return exitError
-}
-
-func portAlacritty(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	return alacritty.Encode(
-		w,
-		palette,
-	)
 }
 
 func portBase16(
@@ -1003,6 +1005,34 @@ func portXcode(
 	)
 }
 
+func portZed(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return zed.Encode(
+		w,
+		day,
+		night,
+	)
+}
+
 func inspect(
 	w io.Writer,
 	s string,
@@ -1277,6 +1307,33 @@ func writeReport(
 	return nil
 }
 
+// releaseNotes writes the changelog section for version as the Markdown body
+// of a GitHub release.
+func releaseNotes(
+	w io.Writer,
+	changelogPath string,
+	version string,
+) error {
+	data, err := os.ReadFile(changelogPath)
+	if err != nil {
+		return fmt.Errorf(
+			"read changelog: %w",
+			err,
+		)
+	}
+
+	notes, err := release.Notes(
+		string(data),
+		version,
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.WriteString(w, notes)
+	return err
+}
+
 func usage(w io.Writer) {
 	fmt.Fprintln(w, "usage:")
 	fmt.Fprintln(w, "  quiet inspect HEX")
@@ -1284,6 +1341,8 @@ func usage(w io.Writer) {
 	fmt.Fprintln(w, "  quiet derive PALETTE")
 	fmt.Fprintln(w, "  quiet check CONTRACT PALETTE [PALETTE ...]")
 	fmt.Fprintln(w, "  quiet report DIR CONTRACT DAY_PALETTE NIGHT_PALETTE")
+	fmt.Fprintln(w, "  quiet release-notes CHANGELOG VERSION")
+	fmt.Fprintln(w, "  quiet version")
 
 	for _, command := range portCommands {
 		fmt.Fprintf(
@@ -1292,32 +1351,4 @@ func usage(w io.Writer) {
 			command.usage,
 		)
 	}
-}
-
-func portZed(
-	w io.Writer,
-	dayPath string,
-	nightPath string,
-) error {
-	day, err := core.LoadPaletteFile(dayPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Day palette: %w",
-			err,
-		)
-	}
-
-	night, err := core.LoadPaletteFile(nightPath)
-	if err != nil {
-		return fmt.Errorf(
-			"load Night palette: %w",
-			err,
-		)
-	}
-
-	return zed.Encode(
-		w,
-		day,
-		night,
-	)
 }

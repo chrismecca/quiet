@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/firefox/firefox.go / 2026-10-25
+// @(#)quiet / go / internal/port/firefox/firefox.go / 2026-10-26
 
 // Package firefox maps quiet-core semantics onto a Firefox theme.
 //
@@ -214,7 +214,7 @@ func Encode(
 		hex, err := resolved[e.role].Hex()
 		if err != nil {
 			return fmt.Errorf(
-				"Firefox %s: %w",
+				"theme color %s: %w",
 				e.key,
 				err,
 			)

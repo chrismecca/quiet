@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/load.go / 2026-10-24
+// @(#)quiet / go / internal/core/load.go / 2026-10-26
 
 package core
 
@@ -123,7 +123,7 @@ func DecodePalette(r io.Reader) (Palette, error) {
 	status := Status(doc.Status)
 
 	switch status {
-	case StatusCandidate:
+	case StatusStable, StatusCandidate:
 	default:
 		return Palette{}, fmt.Errorf(
 			"unsupported palette status %q",

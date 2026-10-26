@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/terminal/README.adoc / 2026-10-24
+// @(#)quiet / asciidoc / ports/terminal/README.adoc / 2026-10-26
 
 = quiet terminal reference port
 
@@ -81,11 +81,10 @@ color-science conformance.
 
 == Status
 
-The ANSI mapping is a candidate reference port.
+The ANSI mapping is stable, and every first-party terminal port uses it.
 
-It has been exercised in both quiet-day and quiet-night under macOS
-Terminal.app.
-
-The mapping may still change as additional terminal hosts and applications
-expose constraints in the ANSI color model.
+Giving an ANSI slot a different role is a minor change under quiet's
+versioning policy, `docs/versioning.adoc`.  The mapping may therefore still
+change as terminal hosts and applications expose constraints in the ANSI
+color model.
 

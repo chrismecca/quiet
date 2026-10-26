@@ -1,0 +1,125 @@
+// @(#)quiet / asciidoc / docs/versioning.adoc / 2026-10-26
+
+= quiet versioning
+
+quiet has one version for the whole repository: the specification, the
+canonical palettes, the contract, the reference implementation, and the
+first-party ports.  Versions follow Semantic Versioning 2.0.0, in the form
+`MAJOR.MINOR.PATCH`.
+
+`internal/release.Version` records the current version.  Every port that
+carries a version takes it from there, and the release tests check the
+authored manifests against it.
+
+== What a version covers
+
+A quiet version promises the following:
+
+quiet-core::
+  role names; the canonical anchors; the derivation rules and their
+  constants, and so every derived color; the contract's constraints and
+  minimums.
+
+Data formats::
+  the palette, contract, and export formats named by `quiet.palette/v1`,
+  `quiet.core/v1`, and `quiet.export/v1`.
+
+Ports::
+  each port's installed identity: file names and paths, theme names,
+  package and extension IDs.  Also the role each port gives the host
+  elements its README documents.
+
+The `quiet` command::
+  its commands, their arguments, and the exit status of `quiet check`.
+
+It does not cover:
+
+* Go packages, which are all under `internal/`;
+* the text output of `quiet inspect`, `contrast`, `derive`, and `check`,
+  which is written for people;
+* formatting in generated files, such as key order, whitespace, and
+  comments;
+* report prose and PDF layout;
+* the Makefile, tests, and continuous integration.
+
+== Major releases
+
+A major release may break what a version covers.  Each of these is a
+breaking change:
+
+* changing a canonical anchor;
+* changing a derivation rule or constant so that any derived color
+  changes;
+* removing or renaming a role;
+* removing a contract constraint or lowering a minimum;
+* changing a data format incompatibly;
+* removing a port, or renaming its files, themes, packages, or IDs;
+* removing or renaming a `quiet` command, or changing its arguments.
+
+The canonical anchors are frozen within a major version.  A proposed anchor
+change also needs the evidence that `CONTRIBUTING.adoc` asks for under
+*Canonical colors*.
+
+A data format changes incompatibly only under a new schema identifier, such
+as `quiet.palette/v2`.  Adding the new identifier while the old one is still
+read and written is a minor change.  Dropping the old one is a breaking
+change.
+
+The Go module path takes a major-version suffix from quiet 2 on, such as
+`github.com/chrismecca/quiet/v2`, as Go requires.
+
+== Minor releases
+
+A minor release adds without breaking:
+
+* a port, a derived role, or a `quiet` command;
+* a contract constraint, or a higher minimum, that the canonical palettes
+  already pass;
+* host elements a port newly colors;
+* a different role for a host element a port already colors, keeping the
+  contract;
+* support for a new host version.
+
+A port's appearance may therefore change in a minor release.  Its
+installed identity may not.
+
+== Patch releases
+
+A patch release corrects without changing any documented role:
+
+* a port that does not match its own README or the contract, such as a
+  misspelled host key or a foreground below its minimum;
+* metadata, packaging, and documentation;
+* tests, tooling, and continuous integration.
+
+== Before 1.0
+
+Until quiet 1.0, a minor release may also contain breaking changes, as
+Semantic Versioning allows during initial development.
+
+quiet-core and the canonical palettes have been stable since 0.5.  A
+breaking change before 1.0 still needs the same evidence as after it.
+
+== Status
+
+Palette and contract documents carry a `status`:
+
+`stable`::
+  published data that this policy covers.  The canonical palettes and the
+  contract are stable.
+
+`candidate`::
+  proposed data under evaluation, such as a palette that proposes an
+  anchor change.  `quiet check` evaluates candidates, but candidate data is
+  never canonical.
+
+== Changelog
+
+`CHANGELOG.adoc` records every release.  A release that breaks anything
+lists those changes first, under `=== Breaking`.
+
+== Tags
+
+Each release is tagged `vMAJOR.MINOR.PATCH` on its merge commit.  The tag
+starts the release workflow, which checks that the tag, `Version`, and the
+changelog agree before publishing anything.

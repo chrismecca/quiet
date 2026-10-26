@@ -1,0 +1,21 @@
+# @(#)quiet / git / .gitattributes / 2026-10-26
+
+# Tests compare generated files byte for byte, so every checkout keeps LF
+# line endings.
+* text=auto eol=lf
+
+*.jar binary
+*.pdf binary
+*.png binary
+
+# Generated files are collapsed in diffs and left out of language
+# statistics.
+ports/**/quiet* linguist-generated
+ports/chrome/*/manifest.json linguist-generated
+ports/firefox/*/manifest.json linguist-generated
+ports/vscode/LICENSE linguist-generated
+reports/data/** linguist-generated
+reports/pdf/** linguist-generated
+
+# Authored files among the generated ones.
+ports/emacs/quiet-themes.el -linguist-generated

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/zed/zed_test.go / 2026-10-25
+// @(#)quiet / go / internal/port/zed/zed_test.go / 2026-10-26
 
 package zed
 
@@ -249,6 +249,10 @@ func readList(t *testing.T, name string) map[string]bool {
 		if line != "" && !strings.HasPrefix(line, "#") {
 			result[line] = true
 		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		t.Fatal(err)
 	}
 
 	return result

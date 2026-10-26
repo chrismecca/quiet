@@ -2,7 +2,8 @@
 
 = Contributing to quiet
 
-quiet is currently a candidate specification under active development.
+quiet-core and the canonical palettes are stable.  `docs/versioning.adoc`
+defines what a quiet version covers and which changes are breaking.
 
 The project values reproducibility, restraint, and evidence over palette
 preference.
@@ -132,26 +133,56 @@ A change should not introduce:
 * quiet-core validation failures;
 * generated artifacts that differ from current generator output.
 
-Continuous integration runs the same checks on every push to `main` and on
-every pull request.  It also regenerates every port and, on macOS, the
-Terminal.app profiles, and fails if any committed artifact differs.
+`make lint` runs staticcheck and actionlint at pinned versions.  Its first
+run downloads them.
 
 Notable changes are recorded in `CHANGELOG.adoc` under `Unreleased`.
 Add that section above the newest release when it is missing.
 
+== Continuous integration
+
+[cols="1,3"]
+|===
+| Workflow | Runs
+
+| `check`
+| On every push to `main` and every pull request: `make check`,
+  `make lint`, and regeneration of every port on amd64 and arm64, and of
+  the Terminal.app profiles on macOS.  Fails if any committed artifact
+  differs.
+
+| `hosts`
+| Weekly, and on pull requests that change ports: the port tests against
+  current releases of each host application, failing if any test skips.
+  JetBrains IDEs are left to local runs.
+
+| `release`
+| On a version tag: see *Releases*.
+|===
+
+Workflow actions are pinned to commits, and Dependabot proposes updates
+monthly.
+
 == Releases
 
-A quiet version covers the whole repository.  To release:
+A quiet version covers the whole repository.  `docs/versioning.adoc`
+decides whether a release is major, minor, or patch.  To release:
 
-. Rename the changelog's `Unreleased` section to `== VERSION (DATE)`.
+. Rename the changelog's `Unreleased` section to `== VERSION (DATE)`,
+  with any breaking changes first under `=== Breaking`.
 . Set `Version` in `internal/release/release.go`, the `version` in
   `ports/vscode/package.json`, and the `Version` header in
   `ports/emacs/quiet-themes.el`.  Tests fail until all three agree with the
   changelog.
 . Run `make generate` and `make check`.
-. Merge, then tag the merge commit `vVERSION` and publish a GitHub release
-  from its changelog section.
-. Publish the release to each channel in `docs/distribution.adoc`.
+. Merge, then tag the merge commit `vVERSION` and push the tag.
+
+The tag starts the `release` workflow.  It checks that the tag names
+`Version`, runs every check, and publishes a GitHub release with the
+changelog section as its notes and the VS Code and JetBrains packages
+attached.  It then publishes those packages to each marketplace whose token
+is configured.  `docs/distribution.adoc` lists the tokens and the channels
+that remain manual.
 
 == Canonical colors
 

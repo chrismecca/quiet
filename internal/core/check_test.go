@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/check_test.go / 2026-10-24
+// @(#)quiet / go / internal/core/check_test.go / 2026-10-26
 
 package core
 
@@ -20,6 +20,14 @@ func TestCanonicalPalettesConformToCore(t *testing.T) {
 		t.Fatalf(
 			"LoadContractFile: %v",
 			err,
+		)
+	}
+
+	if contract.Status != StatusStable {
+		t.Errorf(
+			"contract status = %q, want %q",
+			contract.Status,
+			StatusStable,
 		)
 	}
 

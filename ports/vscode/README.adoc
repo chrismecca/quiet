@@ -59,6 +59,9 @@ Both commands need a personal access token for the `chrismecca`
 publisher.  The extension version comes from `package.json`, which the
 release tests keep equal to quiet's release version.
 
+The `release` workflow runs the same commands when a version tag is pushed
+and the tokens are configured; see `docs/distribution.adoc`.
+
 == Syntax
 
 quiet deliberately avoids rainbow syntax.

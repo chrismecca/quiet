@@ -1,0 +1,16 @@
+# @(#)quiet / yaml / .github/dependabot.yml / 2026-10-26
+
+# quiet's Go code has no module dependencies. Workflow actions are pinned to
+# commits, and Dependabot proposes updates to them.
+
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"

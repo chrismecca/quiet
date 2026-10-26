@@ -1,0 +1,125 @@
+# @(#)quiet / yaml / .github/workflows/release.yml / 2026-10-26
+
+# A version tag publishes a release. Nothing is published unless the tag,
+# internal/release.Version, and the changelog agree and the tagged tree
+# passes every check.
+#
+# The GitHub release carries the release notes, the VS Code extension, and
+# the JetBrains plugin. The publish job then sends those same files to each
+# marketplace whose token is configured, and skips the others. Its
+# marketplaces environment can require approval before it runs.
+
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Tag names the release version
+        run: |
+          version="$(go run ./cmd/quiet version)"
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match Version $version"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Headers, format, vet, tests, quiet-core conformance
+        run: make check
+
+      - name: Generated ports match committed artifacts
+        run: |
+          make generate
+          git diff --exit-code
+
+      - name: Release notes
+        run: go run ./cmd/quiet release-notes CHANGELOG.adoc "$VERSION" > notes.md
+
+      - name: Package the VS Code extension
+        working-directory: ports/vscode
+        run: npx --yes @vscode/vsce@4.0.0 package --readme-path marketplace.md --out quiet.vsix
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "quiet $VERSION" \
+            --notes-file notes.md \
+            ports/vscode/quiet.vsix \
+            ports/jetbrains/quiet.jar
+
+  publish:
+    name: marketplaces
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: marketplaces
+
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+      JETBRAINS_TOKEN: ${{ secrets.JETBRAINS_TOKEN }}
+
+    steps:
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Download release files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern quiet.vsix \
+            --pattern quiet.jar
+
+      - name: Visual Studio Marketplace
+        if: env.VSCE_PAT != ''
+        run: npx --yes @vscode/vsce@4.0.0 publish --packagePath quiet.vsix
+
+      - name: Open VSX
+        if: env.OVSX_PAT != ''
+        run: npx --yes ovsx@1.3.0 publish quiet.vsix
+
+      # The Marketplace API uploads new versions of an existing plugin. The
+      # first version is uploaded through the Marketplace website.
+      - name: JetBrains Marketplace
+        if: env.JETBRAINS_TOKEN != ''
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --header "Authorization: Bearer $JETBRAINS_TOKEN" \
+            --form xmlId=com.chrismecca.quiet \
+            --form file=@quiet.jar \
+            https://plugins.jetbrains.com/api/updates/upload

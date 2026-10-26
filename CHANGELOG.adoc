@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-25
+// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-26
 
 = quiet changelog
 
@@ -11,18 +11,22 @@ A quiet version covers the whole repository.
 Schema identifiers such as `quiet.core/v1` version serialized data formats
 independently.  They are not quiet release numbers.
 
-Before quiet 1.0, any release may change canonical anchors, derivations, or
-contract constraints.  Such changes are always listed here.
+`docs/versioning.adoc` defines what a version covers and which changes are
+breaking.  A release lists its breaking changes first, under `Breaking`.
 
 The candidate quiet-core and its initial ports predate this changelog.
 
 == Unreleased
 
+=== quiet-core
+
+* quiet-core and the canonical palettes are stable: `spec/quiet-core.json`,
+  `spec/quiet-day.json`, and `spec/quiet-night.json` now have status
+  `stable`.  `candidate` remains for proposed palettes.  Changes follow the
+  new versioning policy, `docs/versioning.adoc`.
+
 === Ports
 
-* Added the Alacritty port: `quiet-day` and `quiet-night` color
-  configurations built on quiet's generic terminal palette.  Search
-  matches use the Mineral wash and keep each cell's color.
 * Added the Helix port: `quiet-day` and `quiet-night` themes.
   Diagnostics keep Helix's curly underlines in quiet's colors.  Where Helix
   is installed, tests check every scope against Helix's own.
@@ -36,7 +40,8 @@ The candidate quiet-core and its initial ports predate this changelog.
 * VS Code: added Marketplace metadata, a Marketplace README, and the
   license, so `vsce package` builds a complete extension.
 * Emacs: theme files now pass `checkdoc` and provide features; the MELPA
-  recipe is documented.
+  recipe is documented.  The use-package example installs the latest
+  release rather than the newest commit.
 * iTerm2: added `quiet-day.itermcolors` and `quiet-night.itermcolors`,
   single-palette presets for collections that keep one file per variant,
   beside the adaptive `quiet.itermcolors`.
@@ -52,6 +57,22 @@ The candidate quiet-core and its initial ports predate this changelog.
   multiply and an add on arm64, which changed one Zed dim terminal color.
   Compositing now rounds each product, and CI regenerates every port on
   an arm64 runner as well as amd64.
+* Added the versioning policy, `docs/versioning.adoc`: what a quiet
+  version covers, and which changes are major, minor, or patch.
+* Added `quiet version` and `quiet release-notes`.
+* Added the `release` workflow.  A version tag checks that the tag,
+  `Version`, and the changelog agree, runs every check, publishes the
+  GitHub release with the VS Code and JetBrains packages, and publishes
+  them to each marketplace whose token is configured.
+* Added the `hosts` workflow, which runs the port tests weekly against
+  current releases of VS Code, Neovim, Vim, Emacs, Helix, Chrome, bat,
+  delta, and fzf.
+* CI runs staticcheck and actionlint (`make lint`), pins actions to
+  commits, and cancels superseded pull request runs; Dependabot proposes
+  action updates.  The Emacs test now also fails when quiet draws a
+  straight underline on a face whose Emacs default is wavy.
+* Added `.gitattributes`: LF line endings everywhere, and generated files
+  marked as generated.
 
 == 0.1.0 (2026-10-25)
 

@@ -1,7 +1,7 @@
 {
   "schema": "quiet.core/v1",
   "name": "quiet-core",
-  "status": "candidate",
+  "status": "stable",
   "contrast_constraints": [
     {
       "id": "ink-on-field",
