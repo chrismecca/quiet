@@ -1,0 +1,117 @@
+// @(#)quiet / asciidoc / ports/helix/README.adoc / 2026-10-25
+
+= quiet for Helix
+
+quiet's Helix port provides two themes, `quiet-day` and `quiet-night`.
+
+== Files
+
+----
+quiet-day.toml
+quiet-night.toml
+----
+
+The files are generated from the canonical quiet palettes.
+
+== Installation
+
+Copy the themes into Helix's theme directory:
+
+----
+mkdir -p ~/.config/helix/themes
+cp quiet-day.toml quiet-night.toml ~/.config/helix/themes/
+----
+
+Then set the theme in `~/.config/helix/config.toml`:
+
+----
+theme = "quiet-night"
+----
+
+or choose one with `:theme quiet-day`.
+
+== Syntax
+
+Ordinary source is Ink, comments are Muted, and language structure, such
+as keywords, types, operators, attributes, and macros, is Mineral.  Helix
+scopes fall back to their parents, so every language shares this
+hierarchy.
+
+== Interface
+
+[cols="2,2"]
+|===
+| Helix scope | quiet role
+
+| `ui.background`, `ui.gutter`
+| Field
+
+| `ui.selection`, `ui.menu.selected`, `ui.text.focus`
+| Ink on Selection
+
+| `ui.cursor`
+| Field on Mineral
+
+| `ui.cursorline.primary`
+| Callout
+
+| `ui.highlight` / `ui.highlight.frameline`
+| Mineral wash / Ochre wash, keeping syntax colors
+
+| `ui.popup`, `ui.menu`, `ui.help`, `ui.virtual.inlay-hint`
+| Surface
+
+| `ui.statusline`
+| Ink on Structure
+
+| `ui.statusline.normal` / `insert` / `select`
+| Field on Mineral / Moss / Ochre
+
+| `ui.linenr` / `ui.linenr.selected`
+| Muted / Mineral
+
+| `ui.virtual.*` guides and whitespace
+| Line
+|===
+
+The mode colors apply only when `editor.color-modes` is enabled.
+
+== Diagnostics
+
+Gutter markers are Rust, Ochre, and Mineral.  In the editing area,
+diagnostics keep Helix's curly underline in the same colors, and the code
+beneath keeps its syntax colors.  Deprecated names keep Helix's
+strikethrough; unnecessary code is Muted.
+
+== Typography
+
+quiet keeps the cues that mark state in Helix's own default theme: curly
+underlines on diagnostics, struck-out deprecated names, and underlined
+URLs.  It drops typographic emphasis, such as bold jump labels and italic
+snippet placeholders.
+
+== Known limits
+
+The cursor line uses Callout, which guarantees only Muted.  Rust on Callout
+is 4.36:1 in `quiet-night`, as in every quiet editor port.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed themes match generator output;
+* each line is a scope style or a palette entry, and every style names a
+  palette color;
+* every scope with a background keeps its text at its contract minimum.
+
+Where Helix is installed, the suite also checks every scope against the
+captures in Helix's highlight queries and the keys its bundled themes set.
+Set `QUIET_HELIX_RUNTIME` to a Helix runtime directory to choose one.  The
+reference port is tested against Helix 25.07.1, which loads both themes
+without warnings.
+
+== Generation
+
+----
+make helix
+----

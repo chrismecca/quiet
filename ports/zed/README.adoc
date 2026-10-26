@@ -1,0 +1,137 @@
+// @(#)quiet / asciidoc / ports/zed/README.adoc / 2026-10-25
+
+= quiet for Zed
+
+quiet's Zed port is a theme family, `quiet`, holding two themes:
+`quiet-day` and `quiet-night`.
+
+== Files
+
+----
+quiet.json
+----
+
+The file is generated from the canonical quiet palettes.
+
+== Installation
+
+Copy the family into Zed's theme directory:
+
+----
+mkdir -p ~/.config/zed/themes
+cp quiet.json ~/.config/zed/themes/
+----
+
+Then choose `quiet-day` or `quiet-night` with *zed: toggle theme
+selector*, or set it in `settings.json`:
+
+----
+"theme": {
+  "mode": "system",
+  "light": "quiet-day",
+  "dark": "quiet-night"
+}
+----
+
+== Syntax
+
+Ordinary source is Ink, comments are Muted, and language structure, such
+as keywords, types, operators, attributes, and tags, is Mineral.
+
+== Interface
+
+[cols="2,2"]
+|===
+| Zed element | quiet role
+
+| Editor, active tab, toolbar
+| Field
+
+| Panels, tab bar, popovers
+| Surface
+
+| Window background, status bar, title bar
+| Structure
+
+| Current line
+| Callout
+
+| Selected items, text selection
+| Selection
+
+| Focused borders, accent text and icons, your cursor
+| Mineral
+
+| Search matches / active match
+| Mineral wash / Ochre wash
+
+| Symbol read / write highlights
+| Mineral wash / Ochre wash
+
+| Added / deleted diff hunks
+| Moss wash / Rust wash
+
+| Added / deleted words
+| Moss / Rust wash emphasis
+
+| Conflict: ours / theirs
+| Mineral wash / Moss wash
+
+| Errors, warnings, information, success
+| Rust, Ochre, Mineral, Moss, with their washes for backgrounds
+
+| Vim and Helix modes: normal / insert / visual / replace
+| Field on Mineral / Moss / Ochre / Rust
+|===
+
+The washes keep every syntax color readable.  Zed draws word-level diff
+changes over the hunk's wash, so they take the emphasis tier, which
+guarantees only Ink.
+
+The family sets every style key Zed 1.25.3 defines except experimental
+and deprecated ones.  Ghost elements and transparent borders are
+transparent, as in Zed's own themes.
+
+=== Terminal
+
+The terminal takes quiet's generic terminal palette.  Zed also asks for dim
+colors, which the generic palette does not define: each is the normal
+color composited over the terminal background at the opacity of quiet's
+Subtle role.
+
+=== Collaborators
+
+The family sets the local user's cursor and selection.  Collaborators keep
+Zed's own colors, which identify people rather than carry meaning.
+
+Bracket colorization takes one accent, Ink, so brackets stay uncolored.
+
+== Known limits
+
+The current line uses Callout, which guarantees only Muted.  Rust on Callout
+is 4.36:1 in `quiet-night`, as in every quiet editor port.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed family matches generator output and is valid JSON;
+* every style key and syntax name is one Zed 1.25.3 knows, and every
+  style key it defines is set;
+* every background drawn beneath source keeps every syntax color at its
+  contract minimum, and interface text reaches 4.5:1 on its surfaces;
+* every dim terminal color is dimmer than its normal color.
+
+The key lists in `internal/port/zed/testdata` come from Zed 1.25.3's
+source: the theme schema in `crates/settings_content/src/theme.rs` and the
+themes bundled in `assets/themes`.
+
+Zed 1.25.3 loads the family without errors.  Zed logs theme files it
+cannot parse, so a load can be checked with `zed --foreground` and Zed's
+log.
+
+== Generation
+
+----
+make zed
+----

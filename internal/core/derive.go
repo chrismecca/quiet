@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/derive.go / 2026-10-24
+// @(#)quiet / go / internal/core/derive.go / 2026-10-25
 
 package core
 
@@ -25,6 +25,11 @@ const (
 
 	subtleAlpha = 0.55
 )
+
+// SubtleAlpha is the opacity at which Subtle composites Muted over its
+// ground. Ports that de-emphasize other colors the same way, such as
+// terminal dim colors, composite at this opacity.
+const SubtleAlpha = subtleAlpha
 
 // Derived contains opaque quiet colors produced deterministically from the
 // canonical anchors.

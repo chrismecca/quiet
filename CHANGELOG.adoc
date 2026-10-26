@@ -16,6 +16,20 @@ contract constraints.  Such changes are always listed here.
 
 The candidate quiet-core and its initial ports predate this changelog.
 
+== Unreleased
+
+=== Ports
+
+* Added the Alacritty port: `quiet-day` and `quiet-night` color
+  configurations built on quiet's generic terminal palette.  Search
+  matches use the Mineral wash and keep each cell's color.
+* Added the Helix port: `quiet-day` and `quiet-night` themes.
+  Diagnostics keep Helix's curly underlines in quiet's colors.  Where Helix
+  is installed, tests check every scope against Helix's own.
+* Added the Zed port: a `quiet` theme family with `quiet-day` and
+  `quiet-night`, setting every style key Zed 1.25.3 defines.  Dim
+  terminal colors use quiet's Subtle opacity.
+
 == 0.1.0 (2026-10-25)
 
 The first quiet release.  quiet-core remains a candidate: its anchors are

@@ -12,6 +12,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/port/alacritty"
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
 	"github.com/chrismecca/quiet/internal/port/chrome"
@@ -21,6 +22,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/firefox"
 	"github.com/chrismecca/quiet/internal/port/fzf"
 	"github.com/chrismecca/quiet/internal/port/ghostty"
+	"github.com/chrismecca/quiet/internal/port/helix"
 	"github.com/chrismecca/quiet/internal/port/iterm2"
 	"github.com/chrismecca/quiet/internal/port/jetbrains"
 	"github.com/chrismecca/quiet/internal/port/kitty"
@@ -35,6 +37,7 @@ import (
 	"github.com/chrismecca/quiet/internal/port/wezterm"
 	"github.com/chrismecca/quiet/internal/port/x11"
 	"github.com/chrismecca/quiet/internal/port/xcode"
+	"github.com/chrismecca/quiet/internal/port/zed"
 	"github.com/chrismecca/quiet/internal/report"
 )
 
@@ -54,6 +57,14 @@ type portCommand struct {
 // portCommands is the single canonical ordering for port dispatch and usage.
 // Keep this list alphabetic. Imports and helper functions mirror the same order.
 var portCommands = []portCommand{
+	{
+		name:  "alacritty",
+		usage: "alacritty PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portAlacritty(w, args[0])
+		},
+	},
 	{
 		name:  "base16",
 		usage: "base16 PALETTE",
@@ -124,6 +135,14 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portGhostty(w, args[0])
+		},
+	},
+	{
+		name:  "helix",
+		usage: "helix PALETTE",
+		argc:  1,
+		run: func(w io.Writer, args []string) error {
+			return portHelix(w, args[0])
 		},
 	},
 	{
@@ -252,6 +271,14 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portXcode(w, args[0])
+		},
+	},
+	{
+		name:  "zed",
+		usage: "zed DAY_PALETTE NIGHT_PALETTE",
+		argc:  2,
+		run: func(w io.Writer, args []string) error {
+			return portZed(w, args[0], args[1])
 		},
 	},
 }
@@ -438,6 +465,21 @@ func commandError(
 	return exitError
 }
 
+func portAlacritty(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return alacritty.Encode(
+		w,
+		palette,
+	)
+}
+
 func portBase16(
 	w io.Writer,
 	path string,
@@ -589,6 +631,21 @@ func portGhostty(
 	return ghostty.Encode(
 		w,
 		resolved,
+	)
+}
+
+func portHelix(
+	w io.Writer,
+	path string,
+) error {
+	palette, err := core.LoadPaletteFile(path)
+	if err != nil {
+		return err
+	}
+
+	return helix.Encode(
+		w,
+		palette,
 	)
 }
 
@@ -1207,4 +1264,32 @@ func usage(w io.Writer) {
 			command.usage,
 		)
 	}
+}
+
+func portZed(
+	w io.Writer,
+	dayPath string,
+	nightPath string,
+) error {
+	day, err := core.LoadPaletteFile(dayPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Day palette: %w",
+			err,
+		)
+	}
+
+	night, err := core.LoadPaletteFile(nightPath)
+	if err != nil {
+		return fmt.Errorf(
+			"load Night palette: %w",
+			err,
+		)
+	}
+
+	return zed.Encode(
+		w,
+		day,
+		night,
+	)
 }
