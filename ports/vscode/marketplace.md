@@ -22,7 +22,7 @@ words in the diff editor are outlined rather than filled.
 ## Integrated terminal
 
 The terminal uses quiet's generic terminal palette, shared with quiet's ports
-for kitty, Ghostty, iTerm2, WezTerm, Alacritty, and Terminal.app.
+for kitty, Ghostty, iTerm2, WezTerm, and Terminal.app.
 
 ## More
 

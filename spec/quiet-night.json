@@ -2,7 +2,7 @@
   "schema": "quiet.palette/v1",
   "name": "quiet-night",
   "mode": "night",
-  "status": "candidate",
+  "status": "stable",
   "anchors": {
     "field": "#1C1E1C",
     "surface": "#242925",

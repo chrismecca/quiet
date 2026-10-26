@@ -2,7 +2,7 @@
   "schema": "quiet.palette/v1",
   "name": "quiet-day",
   "mode": "day",
-  "status": "candidate",
+  "status": "stable",
   "anchors": {
     "field": "#EEEADF",
     "surface": "#E6E9E2",

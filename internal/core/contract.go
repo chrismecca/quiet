@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/contract.go / 2026-10-24
+// @(#)quiet / go / internal/core/contract.go / 2026-10-26
 
 package core
 
@@ -49,8 +49,7 @@ const (
 	RoleRustWashEmphasis    Role = "rust-wash-emphasis"
 )
 
-// Contract is the machine-readable portion of the candidate quiet-core
-// specification.
+// Contract is the machine-readable portion of the quiet-core specification.
 //
 // Human rationale belongs in the normative AsciiDoc specification. Contract
 // contains only rules that the reference implementation can evaluate
@@ -158,7 +157,7 @@ func DecodeContract(r io.Reader) (Contract, error) {
 	status := Status(doc.Status)
 
 	switch status {
-	case StatusCandidate:
+	case StatusStable, StatusCandidate:
 	default:
 		return Contract{}, fmt.Errorf(
 			"unsupported contract status %q",

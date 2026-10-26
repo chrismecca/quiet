@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/wash.go / 2026-10-24
+// @(#)quiet / go / internal/core/wash.go / 2026-10-26
 
 package core
 
@@ -9,8 +9,9 @@ import (
 	"github.com/chrismecca/quiet/internal/color"
 )
 
-// The constants below are part of the current candidate Wash derivation
-// contract. Distances and lightness offsets are OKLab units.
+// The constants below are part of the quiet-core Wash derivation contract, and
+// changing one is a breaking change (docs/versioning.adoc). Distances and
+// lightness offsets are OKLab units.
 //
 // The line distance is bounded above by sRGB gamut: quiet-day Rust over Field
 // leaves the gamut near 0.028 (reports/src/wash.org). The emphasis lightness offsets move away

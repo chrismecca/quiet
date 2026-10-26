@@ -2,6 +2,8 @@
 
 # Every change must leave quiet reproducible: quiet-core conformance passes and
 # every committed generated artifact equals current generator output.
+#
+# Actions are pinned to commits. Dependabot proposes updates.
 
 name: check
 
@@ -14,20 +16,32 @@ on:
 permissions:
   contents: read
 
+# A newer push to a pull request replaces its running check. Runs on main
+# always finish, so every merge commit has a result.
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     name: check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
 
       - name: Headers, format, vet, tests, quiet-core conformance
         run: make check
+
+      - name: staticcheck and actionlint
+        run: make lint
 
       # The Go tests already compare most artifacts byte for byte. This step
       # also exercises the Makefile targets that regenerate them.
@@ -40,11 +54,14 @@ jobs:
   terminal-app:
     name: Terminal.app profiles
     runs-on: macos-latest
+    timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
 

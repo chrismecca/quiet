@@ -1,0 +1,79 @@
+# @(#)quiet / yaml / .github/workflows/release.yml / 2026-10-26
+
+# A version tag publishes a release. Nothing is published unless the tag,
+# internal/release.Version, and the changelog agree and the tagged tree
+# passes every check.
+#
+# The GitHub release carries the release notes, the VS Code extension, and
+# the JetBrains plugin. Marketplaces are published by hand from those files;
+# see docs/distribution.adoc.
+
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: GitHub release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Tag names the release version
+        run: |
+          version="$(go run ./cmd/quiet version)"
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match Version $version"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Headers, format, vet, tests, quiet-core conformance
+        run: make check
+
+      - name: Generated ports match committed artifacts
+        run: |
+          make generate
+          git diff --exit-code
+
+      - name: Release notes
+        run: go run ./cmd/quiet release-notes CHANGELOG.adoc "$VERSION" > notes.md
+
+      - name: Package the VS Code extension
+        working-directory: ports/vscode
+        run: npx --yes @vscode/vsce@4.0.0 package --readme-path marketplace.md --out quiet.vsix
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "quiet $VERSION" \
+            --notes-file notes.md \
+            ports/vscode/quiet.vsix \
+            ports/jetbrains/quiet.jar

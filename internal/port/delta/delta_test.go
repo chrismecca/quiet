@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/delta/delta_test.go / 2026-10-24
+// @(#)quiet / go / internal/port/delta/delta_test.go / 2026-10-26
 
 package delta
 
@@ -124,6 +124,7 @@ func TestDeltaRendersWithFeatures(t *testing.T) {
 			"XDG_CONFIG_HOME="+filepath.Join(home, ".config"),
 			"GIT_CONFIG_NOSYSTEM=1",
 			"XDG_CACHE_HOME="+cache,
+			"COLORTERM=truecolor",
 		)
 		cmd.Stdin = strings.NewReader(diff)
 		cmd.Dir = root

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/load_test.go / 2026-10-24
+// @(#)quiet / go / internal/core/load_test.go / 2026-10-26
 
 package core
 
@@ -91,11 +91,11 @@ func TestCanonicalPalettes(t *testing.T) {
 				)
 			}
 
-			if palette.Status != StatusCandidate {
+			if palette.Status != StatusStable {
 				t.Errorf(
 					"status = %q, want %q",
 					palette.Status,
-					StatusCandidate,
+					StatusStable,
 				)
 			}
 

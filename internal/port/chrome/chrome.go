@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/chrome/chrome.go / 2026-10-25
+// @(#)quiet / go / internal/port/chrome/chrome.go / 2026-10-26
 
 // Package chrome maps quiet-core semantics onto a Chrome theme.
 //
@@ -125,7 +125,7 @@ func Encode(
 		r, g, bl, err := resolved[e.role].RGB8()
 		if err != nil {
 			return fmt.Errorf(
-				"Chrome %s: %w",
+				"theme color %s: %w",
 				e.key,
 				err,
 			)

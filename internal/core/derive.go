@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/derive.go / 2026-10-25
+// @(#)quiet / go / internal/core/derive.go / 2026-10-26
 
 package core
 
@@ -8,7 +8,8 @@ import (
 	"github.com/chrismecca/quiet/internal/color"
 )
 
-// The constants below are part of the current candidate derivation contract.
+// The constants below are part of the quiet-core derivation contract. Changing
+// one changes derived colors, which is a breaking change (docs/versioning.adoc).
 //
 // They are named rather than embedded in calculations so the relationship
 // between implementation, specification, and future audit output remains

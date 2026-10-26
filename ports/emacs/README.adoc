@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-25
+// @(#)quiet / asciidoc / ports/emacs/README.adoc / 2026-10-26
 
 = quiet for GNU Emacs
 
@@ -57,14 +57,14 @@ Current Emacs releases can also install the package through `use-package` and
 (use-package quiet-themes
   :vc (:url "https://github.com/chrismecca/quiet.git"
        :lisp-dir "ports/emacs"
-       :main-file "quiet-themes.el"
-       :rev :newest)
+       :main-file "quiet-themes.el")
   :config
   (load-theme 'quiet-night t))
 ----
 
-`:rev :newest` selects the current public candidate rather than a tagged
-release.
+Without `:rev`, use-package installs the commit that last changed the
+`Version` header of `quiet-themes.el`, which is quiet's latest release.
+Add `:rev :newest` to follow `main` instead.
 
 == Load a theme
 

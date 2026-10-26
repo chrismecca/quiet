@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-24
+// @(#)quiet / asciidoc / spec/quiet-core.adoc / 2026-10-26
 
 = quiet-core
 :toc:
@@ -8,16 +8,10 @@
 quiet-core defines the semantic and perceptual rules shared by quiet-day,
 quiet-night, and conforming quiet ports.
 
-This document describes the current candidate specification.
-
-It is not yet a stable quiet release.
-
 == Status
 
-quiet-core is under active development.
-
-The canonical Day and Night anchors remain candidate data pending broader
-testing and additional reference-port work.
+quiet-core and the canonical Day and Night palettes are stable.  Changes to
+them follow quiet's versioning policy, `docs/versioning.adoc`.
 
 The machine-readable contract is:
 
@@ -192,7 +186,7 @@ meaning.
 
 == quiet-day
 
-The current candidate quiet-day anchors are:
+The canonical quiet-day anchors are:
 
 [cols="1,1"]
 |===
@@ -231,7 +225,7 @@ The current candidate quiet-day anchors are:
 
 == quiet-night
 
-The current candidate quiet-night anchors are:
+The canonical quiet-night anchors are:
 
 [cols="1,1"]
 |===
@@ -880,12 +874,13 @@ Canonical palette files MUST:
 
 * identify schema `quiet.palette/v1`;
 * identify mode as `day` or `night`;
+* identify status as `stable`;
 * contain exactly the ten defined anchors;
 * represent each anchor as uppercase six-digit sRGB hexadecimal;
 * contain no unknown fields;
 * contain no cached derived colors.
 
-The current candidate quiet-core contract identifies schema:
+The quiet-core contract identifies schema:
 
 ----
 quiet.core/v1
@@ -905,7 +900,7 @@ internal/core/
 cmd/quiet/
 ----
 
-is the reference implementation for the current candidate specification.
+is the reference implementation of this specification.
 
 Generic color mathematics belongs in `internal/color`.
 
@@ -989,24 +984,21 @@ When a change is required, the preferred correction is the smallest
 perceptual movement that resolves the documented problem while preserving
 quiet's design intent.
 
-== Release boundary
+The canonical anchors are frozen within a major quiet version.
 
-The existence of this candidate specification does not constitute a quiet
-0.1 release.
+== Versioning
 
-Before quiet 0.1, the project is expected to include at least:
+quiet versions this specification, the canonical palettes, the contract,
+the reference implementation, and the first-party ports together.
+`docs/versioning.adoc` defines which changes are breaking.
 
-* a stable human-readable quiet-core specification;
-* a stable machine-readable quiet-core contract;
-* reproducible Day and Night palettes;
-* the reference validation implementation;
-* reproducible analytical reports;
-* external review;
-* a small set of representative reference ports.
+Changing a canonical anchor or a derivation, removing or renaming a role,
+and removing a contract constraint or lowering its minimum are breaking
+changes.
 
-Reference ports are part of the release evidence: they demonstrate that the
-specification can be mapped onto real interfaces without private knowledge
-from the original author.
+Reference ports are part of the specification's evidence: they demonstrate
+that it can be mapped onto real interfaces without private knowledge from
+the original author.
 
 == Guiding principle
 

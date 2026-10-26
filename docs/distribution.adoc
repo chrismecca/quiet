@@ -49,7 +49,7 @@ These ports need no separate channel.  Their READMEs describe installation.
 |===
 
 Versions come from `internal/release.Version`.  Publish only from a release
-tag.
+tag: its GitHub release carries the `.vsix` and `quiet.jar` to upload.
 
 == Theme collections
 

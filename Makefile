@@ -1,4 +1,4 @@
-# @(#)quiet / make / Makefile / 2026-10-25
+# @(#)quiet / make / Makefile / 2026-10-26
 
 GO := go
 BIN := bin/quiet
@@ -18,6 +18,8 @@ PORTFILES := $(shell find ports -type f \
 WORKFLOWFILES := $(wildcard .github/workflows/*.yml)
 
 HEADER_FILES := \
+	.gitattributes \
+	.github/dependabot.yml \
 	.gitignore \
 	CHANGELOG.adoc \
 	CONTRIBUTING.adoc \
@@ -37,7 +39,6 @@ TERMINAL_APP_NIGHT := $(TERMINAL_APP_DIR)/quiet-night.terminal
 # Portable generated ports, kept in the same canonical order as quiet's port
 # registry. Terminal.app remains separate because its serializer requires macOS.
 GENERATED_PORTS := \
-	alacritty \
 	base16 \
 	base24 \
 	chrome \
@@ -107,6 +108,16 @@ core-check:
 .PHONY: check
 check: headers fmt-check vet test core-check
 
+# Linters run from pinned module versions, so their first run needs network
+# access. Continuous integration runs them on every change.
+STATICCHECK := honnef.co/go/tools/cmd/staticcheck@2026.2.2
+ACTIONLINT := github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+
+.PHONY: lint
+lint:
+	$(GO) run $(STATICCHECK) ./...
+	$(GO) run $(ACTIONLINT)
+
 .PHONY: build
 build:
 	mkdir -p bin
@@ -154,15 +165,6 @@ reports: report-data
 	done
 
 # Generated ports -----------------------------------------------------------
-
-.PHONY: alacritty
-alacritty:
-	$(GO) run ./cmd/quiet port alacritty \
-		spec/quiet-day.json \
-		> ports/alacritty/quiet-day.toml
-	$(GO) run ./cmd/quiet port alacritty \
-		spec/quiet-night.json \
-		> ports/alacritty/quiet-night.toml
 
 .PHONY: base16
 base16:

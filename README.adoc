@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / README.adoc / 2026-10-25
+// @(#)quiet / asciidoc / README.adoc / 2026-10-26
 
 ----
            _     _
@@ -78,7 +78,6 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/x11/[X11]
 | link:ports/dircolors/[GNU dircolors]
 | link:ports/ghostty/[Ghostty]
-| link:ports/alacritty/[Alacritty]
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
 | link:ports/wezterm/[WezTerm]
@@ -97,6 +96,7 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/delta/[delta]
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
+|
 |
 |===
 
@@ -137,10 +137,11 @@ The reference implementation can inspect, derive, validate, and export quiet:
 
 == Read more
 
-[cols="^1,^1,^1",options="noheader"]
+[cols="^1,^1,^1,^1",options="noheader"]
 |===
 | link:spec/quiet-core.adoc[Specification]
 | link:PORTING.adoc[Porting]
+| link:docs/versioning.adoc[Versioning]
 | link:CONTRIBUTING.adoc[Contributing]
 |===
 
@@ -151,10 +152,8 @@ The reference interface lives in `examples/reference-interface/`.
 
 == Status
 
-quiet 0.1 is under development.
-
-Day and Night remain candidate data while reference-port work and broader
-testing continue.
+quiet-core and the canonical palettes are stable.  Changes follow quiet's
+link:docs/versioning.adoc[versioning policy].
 
 MIT.  See `LICENSE`.
 

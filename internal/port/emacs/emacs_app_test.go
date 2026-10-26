@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/emacs/emacs_app_test.go / 2026-10-25
+// @(#)quiet / go / internal/port/emacs/emacs_app_test.go / 2026-10-26
 
 package emacs
 
@@ -31,18 +31,21 @@ var libraries = []string{
 func TestThemesLoadInEmacs(t *testing.T) {
 	emacs := emacsPath(t)
 
-	var underlined, waved, plain []string
+	// unwaved holds every face quiet draws without a wavy underline, plain or
+	// straight. None may be wavy in Emacs's default.
+	var underlined, plain, unwaved []string
 	for _, f := range faces() {
 		switch f.underline {
 		case "":
 			plain = append(plain, f.name)
+			unwaved = append(unwaved, f.name)
 
 		case "wave":
-			waved = append(waved, f.name)
 			underlined = append(underlined, f.name)
 
 		default:
 			underlined = append(underlined, f.name)
+			unwaved = append(unwaved, f.name)
 		}
 	}
 
@@ -57,7 +60,7 @@ func TestThemesLoadInEmacs(t *testing.T) {
   (dolist (f '(` + strings.Join(underlined, " ") + `))
     (unless (string-match-p ":underline" (format "%S" (face-default-spec f)))
       (princ (format "%s has no underline in Emacs's default\n" f))))
-  (dolist (f '(` + strings.Join(plain, " ") + `))
+  (dolist (f '(` + strings.Join(unwaved, " ") + `))
     (when (string-match-p ":style wave" (format "%S" (face-default-spec f)))
       (princ (format "%s drops the wavy underline in Emacs's default\n" f)))))`
 

@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/core/palette.go / 2026-10-24
+// @(#)quiet / go / internal/core/palette.go / 2026-10-26
 
 // Package core defines quiet's semantic palette model and the rules that
 // operate on it.
@@ -32,8 +32,13 @@ const (
 type Status string
 
 const (
-	// StatusCandidate marks palette data that is frozen for evaluation but has
-	// not yet been published as part of a stable quiet release.
+	// StatusStable marks published data. Changes to it follow quiet's
+	// versioning policy (docs/versioning.adoc). The canonical palettes and
+	// contract are stable.
+	StatusStable Status = "stable"
+
+	// StatusCandidate marks proposed data under evaluation, such as a palette
+	// proposing an anchor change. Candidate data is never canonical.
 	StatusCandidate Status = "candidate"
 )
 
