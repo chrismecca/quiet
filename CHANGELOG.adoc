@@ -29,6 +29,7 @@ The candidate quiet-core and its initial ports predate this changelog.
 
 === Ports
 
+* Removed the CDE port.  quiet no longer provides CDE palettes.
 * Added the JetBrains port: a plugin with `quiet-day` and `quiet-night`
   interface themes built on JetBrains' Islands themes, and matching editor
   color schemes, also provided on their own for import.  Diff views use the

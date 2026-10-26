@@ -14,7 +14,6 @@ import (
 	"github.com/chrismecca/quiet/internal/core"
 	"github.com/chrismecca/quiet/internal/port/base16"
 	"github.com/chrismecca/quiet/internal/port/base24"
-	"github.com/chrismecca/quiet/internal/port/cde"
 	"github.com/chrismecca/quiet/internal/port/chrome"
 	"github.com/chrismecca/quiet/internal/port/delta"
 	"github.com/chrismecca/quiet/internal/port/dircolors"
@@ -69,14 +68,6 @@ var portCommands = []portCommand{
 		argc:  1,
 		run: func(w io.Writer, args []string) error {
 			return portBase24(w, args[0])
-		},
-	},
-	{
-		name:  "cde",
-		usage: "cde PALETTE",
-		argc:  1,
-		run: func(w io.Writer, args []string) error {
-			return portCDE(w, args[0])
 		},
 	},
 	{
@@ -484,26 +475,6 @@ func portBase24(
 	return base24.EncodeYAML(
 		w,
 		scheme,
-	)
-}
-
-func portCDE(
-	w io.Writer,
-	path string,
-) error {
-	palette, err := core.LoadPaletteFile(path)
-	if err != nil {
-		return err
-	}
-
-	resolved, err := cde.Resolve(palette)
-	if err != nil {
-		return err
-	}
-
-	return cde.Encode(
-		w,
-		resolved,
 	)
 }
 

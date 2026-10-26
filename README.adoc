@@ -76,9 +76,7 @@ The native exports preserve quiet's own semantic vocabulary.
 |===
 | link:ports/terminal/terminal-app/[Terminal.app]
 | link:ports/x11/[X11]
-| link:ports/cde/[CDE]
 | link:ports/dircolors/[GNU dircolors]
-| SGI 4Dwm
 | link:ports/ghostty/[Ghostty]
 | link:ports/iterm2/[iTerm2]
 | link:ports/kitty/[kitty]
@@ -96,8 +94,6 @@ The native exports preserve quiet's own semantic vocabulary.
 | link:ports/delta/[delta]
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
-|
-|
 |===
 
 == Underneath
