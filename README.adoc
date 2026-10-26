@@ -64,7 +64,7 @@ conditions.
 
 They are not mathematical inversions.
 
-== Use it
+== Exports
 
 [cols="^1,^1,^1",options="noheader"]
 |===
@@ -74,7 +74,7 @@ They are not mathematical inversions.
 
 | link:ports/base16/[Base16]
 | link:ports/base24/[Base24]
-| link:ports/terminal/terminal-app/[Terminal.app]
+|
 |===
 
 Base16 and Base24 are compatibility projections.
@@ -82,6 +82,14 @@ Base16 and Base24 are compatibility projections.
 The native exports preserve quiet's own semantic vocabulary.
 
 == Ports
+
+quiet ports color systems.
+
+It does not redesign the applications that use them.
+
+=== First-party
+
+Maintained in this repository.
 
 [cols="^1,^1,^1,^1",options="noheader"]
 |===
@@ -115,6 +123,16 @@ The native exports preserve quiet's own semantic vocabulary.
 |
 |
 |===
+
+=== Community
+
+Ports maintained outside this repository.
+
+* https://github.com/jdanna/quiet-terminology[Terminology] — by https://github.com/jdanna[jdanna]
+
+Made a quiet port?
+
+Start with link:PORTING.adoc[Porting quiet], then open a pull request to add it here.
 
 == Underneath
 
