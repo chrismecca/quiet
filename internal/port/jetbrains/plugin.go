@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/release"
 )
 
 // pluginID identifies the plugin to JetBrains IDEs and the JetBrains
@@ -27,7 +28,7 @@ var archiveTime = time.Date(1980, 1, 1, 0, 0, 0, 0, time.UTC)
 const pluginXML = `<idea-plugin>
   <id>` + pluginID + `</id>
   <name>quiet</name>
-  <version>0.0.0</version>
+  <version>` + release.Version + `</version>
   <vendor email="cm@chrismecca.com" url="https://github.com/chrismecca/quiet">Chris Mecca</vendor>
   <description>A restrained color system for long-duration work. Provides the quiet-day and quiet-night interface themes and editor color schemes.</description>
   <idea-version since-build="` + sinceBuild + `"/>

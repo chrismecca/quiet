@@ -1,4 +1,4 @@
-// @(#)quiet / go / internal/port/firefox/firefox.go / 2026-10-24
+// @(#)quiet / go / internal/port/firefox/firefox.go / 2026-10-25
 
 // Package firefox maps quiet-core semantics onto a Firefox theme.
 //
@@ -14,6 +14,7 @@ import (
 
 	"github.com/chrismecca/quiet/internal/color"
 	"github.com/chrismecca/quiet/internal/core"
+	"github.com/chrismecca/quiet/internal/release"
 )
 
 // minimumVersion is the first Firefox release with the color_scheme and
@@ -225,7 +226,7 @@ func Encode(
 	doc := manifest{
 		ManifestVersion: 3,
 		Name:            p.Name,
-		Version:         "0.0.0",
+		Version:         release.Version,
 		Description:     "A restrained color system for long-duration work.",
 		Browser: browserSettings{
 			Gecko: gecko{

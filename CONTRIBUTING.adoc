@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-24
+// @(#)quiet / asciidoc / CONTRIBUTING.adoc / 2026-10-25
 
 = Contributing to quiet
 
@@ -137,6 +137,20 @@ every pull request.  It also regenerates every port and, on macOS, the
 Terminal.app profiles, and fails if any committed artifact differs.
 
 Notable changes are recorded in `CHANGELOG.adoc` under `Unreleased`.
+Add that section above the newest release when it is missing.
+
+== Releases
+
+A quiet version covers the whole repository.  To release:
+
+. Rename the changelog's `Unreleased` section to `== VERSION (DATE)`.
+. Set `Version` in `internal/release/release.go`, the `version` in
+  `ports/vscode/package.json`, and the `Version` header in
+  `ports/emacs/quiet-themes.el`.  Tests fail until all three agree with the
+  changelog.
+. Run `make generate` and `make check`.
+. Merge, then tag the merge commit `vVERSION` and publish a GitHub release
+  from its changelog section.
 
 == Canonical colors
 

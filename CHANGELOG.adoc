@@ -16,7 +16,10 @@ contract constraints.  Such changes are always listed here.
 
 The candidate quiet-core and its initial ports predate this changelog.
 
-== Unreleased
+== 0.1.0 (2026-10-25)
+
+The first quiet release.  quiet-core remains a candidate: its anchors are
+not yet frozen.
 
 === quiet-core
 
@@ -121,5 +124,8 @@ Night files follow the same pattern.
 * The tmux port's mapping is now a declarative table of tmux options and
   quiet roles.  Generated overlays are unchanged.
 * Added this changelog.
+* Added a single release version, `internal/release.Version`.  Generated
+  browser and IDE manifests take their version from it, and tests check that
+  the VS Code and Emacs package versions and this changelog agree.
 * The Emacs package header now names Chris Mecca with a contact address,
   matching `LICENSE`.
