@@ -38,6 +38,13 @@ The candidate quiet-core and its initial ports predate this changelog.
 * Emacs: theme files now pass `checkdoc` and provide features; the MELPA
   recipe is documented.
 
+=== Project
+
+* Fixed generated ports differing between arm64 and amd64: Go may fuse a
+  multiply and an add on arm64, which changed one Zed dim terminal color.
+  Compositing now rounds each product, and CI regenerates every port on
+  an arm64 runner as well as amd64.
+
 == 0.1.0 (2026-10-25)
 
 The first quiet release.  quiet-core remains a candidate: its anchors are
