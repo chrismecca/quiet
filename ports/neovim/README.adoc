@@ -85,8 +85,8 @@ terminal ports.
 == Artifacts
 
 ----
-ports/neovim/quiet-day.lua
-ports/neovim/quiet-night.lua
+ports/neovim/colors/quiet-day.lua
+ports/neovim/colors/quiet-night.lua
 ----
 
 These files are generated artifacts and MUST NOT be edited independently of
@@ -94,27 +94,42 @@ the reference implementation.
 
 == Installation
 
-Copy the generated schemes into Neovim's colors directory:
+The schemes install from the quiet repository.  `ports/neovim` is a
+runtime directory: add it to `runtimepath`, then choose a scheme.
+
+With lazy.nvim:
+
+----
+{
+  "chrismecca/quiet",
+  lazy = false,
+  priority = 1000,
+  config = function(plugin)
+    vim.opt.runtimepath:append(plugin.dir .. "/ports/neovim")
+    vim.cmd.colorscheme("quiet-night")
+  end,
+}
+----
+
+With Neovim's built-in `vim.pack` (Neovim 0.12 or later):
+
+----
+vim.pack.add({ "https://github.com/chrismecca/quiet" })
+vim.opt.runtimepath:append(
+  vim.fn.stdpath("data") .. "/site/pack/core/opt/quiet/ports/neovim"
+)
+vim.cmd.colorscheme("quiet-night")
+----
+
+Or copy the files into Neovim's colors directory:
 
 ----
 mkdir -p ~/.config/nvim/colors
-
-cp ports/neovim/quiet-day.lua \
-   ports/neovim/quiet-night.lua \
-   ~/.config/nvim/colors/
+cp ports/neovim/colors/*.lua ~/.config/nvim/colors/
 ----
 
-Then select one with:
-
-----
-:colorscheme quiet-day
-----
-
-or:
-
-----
-:colorscheme quiet-night
-----
+Then select a scheme with `:colorscheme quiet-day` or
+`:colorscheme quiet-night`.
 
 == Name
 
@@ -145,11 +160,12 @@ nvim --clean \
   +'colorscheme quiet-night'
 ----
 
-The generated Lua can also be validated directly:
+The schemes in this repository can also be validated directly:
 
 ----
 nvim --clean --headless \
-  +'luafile ports/neovim/quiet-day.lua' \
+  +'set runtimepath^=ports/neovim' \
+  +'colorscheme quiet-day' \
   +'lua assert(vim.g.colors_name == "quiet-day")' \
   +qa
 ----

@@ -29,6 +29,14 @@ The candidate quiet-core and its initial ports predate this changelog.
 * Added the Zed port: a `quiet` theme family with `quiet-day` and
   `quiet-night`, setting every style key Zed 1.25.3 defines.  Dim
   terminal colors use quiet's Subtle opacity.
+* Vim and Neovim schemes now live in `colors/` directories, so
+  `ports/vim` and `ports/neovim` install from this repository with
+  vim-plug, lazy.nvim, or `vim.pack`.  Tests load each scheme through the
+  runtimepath in an installed Vim and Neovim.
+* VS Code: added Marketplace metadata, a Marketplace README, and the
+  license, so `vsce package` builds a complete extension.
+* Emacs: theme files now pass `checkdoc` and provide features; the MELPA
+  recipe is documented.
 
 == 0.1.0 (2026-10-25)
 

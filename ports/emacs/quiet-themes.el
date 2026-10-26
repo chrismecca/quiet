@@ -1,4 +1,4 @@
-;;; quiet-themes.el --- quiet themes for long-duration work -*- lexical-binding: t; -*-
+;;; quiet-themes.el --- Restrained color themes for long-duration work -*- lexical-binding: t; -*-
 ;; @(#)quiet / elisp / ports/emacs/quiet-themes.el / 2026-10-25
 
 ;; Copyright (C) 2026 Chris Mecca

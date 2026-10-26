@@ -56,6 +56,7 @@ func TestCanonicalThemesMatchCommittedArtifacts(t *testing.T) {
 					t,
 					"ports",
 					"neovim",
+					"colors",
 					tt.artifact,
 				),
 			)
