@@ -2,6 +2,7 @@
 
 image::docs/assets/icon/quiet-icon-256.png[quiet,128,align=center]
 
+[discrete]
 = Quiet.
 
 A restrained semantic color system for long-duration work.
