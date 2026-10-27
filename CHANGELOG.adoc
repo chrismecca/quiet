@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-26
+// @(#)quiet / asciidoc / CHANGELOG.adoc / 2026-10-27
 
 = quiet changelog
 
@@ -15,6 +15,15 @@ independently.  They are not quiet release numbers.
 breaking.  A release lists its breaking changes first, under `Breaking`.
 
 The candidate quiet-core and its initial ports predate this changelog.
+
+== Unreleased
+
+=== Ports
+
+* Added the Claude Code port: `quiet-day` and `quiet-night` custom
+  themes, setting every palette key of Claude Code 2.1.308 that carries
+  state or structure.  Claude Code's identity colors, subagent colors, and
+  rainbow effect keep the base theme's.
 
 == 0.5.0 (2026-10-26)
 

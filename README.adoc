@@ -1,4 +1,4 @@
-// @(#)quiet / asciidoc / README.adoc / 2026-10-26
+// @(#)quiet / asciidoc / README.adoc / 2026-10-27
 
 image::docs/assets/icon/quiet-icon-256.png[quiet,128,align=center]
 
@@ -120,7 +120,7 @@ Maintained in this repository.
 
 | link:ports/tmtheme/[bat]
 | link:ports/tmtheme/[Sublime Text]
-|
+| link:ports/claude-code/[Claude Code]
 |
 |===
 

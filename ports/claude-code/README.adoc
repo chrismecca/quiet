@@ -1,0 +1,279 @@
+// @(#)quiet / asciidoc / ports/claude-code/README.adoc / 2026-10-27
+
+= quiet for Claude Code
+
+quiet's Claude Code port is a pair of Claude Code custom themes.
+
+It colors Claude Code's interface: text, borders, states, permission
+modes, diffs, and message surfaces.  It does not change layout, symbols,
+or behavior.
+
+== Files
+
+----
+quiet-day.json
+quiet-night.json
+----
+
+Both files are generated from the canonical quiet palettes.
+
+== Installation
+
+Claude Code reads custom themes from `~/.claude/themes`, or from
+`$CLAUDE_CONFIG_DIR/themes` when that is set:
+
+----
+mkdir -p ~/.claude/themes
+cp ports/claude-code/quiet-day.json \
+   ports/claude-code/quiet-night.json \
+   ~/.claude/themes/
+----
+
+Then choose `quiet-day` or `quiet-night` with `/theme`.  Claude Code lists
+a custom theme under its file name.
+
+Claude Code's custom themes do not pair a light and a dark theme, so the
+port cannot follow the system appearance.  Select the adaptation that
+matches the terminal.
+
+== Format
+
+Each file names a built-in base theme and overrides colors by palette key:
+
+----
+{
+  "name": "quiet-night",
+  "base": "dark",
+  "overrides": {
+    "text": "#E2E0D7",
+    ...
+  }
+}
+----
+
+quiet-day builds on `light` and quiet-night on `dark`, so every key quiet
+leaves unset keeps a color designed for the same ground.  Claude Code
+ignores an override key its palette does not define.
+
+== Terminal background
+
+Claude Code draws on the terminal's own background.  The mapping, and its
+contrast guarantees, assume quiet's Field there, so use the port with a
+quiet terminal port.
+
+== Semantic mapping
+
+=== Text and structure
+
+[cols="2,1"]
+|===
+| Claude Code key | quiet role
+
+| `text`
+| Ink
+
+| `inactive`
+| Muted
+
+| `subtle`
+| Subtle over Field
+
+| `inverseText`, on state badges
+| Field
+
+| `promptBorder`, `rate_limit_empty`
+| Line
+
+| `userMessageBackground`, `bashMessageBackgroundColor`,
+  `memoryBackgroundColor`
+| Surface
+
+| `userMessageBackgroundHover`
+| Callout
+
+| `composerSidebarBackground`
+| Structure
+
+| `selectionBg`
+| Selection
+
+| `briefLabelYou`
+| Muted
+|===
+
+`subtle` marks nonessential hints and is not held to 4.5:1.  Claude Code
+draws it on the terminal background, which is fixed, so the contextual
+role resolves to one color.
+
+`briefLabelYou` names the user's messages in brief view.  The label itself
+says who spoke, so it is secondary text.
+
+=== State and focus
+
+[cols="2,1"]
+|===
+| Claude Code key | quiet role
+
+| `success`
+| Moss
+
+| `warning`
+| Ochre
+
+| `error`
+| Rust
+
+| `permission`, `suggestion`, `remember`, `ide`, `skill`, `background`,
+  `professionalBlue`, `claudeBlue_FOR_SYSTEM_SPINNER`
+| Mineral
+
+| `fastMode`, `effortUltra`, `rate_limit_fill`
+| Mineral
+|===
+
+Despite its name, `background` marks background tasks, not a surface.
+`professionalBlue` titles account and policy notices.
+
+=== Permission modes
+
+Claude Code names each permission mode beside its symbol, and colors it:
+
+[cols="1,2,1"]
+|===
+| Mode | Claude Code key | quiet role
+
+| Manual
+| `inactive`
+| Muted
+
+| Plan
+| `planMode`
+| Mineral
+
+| Accept edits
+| `autoAccept`
+| Ochre
+
+| Auto
+| `warning`
+| Ochre
+
+| Bypass permissions, Don't ask
+| `error`
+| Rust
+|===
+
+The modes rise with consequence.  Plan is an active state.  Accept edits
+and Auto apply changes without review, which calls for attention.  The
+mode names, not their colors, distinguish modes that share a role.
+
+Shell mode borders the prompt in `bashBorder`, which is Mineral; the `!`
+prefix marks the mode.
+
+=== Pull requests
+
+Claude Code colors a pull request's number by its review state:
+
+[cols="1,1"]
+|===
+| Review state | quiet role
+
+| approved
+| Moss
+
+| changes requested
+| Rust
+
+| pending
+| Ochre
+
+| merged
+| Mineral
+|===
+
+The label carries review state by color alone; quiet cannot add a cue
+there.  merged takes Mineral so that all four states remain distinct.
+
+=== Diffs
+
+[cols="2,1"]
+|===
+| Claude Code key | quiet role
+
+| `diffAdded`, `diffAddedDimmed`
+| Moss wash
+
+| `diffRemoved`, `diffRemovedDimmed`
+| Rust wash
+
+| `diffAddedWord`
+| Moss wash emphasis
+
+| `diffRemovedWord`
+| Rust wash emphasis
+|===
+
+Changed lines take the line tier and changed words the emphasis tier, as
+in every quiet port.  The dimmed variants, for diffs Claude Code shows
+dimmed, collapse onto the line tier; Claude Code dims their text.
+
+=== Shimmer
+
+Claude Code animates some labels by sweeping a highlight across them.  The
+`*Shimmer` keys are that highlight.  Each takes the next role up from its
+label's: Ink over a chromatic or Muted label, and Muted over the Line
+prompt border.  The animation stays visible without a new color.
+
+== Not mapped
+
+These keys keep the base theme's colors:
+
+* Claude Code's identity: `claude`, `claudeShimmer`, `clawd_body`,
+  `clawd_background`, `briefLabelClaude`, and `chromeYellow` for Claude in
+  Chrome;
+* the subagent colors, `red_FOR_SUBAGENTS_ONLY` through
+  `cyan_FOR_SUBAGENTS_ONLY`, which users assign as categories and which
+  `/context` also uses for its categories;
+* the `rainbow_*` effect.
+
+None of them carries state.  quiet ports color systems; it does not
+replace an application's identity or invent a categorical palette.
+
+== Semantic compromises
+
+`diffAddedWord` and `diffRemovedWord` serve two roles.  They are the
+background of changed words in a diff, and the text color of the `+N` and
+`-N` counters in file and pull request lists.  No single color serves
+both: it would have to be dark enough to keep Ink readable over it and
+light enough to read on Field.  The port keeps the diff readable, so the
+counters are not.
+
+Code inside a diff is highlighted by Claude Code's own syntax colors,
+which a theme cannot set.  quiet's washes guarantee quiet's foregrounds,
+not Claude Code's.  Setting `syntaxHighlightingDisabled` to `true` in
+Claude Code's settings draws diff code in Ink.
+
+== Testing
+
+The test suite verifies that:
+
+* the committed files match generator output;
+* each theme names its file, builds on the matching base, and uses only
+  `#RRGGBB` values;
+* every key the port sets is in Claude Code's palette;
+* every palette key is either set or listed as left to the base theme;
+* every text key reaches 4.5:1 on the ground Claude Code draws it on:
+  Field, message surfaces, selection, diff washes, and state badges;
+* every shimmer differs from its label.
+
+Claude Code's palette keys are recorded in
+`internal/port/claudecode/testdata/palette-keys.txt`, taken from the
+built-in themes of Claude Code 2.1.308.  Claude Code does not publish its
+palette, so update the list from a new release when it adds or removes
+keys.
+
+== Generation
+
+----
+make claude-code
+----
