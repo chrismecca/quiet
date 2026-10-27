@@ -7,7 +7,7 @@
 ;; Author: Chris Mecca <cm@chrismecca.com>
 ;; Maintainer: Chris Mecca <cm@chrismecca.com>
 ;; URL: https://github.com/chrismecca/quiet
-;; Version: 0.5.0
+;; Version: 0.6.0
 ;; Package-Requires: ((emacs "29.1"))
 ;; Keywords: faces, theme, accessibility
 
