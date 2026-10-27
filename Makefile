@@ -1,4 +1,4 @@
-# @(#)quiet / make / Makefile / 2026-10-26
+# @(#)quiet / make / Makefile / 2026-10-27
 
 GO := go
 BIN := bin/quiet
@@ -42,6 +42,7 @@ GENERATED_PORTS := \
 	base16 \
 	base24 \
 	chrome \
+	claude-code \
 	delta \
 	dircolors \
 	emacs \
@@ -193,6 +194,15 @@ chrome:
 	$(GO) run ./cmd/quiet port chrome \
 		spec/quiet-night.json \
 		> ports/chrome/quiet-night/manifest.json
+
+.PHONY: claude-code
+claude-code:
+	$(GO) run ./cmd/quiet port claude-code \
+		spec/quiet-day.json \
+		> ports/claude-code/quiet-day.json
+	$(GO) run ./cmd/quiet port claude-code \
+		spec/quiet-night.json \
+		> ports/claude-code/quiet-night.json
 
 .PHONY: delta
 delta:
